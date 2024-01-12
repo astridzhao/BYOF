@@ -17,6 +17,9 @@ dependencies:
   openai_client: ^0.0.7
   language_picker: ^0.4.3
   dart_openai: ^3.0.0
+  path: ^1.8.3
+  sqflite: ^2.3.0
+  sqflite_common_ffi: ^2.3.1
 dev_dependencies: 
   flutter_test: 
     sdk: flutter
