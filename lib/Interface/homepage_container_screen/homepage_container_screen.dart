@@ -43,28 +43,28 @@ class HomepageContainerScreen extends StatelessWidget {
           bottomItems: <BottomBarItem>[
             BottomBarItem(
               bottomItemSelectedColor: Color(0xFF5A7756),
-              label: 'Screen 1',
+              label: 'Home',
               screen: HomepagePage(),
               selectedIcon: Icons.collections_bookmark_outlined,
             ),
             BottomBarItem(
               bottomItemSelectedColor: Color(0xFF5A7756),
-              label: 'Screen 2',
+              label: 'My Favorite',
               screen: LoadingScreen(),
-              selectedIcon: Icons.search_rounded,
+              selectedIcon: Icons.collections_bookmark_outlined,
             ),
             BottomBarItem(
               bottomItemSelectedColor: Color(0xFF5A7756),
-              label: 'Screen 3',
-              selectedIcon: Icons.menu_open_rounded,
-              screen: OnboardingFirstTimeDownloadScreen(),
-            ),
-            BottomBarItem(
-              bottomItemSelectedColor: Color(0xFF5A7756),
-              label: 'Screen 4',
+              label: 'My Fridge',
               screen: const Text('D'),
               selectedIcon: Icons.notifications_active,
-            )
+            ),
+            BottomBarItem(
+              bottomItemSelectedColor: Color(0xFF5A7756),
+              label: 'Meal Plan',
+              selectedIcon: Icons.dinner_dining_rounded,
+              screen: OnboardingFirstTimeDownloadScreen(),
+            ),
           ],
         ),
       ),
