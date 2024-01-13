@@ -13,18 +13,28 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class Splash extends State<LoadingScreen> {
+  Timer? timer;
   @override
   void initState() {
     super.initState();
+    timer = Timer(Duration(seconds: 5), navigateIfMounted);
+  }
+
+  void navigateIfMounted() {
+    if (mounted) {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => HomepageContainerScreen()));
+    }
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Timer(
-        Duration(seconds: 5),
-        () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => HomepageContainerScreen())));
-
     return MaterialApp(
       home: Scaffold(
         backgroundColor: appTheme.black900,

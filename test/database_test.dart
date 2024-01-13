@@ -5,9 +5,9 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 /// Testing database-related functionalities.
 void main() {
-  setUpAll(()  {
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
+  setUpAll(() {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
   });
   test('Recipe Table Routine, ', () async {
     var gardenSalad = Recipe(
@@ -37,7 +37,7 @@ void main() {
     final dal = RecipeDal();
 
     expect("recipes", dal.tableName);
-    
+
     dal.insert(scrabbleEggs);
     dal.insert(gardenSalad);
 

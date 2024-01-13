@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_container_screen/homepage_container_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,10 @@ import 'package:language_picker/languages.dart';
 
 // ignore_for_file: must_be_immutable
 class CreateScreen extends StatefulWidget {
-  CreateScreen({Key? key}) : super(key: key);
+  CreateScreen({
+    Key? key,
+  }) : super(key: key);
+
   @override
   CreateScreenState createState() => CreateScreenState();
 }
@@ -101,10 +105,11 @@ class CreateScreenState extends State<CreateScreen> {
             //   backgroundColor:
             //   MaterialStateProperty.all<Color>(appTheme.orange_primary),
             // ),
-            onPressed: () {
-              sendPrompt();
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => GenerationScreen()));
+            onPressed: () async {
+              await sendPrompt();
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      GenerationScreen(resultCompletion: resultCompletion)));
             },
           ),
         ],
@@ -178,7 +183,7 @@ class CreateScreenState extends State<CreateScreen> {
         SizedBox(height: 4.v),
         TextFormField(
           maxLines: null,
-          keyboardType: TextInputType.text,
+          // keyboardType: TextInputType.text,
           controller: atomInputContainerController,
           decoration: InputDecoration(
               labelText: 'Add your ingredients (max 5)',
@@ -232,14 +237,18 @@ class CreateScreenState extends State<CreateScreen> {
               backgroundColor:
                   isSelected ? Colors.grey : appTheme.green_primary),
           onPressed: () {
-            if (selectedIngredients.contains(data)) {
-              // If the data is already selected, remove it
-              selectedIngredients.remove(data);
-            } else {
-              // If the data is not selected, add it
-              selectedIngredients.add(data);
-            }
-            atomInputContainerController.text = selectedIngredients.join(" ");
+            setState(() {
+              if (selectedIngredients.contains(data)) {
+                // If the data is already selected, remove it
+                selectedIngredients.remove(data);
+              } else {
+                if (selectedIngredients.length < 5) {
+                  // If the data is not selected, add it
+                  selectedIngredients.add(data);
+                }
+              }
+              atomInputContainerController.text = selectedIngredients.join(" ");
+            });
           },
           child: Text(data,
               textAlign: TextAlign.center,
@@ -269,14 +278,18 @@ class CreateScreenState extends State<CreateScreen> {
               backgroundColor:
                   isSelected ? Colors.grey : appTheme.green_primary),
           onPressed: () {
-            if (selectedIngredients.contains(data)) {
-              // If the data is already selected, remove it
-              selectedIngredients.remove(data);
-            } else {
-              // If the data is not selected, add it
-              selectedIngredients.add(data);
-            }
-            atomInputContainerController.text = selectedIngredients.join(" ");
+            setState(() {
+              if (selectedIngredients.contains(data)) {
+                // If the data is already selected, remove it
+                selectedIngredients.remove(data);
+              } else {
+                if (selectedIngredients.length < 5) {
+                  // If the data is not selected, add it
+                  selectedIngredients.add(data);
+                }
+              }
+              atomInputContainerController.text = selectedIngredients.join(" ");
+            });
           },
           child: Text(data,
               textAlign: TextAlign.center,
@@ -305,15 +318,29 @@ class CreateScreenState extends State<CreateScreen> {
           style: ElevatedButton.styleFrom(
               backgroundColor:
                   isSelected ? Colors.grey : appTheme.green_primary),
+          // onPressed: () {
+          //   if (selectedIngredients.contains(data)) {
+          //     // If the data is already selected, remove it
+          //     selectedIngredients.remove(data);
+          //   } else {
+          //     // If the data is not selected, add it
+          //     selectedIngredients.add(data);
+          //   }
+          //   atomInputContainerController.text = selectedIngredients.join(" ");
+          // },
           onPressed: () {
-            if (selectedIngredients.contains(data)) {
-              // If the data is already selected, remove it
-              selectedIngredients.remove(data);
-            } else {
-              // If the data is not selected, add it
-              selectedIngredients.add(data);
-            }
-            atomInputContainerController.text = selectedIngredients.join(" ");
+            setState(() {
+              if (selectedIngredients.contains(data)) {
+                // If the data is already selected, remove it
+                selectedIngredients.remove(data);
+              } else {
+                if (selectedIngredients.length < 5) {
+                  // If the data is not selected, add it
+                  selectedIngredients.add(data);
+                }
+              }
+              atomInputContainerController.text = selectedIngredients.join(" ");
+            });
           },
           child: Text(data,
               textAlign: TextAlign.center,
@@ -395,20 +422,37 @@ class CreateScreenState extends State<CreateScreen> {
   }
 
   sendPrompt() async {
-    final completion = await OpenAI.instance.completion.create(
-        model: 'gpt-3.5-turbo',
-        temperature: 0.7,
-        maxTokens: 500,
-        prompt: generatedPrompt.replaceAll(
-            "INGREDIENTS", atomInputContainerController.text));
+    OpenAI.apiKey = apiKey;
+    final systemMessage = OpenAIChatCompletionChoiceMessageModel(
+      content:
+          "As a recipe-generating assistant, your role is to create a recipe based on the" +
+              selectedIngredients.join() +
+              "provided by the user. To ensure a precise and high-quality response, please follow these guidelines:\1. The response should include 5 sections: Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, and Note. Limit your response to 150-200 words. 2. Return any message you are given as JSON.",
+      role: OpenAIChatMessageRole.assistant,
+    );
 
-    print(completion.choices[0].text);
-    // setState(() {
-    //   resultCompletion = completion.choices[0].text;
-    //   atomInputContainerController.clear();
-    // });
+    // the user message that will be sent to the request.
+    final userMessage = OpenAIChatCompletionChoiceMessageModel(
+      content: "Give me a Asian Style Recipe",
+      role: OpenAIChatMessageRole.user,
+    );
+
+    // all messages to be sent.
+    final requestMessages = [
+      systemMessage,
+      userMessage,
+    ];
+    final completion = await OpenAI.instance.chat
+        .create(model: 'gpt-3.5-turbo', messages: requestMessages);
+    print(completion.choices.first.message);
+    setState(() {
+      resultCompletion = completion.choices.first.message.content;
+      // atomInputContainerController.clear();
+      // selectedIngredients.clear();
+    });
   }
 }
+
 
 // class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
 //   MyAppBar({Key? key}) : super(key: key);
