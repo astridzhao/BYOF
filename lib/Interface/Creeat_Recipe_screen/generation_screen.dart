@@ -87,7 +87,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
               ],
             ),
           ],
-          
         ),
       ),
     );
