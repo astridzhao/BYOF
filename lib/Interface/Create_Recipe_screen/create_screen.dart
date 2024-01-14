@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/Interface/homepage_container_screen/homepage_container_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_container_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:astridzhao_s_food_app/Interface/Creeat_Recipe_screen/generation_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/Creeat_Recipe_screen/constant.dart';
+import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/constant.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
 import 'package:openai_client/openai_client.dart';
 import 'package:dart_openai/dart_openai.dart';

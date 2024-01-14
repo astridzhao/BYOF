@@ -27,6 +27,9 @@ class AppDecoration {
   static BoxDecoration get fillYellow => BoxDecoration(
         color: appTheme.yellow5001,
       );
+  static BoxDecoration get fillLightGreen => BoxDecoration(
+        color: appTheme.lightgreen,
+      );
 
   // Gradient decorations
   static BoxDecoration get gradientGrayToGray => BoxDecoration(

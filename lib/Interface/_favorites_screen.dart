@@ -1,5 +1,4 @@
 /// Still WIP favorite screen.
-
 import 'package:astridzhao_s_food_app/database/recipe_dal.dart';
 import 'package:astridzhao_s_food_app/model/recipe.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +39,6 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else {
-
               final recipes = snapshot.data! as List<Recipe>;
 
               return recipes.isEmpty
