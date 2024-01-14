@@ -34,9 +34,11 @@ class ImageConstant {
 
   static String imgAvatar = '$imagePath/img_avatar.png';
 
-  static String imgEllipse744 = '$imagePath/img_ellipse_744.png';
+  static String fidgebackground = '$imagePath/fridge_background.png';
 
-  static String imgEllipse745 = '$imagePath/img_ellipse_745.png';
+  static String co2 = '$imagePath/img_ellipse_744.png';
+
+  static String moneybig = '$imagePath/img_ellipse_745.png';
 
   static String imgAvatar58x58 = '$imagePath/img_avatar_58x58.png';
 
@@ -47,8 +49,6 @@ class ImageConstant {
   static String imgInstantNoodles = '$imagePath/img_instant_noodles.png';
 
   static String imgHamburger1 = '$imagePath/img_hamburger_1.png';
-
-  static String imgArrowRight = '$imagePath/img_arrow_right.svg';
 
   static String imgPlus = '$imagePath/img_plus.svg';
 
@@ -62,19 +62,9 @@ class ImageConstant {
 
   static String imgFrame11942 = '$imagePath/img_frame_11942.svg';
 
-  static String imgUser = '$imagePath/img_user.svg';
-
-  static String imgFavorite = '$imagePath/img_favorite.svg';
-
-  static String imgSearch = '$imagePath/img_search.svg';
-
-  static String imgLightBulb = '$imagePath/img_light_bulb.svg';
-
-  static String imgClock = '$imagePath/img_clock.svg';
-
   static String imageNotFound = '$imagePath/image_not_found.png';
 
   static String imgManageAccount = '$imagePath/manage_accounts.svg';
 
-  static String imgCollection= '$imagePath/collection.svg';
+  static String imgCollection = '$imagePath/collection.svg';
 }

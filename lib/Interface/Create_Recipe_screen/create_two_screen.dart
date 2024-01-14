@@ -1,6 +1,6 @@
-import 'package:astridzhao_s_food_app/Interface/Creeat_Recipe_screen/create_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
 
-import 'package:astridzhao_s_food_app/Interface/homepage_page/homepage_page.dart';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/homepage_page.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/onboarding_first_time_download_screen.dart';
 
 import 'package:astridzhao_s_food_app/core/app_export.dart';

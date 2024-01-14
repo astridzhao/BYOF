@@ -1,7 +1,8 @@
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/Interface/Creeat_Recipe_screen/create_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/homepage_page/homepage_page.dart';
-import 'package:astridzhao_s_food_app/Interface/loading_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/homepage_page.dart';
+import 'package:astridzhao_s_food_app/Interface/_favorites_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/myfridge_screen/_myfridge_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/onboarding_first_time_download_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:botton_nav_bar/botton_nav_bar.dart';
@@ -50,13 +51,13 @@ class HomepageContainerScreen extends StatelessWidget {
             BottomBarItem(
               bottomItemSelectedColor: Color(0xFF5A7756),
               label: 'My Favorite',
-              screen: LoadingScreen(),
+              screen: FavoriteRecipePage(),
               selectedIcon: Icons.collections_bookmark_outlined,
             ),
             BottomBarItem(
               bottomItemSelectedColor: Color(0xFF5A7756),
               label: 'My Fridge',
-              screen: const Text('D'),
+              screen: MyfridgePage(),
               selectedIcon: Icons.notifications_active,
             ),
             BottomBarItem(

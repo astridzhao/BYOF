@@ -1,4 +1,4 @@
-import 'package:astridzhao_s_food_app/Interface/Creeat_Recipe_screen/create_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:clipboard/clipboard.dart';
