@@ -194,8 +194,8 @@ class PrimaryColors {
 
   // DeepOrange
   Color get deepOrange100 => Color(0XFFF8C5A1);
+  Color get lightgreen => Color.fromARGB(255, 176, 214, 171);
 
-  // Gray
   Color get gray600 => Color(0XFF7C7A7A);
   Color get gray60001 => Color(0XFF808080);
   Color get gray60002 => Color(0XFF6C6C6C);

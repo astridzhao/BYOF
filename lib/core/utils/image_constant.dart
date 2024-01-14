@@ -50,8 +50,6 @@ class ImageConstant {
 
   static String imgHamburger1 = '$imagePath/img_hamburger_1.png';
 
-  static String imgPlus = '$imagePath/img_plus.svg';
-
   static String imgDallE202401091504 =
       '$imagePath/img_dall_e_2024_01_09_15_04.png';
 

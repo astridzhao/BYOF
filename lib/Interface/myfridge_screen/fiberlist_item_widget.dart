@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 class FiberlistItemWidget extends StatefulWidget {
   final ingredient;
+  final VoidCallback onDelete;
 
   const FiberlistItemWidget({
     Key? key,
     required this.ingredient,
+    required this.onDelete,
   }) : super(key: key);
 
   @override
@@ -23,26 +25,45 @@ class _FiberlistItemWidgetState extends State<FiberlistItemWidget> {
     return Container(
       height: 50.h,
       padding: EdgeInsets.all(1.h),
-      decoration: AppDecoration.fillPurple.copyWith(
+      decoration: AppDecoration.fillLightGreen.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder10,
       ),
-      child: Column(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SizedBox(width: 20),
           Expanded(
-            child: Text(widget.ingredient),
+            child: Text(
+              widget.ingredient,
+              style: TextStyle(fontSize: 14.fSize, fontFamily: "Outfit"),
+            ),
           ),
+          Text(
+            "Quatity",
+            style: TextStyle(fontSize: 10.fSize, fontFamily: "Outfit"),
+          ),
+          SizedBox(width: 10),
           Expanded(
             child: TextField(
               controller: countcontroller,
               decoration: InputDecoration(
                 isDense: true, // Important to reduce space
-                contentPadding: EdgeInsets.symmetric(vertical: 4.h),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 2.v, horizontal: 1.h),
                 border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.numbers),
               ),
-              style: TextStyle(fontSize: 10.fSize),
+              style: TextStyle(fontSize: 14.fSize),
             ),
           ),
+          Expanded(
+              child: IconButton(
+            icon: Icon(Icons.delete_sharp),
+            onPressed: () {
+              widget.onDelete();
+            },
+          )),
         ],
       ),
     );

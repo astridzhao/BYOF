@@ -4,7 +4,7 @@ import 'fiberlist_item_widget.dart';
 import 'proteinlist_item_widget.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 
-enum ItemType { fiber, protein, carbs }
+// enum ItemType { fiber, protein, carbs }
 
 class MyfridgePage extends StatefulWidget {
   const MyfridgePage({Key? key}) : super(key: key);
@@ -20,9 +20,9 @@ class MyfridgePage extends StatefulWidget {
 //           //   ),
 //           // ),
 class MyfridgePageState extends State<MyfridgePage> {
-  List<String> fiberItems = ["califlower", "tomato", "mushroom", "corn"];
-  List<String> proteinItems = [];
-  List<String> carbsItems = [];
+  List<String> fiberItems = ["tomato"];
+  List<String> proteinItems = ["egg"];
+  List<String> carbsItems = ["chicken"];
 
   void addFiberItem() async {
     String? newIngredient = await _showAddIngredientDialog(context);
@@ -31,6 +31,28 @@ class MyfridgePageState extends State<MyfridgePage> {
       // For example, if you have a list called _ingredients, you would do:
       setState(() {
         fiberItems.add(newIngredient);
+      });
+    }
+  }
+
+  void addCarbItem() async {
+    String? newIngredient = await _showAddIngredientDialog(context);
+    if (newIngredient != null && newIngredient.isNotEmpty) {
+      // Here you should add the new ingredient to your list of items
+      // For example, if you have a list called _ingredients, you would do:
+      setState(() {
+        carbsItems.add(newIngredient);
+      });
+    }
+  }
+
+  void addProteinItem() async {
+    String? newIngredient = await _showAddIngredientDialog(context);
+    if (newIngredient != null && newIngredient.isNotEmpty) {
+      // Here you should add the new ingredient to your list of items
+      // For example, if you have a list called _ingredients, you would do:
+      setState(() {
+        proteinItems.add(newIngredient);
       });
     }
   }
@@ -73,11 +95,12 @@ class MyfridgePageState extends State<MyfridgePage> {
     return Stack(
       children: [
         SizedBox(
-          height: 200.h,
+          height: MediaQuery.of(context).size.height * 0.2,
           child: GridView.builder(
             padding: EdgeInsets.symmetric(horizontal: 12.h),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4, // Number of items per row
+              childAspectRatio: 6,
+              crossAxisCount: 1, // Number of items per row
               crossAxisSpacing: 12.h, // Horizontal space between items
               mainAxisSpacing: 12.h, // Vertical space between items
             ),
@@ -85,7 +108,15 @@ class MyfridgePageState extends State<MyfridgePage> {
             itemCount: fiberItems.length,
             itemBuilder: (context, index) {
               String ingredientName = fiberItems[index];
-              return FiberlistItemWidget(ingredient: ingredientName);
+              return FiberlistItemWidget(
+                ingredient: ingredientName,
+                onDelete: () {
+                  // Callback to handle deletion
+                  setState(() {
+                    fiberItems.removeAt(index);
+                  });
+                },
+              );
             },
           ),
         ),
@@ -101,10 +132,10 @@ class MyfridgePageState extends State<MyfridgePage> {
     );
   }
 
-  /// Saving Widget
-  // Widget buildFiberList(BuildContext context) {
+  /// Section Widget
+  // Widget _buildProteinList(BuildContext context) {
   //   return SizedBox(
-  //     height: 88.v,
+  //     height: 58.v,
   //     child: ListView.separated(
   //       padding: EdgeInsets.only(
   //         left: 24.h,
@@ -121,61 +152,90 @@ class MyfridgePageState extends State<MyfridgePage> {
   //       },
   //       itemCount: 4,
   //       itemBuilder: (context, index) {
-  //         return FiberlistItemWidget();
+  //         return ProteinlistItemWidget();
   //       },
   //     ),
   //   );
   // }
-
-  /// Section Widget
   Widget _buildProteinList(BuildContext context) {
-    return SizedBox(
-      height: 58.v,
-      child: ListView.separated(
-        padding: EdgeInsets.only(
-          left: 24.h,
-          right: 12.h,
+    return Stack(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.2,
+          child: GridView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 12.h),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              childAspectRatio: 6,
+              crossAxisCount: 1, // Number of items per row
+              crossAxisSpacing: 12.h, // Horizontal space between items
+              mainAxisSpacing: 12.h, // Vertical space between items
+            ),
+            scrollDirection: Axis.vertical,
+            itemCount: proteinItems.length,
+            itemBuilder: (context, index) {
+              String ingredientName = proteinItems[index];
+              return ProteinlistItemWidget(
+                ingredient: ingredientName,
+                onDelete: () {
+                  // Callback to handle deletion
+                  setState(() {
+                    proteinItems.removeAt(index);
+                  });
+                },
+              );
+            },
+          ),
         ),
-        scrollDirection: Axis.horizontal,
-        separatorBuilder: (
-          context,
-          index,
-        ) {
-          return SizedBox(
-            width: 12.h,
-          );
-        },
-        itemCount: 4,
-        itemBuilder: (context, index) {
-          return ProteinlistItemWidget();
-        },
-      ),
+        Positioned(
+          right: 16.h,
+          bottom: 16.v,
+          child: FloatingActionButton(
+            onPressed: addProteinItem,
+            child: Icon(Icons.add),
+          ),
+        ),
+      ],
     );
   }
 
-  /// Section Widget
   Widget _buildCarbsList(BuildContext context) {
-    return SizedBox(
-      height: 58.v,
-      child: ListView.separated(
-        padding: EdgeInsets.only(
-          left: 25.h,
-          right: 11.h,
+    return Stack(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.2,
+          child: GridView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 12.h),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              childAspectRatio: 6,
+              crossAxisCount: 1, // Number of items per row
+              crossAxisSpacing: 12.h, // Horizontal space between items
+              mainAxisSpacing: 12.h, // Vertical space between items
+            ),
+            scrollDirection: Axis.vertical,
+            itemCount: carbsItems.length,
+            itemBuilder: (context, index) {
+              String ingredientName = carbsItems[index];
+              return CarblistItemWidget(
+                ingredient: ingredientName,
+                onDelete: () {
+                  // Callback to handle deletion
+                  setState(() {
+                    carbsItems.removeAt(index);
+                  });
+                },
+              );
+            },
+          ),
         ),
-        scrollDirection: Axis.horizontal,
-        separatorBuilder: (
-          context,
-          index,
-        ) {
-          return SizedBox(
-            width: 12.h,
-          );
-        },
-        itemCount: 4,
-        itemBuilder: (context, index) {
-          return CarbslistItemWidget();
-        },
-      ),
+        Positioned(
+          right: 16.h,
+          bottom: 16.v,
+          child: FloatingActionButton(
+            onPressed: addCarbItem,
+            child: Icon(Icons.add),
+          ),
+        ),
+      ],
     );
   }
 }
