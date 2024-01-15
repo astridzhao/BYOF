@@ -15,7 +15,6 @@ import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_scre
 import 'package:astridzhao_s_food_app/Interface/myfridge_screen/_myfridge_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/_favorites_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/app_navigation_screen/app_navigation_screen.dart';
-import 'package:path/path.dart';
 
 class AppRoutes {
   static const String loadingScreen = '/loading_screen';

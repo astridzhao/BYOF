@@ -1,4 +1,3 @@
-import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable

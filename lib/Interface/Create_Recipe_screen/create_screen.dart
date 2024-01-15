@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/constant.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
-import 'package:dropdown_textfield/dropdown_textfield.dart';
-// import 'package:openai_client/openai_client.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:language_picker/language_picker.dart';
 import 'package:language_picker/languages.dart';
@@ -16,25 +14,15 @@ class CreateScreen extends StatefulWidget {
   CreateScreen({
     Key? key,
   }) : super(key: key);
-
   @override
   CreateScreenState createState() => CreateScreenState();
 }
 
 class CreateScreenState extends State<CreateScreen> {
-  TextEditingController atomInputContainerController = TextEditingController();
-  late SingleValueDropDownController cuisineController;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  void initState() {
-    cuisineController = SingleValueDropDownController();
-    super.initState();
-  }
+  // Create a GlobalKey
+  // final GlobalKey<_CustomDropDownState> dropDownKey = GlobalKey<_CustomDropDownState>();
 
-  @override
-  void dispose() {
-    cuisineController.dispose();
-    super.dispose();
-  }
+  TextEditingController atomInputContainerController = TextEditingController();
 
   String selectedLangauge = Languages.english.name;
   String resultCompletion = "";
@@ -119,11 +107,6 @@ class CreateScreenState extends State<CreateScreen> {
               style: TextStyle(
                   fontFamily: "Outfit", color: appTheme.green_primary),
             ),
-            // style: ButtonStyle(
-            //   fixedSize: MaterialStateProperty.all<Size>(Size(80, 2)),
-            //   backgroundColor:
-            //   MaterialStateProperty.all<Color>(appTheme.orange_primary),
-            // ),
             onPressed: () async {
               await sendPrompt();
               Navigator.of(context).push(MaterialPageRoute(
@@ -138,6 +121,19 @@ class CreateScreenState extends State<CreateScreen> {
           alignment: Alignment.topLeft,
           child: (_buildLanguagePicker(context)),
         ),
+        // Positioned(
+        //   top: 20, // Adjust this value as needed
+        //   left: 0,
+        //   right: 0,
+        //   child: Column(
+        //     children: [
+        //       Text(selectedCuisine),
+        //       Text(selectedCookingMethod),
+        //       Text(selectedDishType),
+        //       Text(selectedDietaryRestriction),
+        //     ],
+        //   ),
+        // ),
         SingleChildScrollView(
             child: Container(
                 height: 1108.v,
@@ -152,9 +148,7 @@ class CreateScreenState extends State<CreateScreen> {
                               Column(mainAxisSize: MainAxisSize.min, children: [
                             SizedBox(height: 40.v),
                             _buildIngredientInputSection(context),
-
-                            // SizedBox(height: 40.v),
-                            // _buildCreateTwoGridSection(context),
+                            SizedBox(height: 40.v),
                           ]))),
                 ]))),
       ]),
@@ -396,16 +390,18 @@ class CreateScreenState extends State<CreateScreen> {
                 ),
                 SizedBox(height: 24.v),
                 CustomDropDown(
-                    width: MediaQuery.of(context).size.width * 0.60,
-                    hintText: "Cuisine Style",
-                    hintStyle:
-                        TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-                    items: dropdownItemList1_cuisine,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedCuisine = value;
-                      });
-                    }),
+                  // dropDownKey: dropDownKey,
+                  width: MediaQuery.of(context).size.width * 0.60,
+                  hintText: "Cuisine Style",
+                  hintStyle:
+                      TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
+                  items: dropdownItemList1_cuisine,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedCuisine = value;
+                    });
+                  },
+                ),
                 SizedBox(height: 24.v),
                 CustomDropDown(
                     hintText: "Cooking Method",
@@ -413,7 +409,11 @@ class CreateScreenState extends State<CreateScreen> {
                         TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
                     width: MediaQuery.of(context).size.width * 0.60,
                     items: dropdownItemList2_cooking_ethod,
-                    onChanged: (value) {}),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCookingMethod = value;
+                      });
+                    }),
                 SizedBox(height: 24.v),
                 CustomDropDown(
                     hintText: "Dish Type",
@@ -421,7 +421,11 @@ class CreateScreenState extends State<CreateScreen> {
                     hintStyle:
                         TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
                     items: dropdownItemList3_dish_type,
-                    onChanged: (value) {}),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDishType = value;
+                      });
+                    }),
                 SizedBox(height: 24.v),
                 CustomDropDown(
                     hintText: "Dietary Restriction",
@@ -429,7 +433,11 @@ class CreateScreenState extends State<CreateScreen> {
                     hintStyle:
                         TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
                     items: dropdownItemList4_restriction,
-                    onChanged: (value) {}),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDietaryRestriction = value;
+                      });
+                    }),
                 SizedBox(height: 24.v)
               ]),
             ),
@@ -442,7 +450,14 @@ class CreateScreenState extends State<CreateScreen> {
     final systemMessage = OpenAIChatCompletionChoiceMessageModel(
       content: "As a recipe-generating assistant, create a recipe by using " +
           selectedIngredients.join() +
-          " provided by the user. To ensure a precise and high-quality response, please follow these guidelines:\1. The response should include 5 sections: Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, and Note. Limit your response to 150-200 words. \2. Return any message you are given as JSON.",
+          " provided by the user. To ensure a precise and high-quality response, please follow these guidelines:" +
+          "\1. The response should include 5 sections: Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, and Note. Limit your response to 150-200 words." +
+          "\2. Return any message you are given as JSON." +
+          "\3. Using user's preference cooking way specified as " +
+          selectedCuisine +
+          selectedCookingMethod +
+          selectedDietaryRestriction +
+          selectedDishType,
       role: OpenAIChatMessageRole.assistant,
     );
 

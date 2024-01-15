@@ -1,5 +1,4 @@
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 
 class ProteinlistItemWidget extends StatefulWidget {

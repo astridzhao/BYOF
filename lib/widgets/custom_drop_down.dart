@@ -1,7 +1,8 @@
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:flutter/material.dart';
 
-class CustomDropDown extends StatelessWidget {
+class CustomDropDown extends StatefulWidget {
+  // final GlobalKey<_CustomDropDownState> dropDownKey;
   CustomDropDown({
     Key? key,
     this.alignment,
@@ -23,6 +24,7 @@ class CustomDropDown extends StatelessWidget {
     this.filled = true,
     this.validator,
     this.onChanged,
+    // required this.dropDownKey,
   }) : super(
           key: key,
         );
@@ -66,86 +68,90 @@ class CustomDropDown extends StatelessWidget {
   final Function(String)? onChanged;
 
   @override
-  CustomDropDownState createState() => CustomDropDownState();
+  _CustomDropDownState createState() => _CustomDropDownState();
 }
 
-class CustomDropDownState extends State<CustomDropDown> {
-  TextEditingController cuisineControlleR = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-}
-  // }
-  // @override
-  // Widget build(BuildContext context) {
-  //   return alignment != null
-  //       ? Align(
-  //           alignment: alignment ?? Alignment.center,
-  //           child: dropDownWidget,
-  //         )
-  //       : dropDownWidget;
-  // }
+class _CustomDropDownState extends State<CustomDropDown> {
+  String? selectedValue;
 
-  // Widget get dropDownWidget => SizedBox(
-  //       width: width ?? double.maxFinite,
-  //       child: DropdownButtonFormField(
-  //         focusNode: focusNode ?? FocusNode(),
-  //         icon: icon,
-  //         autofocus: autofocus!,
-  //         style: textStyle,
-  //         items: items?.map<DropdownMenuItem<String>>((String value) {
-  //           return DropdownMenuItem<String>(
-  //             value: value,
-  //             child: Text(
-  //               value,
-  //               overflow: TextOverflow.ellipsis,
-  //               style: hintStyle,
-  //             ),
-  //           );
-  //         }).toList(),
-  //         decoration: decoration,
-  //         validator: validator,
-  //         onChanged: (value) {
-  //           onChanged!(value.toString());
-  //         },
-  //       ),
-  //     );
-  // InputDecoration get decoration => InputDecoration(
-  //       hintText: hintText ?? "",
-  //       hintStyle: hintStyle,
-  //       prefixIcon: prefix,
-  //       prefixIconConstraints: prefixConstraints,
-  //       suffixIcon: suffix,
-  //       suffixIconConstraints: suffixConstraints,
-  //       isDense: true,
-  //       contentPadding: contentPadding ??
-  //           EdgeInsets.symmetric(
-  //             horizontal: 8.h,
-  //             vertical: 11.v,
-  //           ),
-  //       fillColor: fillColor ?? theme.colorScheme.onError.withOpacity(1),
-  //       filled: filled,
-  //       border: borderDecoration ??
-  //           OutlineInputBorder(
-  //             borderRadius: BorderRadius.circular(10.h),
-  //             borderSide: BorderSide(
-  //               color: theme.colorScheme.onPrimaryContainer,
-  //               width: 1,
-  //             ),
-  //           ),
-  //       enabledBorder: borderDecoration ??
-  //           OutlineInputBorder(
-  //             borderRadius: BorderRadius.circular(10.h),
-  //             borderSide: BorderSide(
-  //               color: theme.colorScheme.onPrimaryContainer,
-  //               width: 1,
-  //             ),
-  //           ),
-  //       focusedBorder: borderDecoration ??
-  //           OutlineInputBorder(
-  //             borderRadius: BorderRadius.circular(10.h),
-  //             borderSide: BorderSide(
-  //               color: theme.colorScheme.onPrimaryContainer,
-  //               width: 1,
-  //             ),
-  //           ),
-  //     );
-// }
+  @override
+  Widget build(BuildContext context) {
+    return widget.alignment != null
+        ? Align(
+            alignment: widget.alignment ?? Alignment.center,
+            child: dropDownWidget,
+          )
+        : dropDownWidget;
+  }
+
+  Widget get dropDownWidget => SizedBox(
+        width: widget.width ?? double.maxFinite,
+        child: DropdownButtonFormField(
+          focusNode: widget.focusNode ?? FocusNode(),
+          icon: widget.icon,
+          autofocus: widget.autofocus!,
+          style: widget.textStyle,
+          items: widget.items?.map<DropdownMenuItem<String>>((value) {
+            return DropdownMenuItem<String>(
+              // key: widget.dropDownKey,
+              value: value,
+              child: Text(
+                value,
+                overflow: TextOverflow.ellipsis,
+                style: widget.hintStyle,
+              ),
+            );
+          }).toList(),
+          decoration: decoration,
+          validator: widget.validator,
+          onChanged: (selectedValue) {
+            setState(() {
+              this.selectedValue = selectedValue as String?;
+            });
+            // widget.onChanged!(selectedValue.toString());
+            widget.onChanged?.call(selectedValue.toString());
+          },
+        ),
+      );
+  InputDecoration get decoration => InputDecoration(
+        hintText: widget.hintText ?? "",
+        hintStyle: widget.hintStyle,
+        prefixIcon: widget.prefix,
+        prefixIconConstraints: widget.prefixConstraints,
+        suffixIcon: widget.suffix,
+        suffixIconConstraints: widget.suffixConstraints,
+        isDense: true,
+        contentPadding: widget.contentPadding ??
+            EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 11,
+            ),
+        fillColor: widget.fillColor ??
+            appTheme.yellow_secondary, // Change to your desired color
+        filled: widget.filled,
+        border: widget.borderDecoration ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Colors.blue, // Change to your desired color
+                width: 1,
+              ),
+            ),
+        enabledBorder: widget.borderDecoration ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.h),
+              borderSide: BorderSide(
+                color: theme.colorScheme.onPrimaryContainer,
+                width: 1,
+              ),
+            ),
+        focusedBorder: widget.borderDecoration ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.h),
+              borderSide: BorderSide(
+                color: theme.colorScheme.onPrimaryContainer,
+                width: 1,
+              ),
+            ),
+      );
+}
