@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_container_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/constant.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
-import 'package:openai_client/openai_client.dart';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
+// import 'package:openai_client/openai_client.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:language_picker/language_picker.dart';
 import 'package:language_picker/languages.dart';
@@ -24,9 +23,27 @@ class CreateScreen extends StatefulWidget {
 
 class CreateScreenState extends State<CreateScreen> {
   TextEditingController atomInputContainerController = TextEditingController();
+  late SingleValueDropDownController cuisineController;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  void initState() {
+    cuisineController = SingleValueDropDownController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    cuisineController.dispose();
+    super.dispose();
+  }
 
   String selectedLangauge = Languages.english.name;
   String resultCompletion = "";
+
+  // Variables to hold the selected preferences
+  String selectedCuisine = "";
+  String selectedCookingMethod = "";
+  String selectedDishType = "";
+  String selectedDietaryRestriction = "";
 
   List<String> dropdownItemList1_cuisine = ["Asian", "Italian", "Mexican"];
 
@@ -68,22 +85,24 @@ class CreateScreenState extends State<CreateScreen> {
       resizeToAvoidBottomInset: false,
       // appBar: MyAppBar(),
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          tooltip: 'Back to home page',
-          color: Colors.blueGrey,
-          splashColor: appTheme.orange_primary,
-          onPressed: () {
-            Navigator.of(context).pop(MaterialPageRoute(
-                builder: (context) => HomepageContainerScreen()));
-          },
-        ),
+        // leading: Text(
+        //   'BRING YOUR OWN FRIDGE',
+        //   style: TextStyle(
+        //       color: Colors.black54,
+        //       fontSize: 14,
+        //       fontWeight: FontWeight.bold,
+        //       fontFamily: "Outfit"),
+        // ),
+        elevation: 0,
         backgroundColor: appTheme.yellow_secondary,
         title: const Text('BRING YOUR OWN FRIDGE'),
         toolbarHeight: 80,
         // backgroundColor: Color(0xFF5A7756),
         titleTextStyle: TextStyle(
-            color: Colors.black54, fontSize: 14, fontWeight: FontWeight.bold),
+            color: Colors.black54,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Outfit"),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.more_horiz),
@@ -133,6 +152,7 @@ class CreateScreenState extends State<CreateScreen> {
                               Column(mainAxisSize: MainAxisSize.min, children: [
                             SizedBox(height: 40.v),
                             _buildIngredientInputSection(context),
+
                             // SizedBox(height: 40.v),
                             // _buildCreateTwoGridSection(context),
                           ]))),
@@ -198,17 +218,19 @@ class CreateScreenState extends State<CreateScreen> {
             style: TextStyle(
               fontFamily: "Outfit",
             )),
-        SizedBox(height: 5),
+        SizedBox(height: 10),
         _buildButtonProtein(context),
+        SizedBox(height: 10),
         Text("Choose My Fiber",
             textAlign: TextAlign.center,
             softWrap: true,
             style: TextStyle(
               fontFamily: "Outfit",
             )),
-        SizedBox(height: 5),
+        SizedBox(height: 10),
         _buildButtonVegetable(context),
-        Text("Choose My Fiber",
+        SizedBox(height: 10),
+        Text("Choose My Carbs",
             textAlign: TextAlign.center,
             softWrap: true,
             style: TextStyle(
@@ -225,10 +247,10 @@ class CreateScreenState extends State<CreateScreen> {
       shrinkWrap: true,
       itemCount: ingredients_protein.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisExtent: 32.v,
+          mainAxisExtent: 40.v,
           crossAxisCount: 3,
-          mainAxisSpacing: 2.h,
-          crossAxisSpacing: 3.h),
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10),
       itemBuilder: (context, index) {
         String data = ingredients_protein[index];
         bool isSelected = selectedIngredients.contains(data);
@@ -266,10 +288,10 @@ class CreateScreenState extends State<CreateScreen> {
       shrinkWrap: true,
       itemCount: ingredients_vege.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisExtent: 32.v,
+          mainAxisExtent: 40.v,
           crossAxisCount: 3,
-          mainAxisSpacing: 2.h,
-          crossAxisSpacing: 3.h),
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10),
       itemBuilder: (context, index) {
         String data = ingredients_vege[index];
         bool isSelected = selectedIngredients.contains(data);
@@ -309,8 +331,8 @@ class CreateScreenState extends State<CreateScreen> {
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
           crossAxisCount: 3,
-          mainAxisSpacing: 2.h,
-          crossAxisSpacing: 3.h),
+          mainAxisSpacing: 10.0,
+          crossAxisSpacing: 10.0),
       itemBuilder: (context, index) {
         String data = ingredients_carb[index];
         bool isSelected = selectedIngredients.contains(data);
@@ -318,16 +340,6 @@ class CreateScreenState extends State<CreateScreen> {
           style: ElevatedButton.styleFrom(
               backgroundColor:
                   isSelected ? Colors.grey : appTheme.green_primary),
-          // onPressed: () {
-          //   if (selectedIngredients.contains(data)) {
-          //     // If the data is already selected, remove it
-          //     selectedIngredients.remove(data);
-          //   } else {
-          //     // If the data is not selected, add it
-          //     selectedIngredients.add(data);
-          //   }
-          //   atomInputContainerController.text = selectedIngredients.join(" ");
-          // },
           onPressed: () {
             setState(() {
               if (selectedIngredients.contains(data)) {
@@ -389,7 +401,11 @@ class CreateScreenState extends State<CreateScreen> {
                     hintStyle:
                         TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
                     items: dropdownItemList1_cuisine,
-                    onChanged: (value) {}),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCuisine = value;
+                      });
+                    }),
                 SizedBox(height: 24.v),
                 CustomDropDown(
                     hintText: "Cooking Method",

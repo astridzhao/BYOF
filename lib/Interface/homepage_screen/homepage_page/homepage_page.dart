@@ -87,56 +87,6 @@ class HomepagePageState extends State<HomepagePage> {
                   ),
                   SizedBox(height: 10.v),
                   _buildCreateplanSection(context),
-
-                  // SizedBox(height: 1.v),
-                  // Divider(
-                  //   color: appTheme.gray800,
-                  //   indent: 25.h,
-                  //   endIndent: 14.h,
-                  // ),
-                  // SizedBox(height: 8.v),
-                  // Padding(
-                  //   padding: EdgeInsets.only(
-                  //     left: 25.h,
-                  //     right: 15.h,
-                  //   ),
-                  //   child: _buildProtein(
-                  //     context,
-                  //     proteinText: "Fiber",
-                  //     seeAllText: "See all",
-                  //   ),
-                  // ),
-                  // SizedBox(height: 1.v),
-                  // _buildFiberList(context),
-                  // SizedBox(height: 15.v),
-                  // Padding(
-                  //   padding: EdgeInsets.only(
-                  //     left: 25.h,
-                  //     right: 15.h,
-                  //   ),
-                  //   child: _buildProtein(
-                  //     context,
-                  //     proteinText: "Protein",
-                  //     seeAllText: "See all",
-                  //   ),
-                  // ),
-                  // SizedBox(height: 31.v),
-                  // _buildProteinList(context),
-                  // SizedBox(height: 17.v),
-                  // Padding(
-                  //   padding: EdgeInsets.only(
-                  //     left: 25.h,
-                  //     right: 14.h,
-                  //   ),
-                  //   child: _buildProtein(
-                  //     context,
-                  //     proteinText: "Carbs",
-                  //     seeAllText: "See all",
-                  //   ),
-                  // ),
-                  // SizedBox(height: 31.v),
-                  // _buildCarbsList(context),
-                  // SizedBox(height: 64.v),
                 ],
               ),
             ),

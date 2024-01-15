@@ -66,78 +66,86 @@ class CustomDropDown extends StatelessWidget {
   final Function(String)? onChanged;
 
   @override
-  Widget build(BuildContext context) {
-    return alignment != null
-        ? Align(
-            alignment: alignment ?? Alignment.center,
-            child: dropDownWidget,
-          )
-        : dropDownWidget;
-  }
-
-  Widget get dropDownWidget => SizedBox(
-        width: width ?? double.maxFinite,
-        child: DropdownButtonFormField(
-          focusNode: focusNode ?? FocusNode(),
-          icon: icon,
-          autofocus: autofocus!,
-          style: textStyle,
-          items: items?.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(
-                value,
-                overflow: TextOverflow.ellipsis,
-                style: hintStyle,
-              ),
-            );
-          }).toList(),
-          decoration: decoration,
-          validator: validator,
-          onChanged: (value) {
-            onChanged!(value.toString());
-          },
-        ),
-      );
-  InputDecoration get decoration => InputDecoration(
-        hintText: hintText ?? "",
-        hintStyle: hintStyle,
-        prefixIcon: prefix,
-        prefixIconConstraints: prefixConstraints,
-        suffixIcon: suffix,
-        suffixIconConstraints: suffixConstraints,
-        isDense: true,
-        contentPadding: contentPadding ??
-            EdgeInsets.symmetric(
-              horizontal: 8.h,
-              vertical: 11.v,
-            ),
-        fillColor: fillColor ?? theme.colorScheme.onError.withOpacity(1),
-        filled: filled,
-        border: borderDecoration ??
-        
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.h),
-              borderSide: BorderSide(
-                color: theme.colorScheme.onPrimaryContainer,
-                width: 1,
-              ),
-            ),
-        enabledBorder: borderDecoration ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.h),
-              borderSide: BorderSide(
-                color: theme.colorScheme.onPrimaryContainer,
-                width: 1,
-              ),
-            ),
-        focusedBorder: borderDecoration ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.h),
-              borderSide: BorderSide(
-                color: theme.colorScheme.onPrimaryContainer,
-                width: 1,
-              ),
-            ),
-      );
+  CustomDropDownState createState() => CustomDropDownState();
 }
+
+class CustomDropDownState extends State<CustomDropDown> {
+  TextEditingController cuisineControlleR = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+}
+  // }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return alignment != null
+  //       ? Align(
+  //           alignment: alignment ?? Alignment.center,
+  //           child: dropDownWidget,
+  //         )
+  //       : dropDownWidget;
+  // }
+
+  // Widget get dropDownWidget => SizedBox(
+  //       width: width ?? double.maxFinite,
+  //       child: DropdownButtonFormField(
+  //         focusNode: focusNode ?? FocusNode(),
+  //         icon: icon,
+  //         autofocus: autofocus!,
+  //         style: textStyle,
+  //         items: items?.map<DropdownMenuItem<String>>((String value) {
+  //           return DropdownMenuItem<String>(
+  //             value: value,
+  //             child: Text(
+  //               value,
+  //               overflow: TextOverflow.ellipsis,
+  //               style: hintStyle,
+  //             ),
+  //           );
+  //         }).toList(),
+  //         decoration: decoration,
+  //         validator: validator,
+  //         onChanged: (value) {
+  //           onChanged!(value.toString());
+  //         },
+  //       ),
+  //     );
+  // InputDecoration get decoration => InputDecoration(
+  //       hintText: hintText ?? "",
+  //       hintStyle: hintStyle,
+  //       prefixIcon: prefix,
+  //       prefixIconConstraints: prefixConstraints,
+  //       suffixIcon: suffix,
+  //       suffixIconConstraints: suffixConstraints,
+  //       isDense: true,
+  //       contentPadding: contentPadding ??
+  //           EdgeInsets.symmetric(
+  //             horizontal: 8.h,
+  //             vertical: 11.v,
+  //           ),
+  //       fillColor: fillColor ?? theme.colorScheme.onError.withOpacity(1),
+  //       filled: filled,
+  //       border: borderDecoration ??
+  //           OutlineInputBorder(
+  //             borderRadius: BorderRadius.circular(10.h),
+  //             borderSide: BorderSide(
+  //               color: theme.colorScheme.onPrimaryContainer,
+  //               width: 1,
+  //             ),
+  //           ),
+  //       enabledBorder: borderDecoration ??
+  //           OutlineInputBorder(
+  //             borderRadius: BorderRadius.circular(10.h),
+  //             borderSide: BorderSide(
+  //               color: theme.colorScheme.onPrimaryContainer,
+  //               width: 1,
+  //             ),
+  //           ),
+  //       focusedBorder: borderDecoration ??
+  //           OutlineInputBorder(
+  //             borderRadius: BorderRadius.circular(10.h),
+  //             borderSide: BorderSide(
+  //               color: theme.colorScheme.onPrimaryContainer,
+  //               width: 1,
+  //             ),
+  //           ),
+  //     );
+// }

@@ -11,10 +11,11 @@ import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_s
 import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/forget_password_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/function_choose_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_container_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_two_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/myfridge_screen/_myfridge_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/_favorites_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/app_navigation_screen/app_navigation_screen.dart';
+import 'package:path/path.dart';
 
 class AppRoutes {
   static const String loadingScreen = '/loading_screen';
@@ -48,6 +49,12 @@ class AppRoutes {
 
   static const String createTwoScreen = '/create_two_screen';
 
+  static const String myFridgeScreen = '/_myfridge_screen';
+
+  static const String myFavoriteScreen = '/_favorites_screen';
+
+  static const String generationScreen = '/generation_screen';
+
   static const String appNavigationScreen = '/app_navigation_screen';
 
   static Map<String, WidgetBuilder> routes = {
@@ -64,8 +71,9 @@ class AppRoutes {
     forgetPasswordScreen: (context) => ForgetPasswordScreen(),
     functionChooseScreen: (context) => FunctionChooseScreen(),
     homepageContainerScreen: (context) => HomepageContainerScreen(),
-    createTwoScreen: (context) => CreateTwoScreen(),
     createScreen: (context) => CreateScreen(),
+    myFridgeScreen: (context) => MyfridgePage(),
+    myFavoriteScreen: (context) => FavoriteRecipePage(),
     appNavigationScreen: (context) => AppNavigationScreen()
   };
 }

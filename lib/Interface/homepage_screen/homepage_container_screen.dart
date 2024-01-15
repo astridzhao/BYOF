@@ -8,10 +8,21 @@ import 'package:flutter/material.dart';
 import 'package:botton_nav_bar/botton_nav_bar.dart';
 
 // ignore_for_file: must_be_immutable
-class HomepageContainerScreen extends StatelessWidget {
+class HomepageContainerScreen extends StatefulWidget {
   HomepageContainerScreen({Key? key}) : super(key: key);
 
+  _HomepageContainerScreenState createState() =>
+      _HomepageContainerScreenState();
+}
+
+class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+  // Function to navigate to CreateScreen
+  void navigateToCreateScreen(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => CreateScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,20 +37,10 @@ class HomepageContainerScreen extends StatelessWidget {
                     getCurrentPage(routeSetting.name!),
                 transitionDuration: Duration(seconds: 0))),
         bottomNavigationBar: BottomNavBar(
-          fabChild: Text(
-            'Create',
-            style: TextStyle(color: Colors.black),
-          ),
           notchedRadius: 30,
-          centerNotched: false,
-          fabIcon: GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => CreateScreen()));
-            },
-            child: Icon(Icons.create),
-          ),
-          fabBackGroundColor: Color(0xFF5A7756),
+          centerNotched: true,
+          fabIcon: Icon(Icons.emoji_events),
+          fabBackGroundColor: Color.fromARGB(255, 243, 164, 53),
           bottomNavBarColor: Color(0xFFEDBA8E),
           bottomItems: <BottomBarItem>[
             BottomBarItem(
@@ -56,15 +57,15 @@ class HomepageContainerScreen extends StatelessWidget {
             ),
             BottomBarItem(
               bottomItemSelectedColor: Color(0xFF5A7756),
-              label: 'My Fridge',
-              screen: MyfridgePage(),
-              selectedIcon: Icons.notifications_active,
+              label: 'Create Recipe',
+              selectedIcon: Icons.dinner_dining_rounded,
+              screen: CreateScreen(),
             ),
             BottomBarItem(
               bottomItemSelectedColor: Color(0xFF5A7756),
-              label: 'Meal Plan',
-              selectedIcon: Icons.dinner_dining_rounded,
-              screen: OnboardingFirstTimeDownloadScreen(),
+              label: 'My Fridge',
+              screen: MyfridgePage(),
+              selectedIcon: Icons.notifications_active,
             ),
           ],
         ),
@@ -113,6 +114,12 @@ class HomepageContainerScreen extends StatelessWidget {
     switch (currentRoute) {
       case AppRoutes.homepagePage:
         return HomepagePage();
+      case AppRoutes.createScreen:
+        return CreateScreen();
+      case AppRoutes.myFavoriteScreen:
+        return FavoriteRecipePage();
+      case AppRoutes.myFridgeScreen:
+        return MyfridgePage();
       default:
         return HomepagePage();
     }
