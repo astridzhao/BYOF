@@ -60,26 +60,37 @@ class MyfridgePageState extends State<MyfridgePage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: SingleChildScrollView(
-          padding: EdgeInsets.only(top: 20),
-          child: Column(
-            children: [
-              // buildSectionHeader(context, title: "Fiber", seeAllText: "See all"),
-              SectionHeader(title: "Fiber", seeAllText: "See all"),
-              SizedBox(height: 1.v),
-              _buildFiberList(context),
-              SizedBox(height: 17.v),
+        body: DecoratedBox(
+          // BoxDecoration takes the image
+          decoration: BoxDecoration(
+            // Image set to background of the body
+            image: DecorationImage(
+                colorFilter: new ColorFilter.mode(
+                    Colors.black.withOpacity(0.15), BlendMode.dstATop),
+                image: AssetImage("assets/images/fridge_background.png"),
+                fit: BoxFit.fill),
+          ),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(top: 20),
+            child: Column(
+              children: [
+                // buildSectionHeader(context, title: "Fiber", seeAllText: "See all"),
+                SectionHeader(title: "Fiber", seeAllText: "See all"),
+                SizedBox(height: 1.v),
+                _buildFiberList(context),
+                SizedBox(height: 17.v),
 
-              SectionHeader(title: "Protein", seeAllText: "See all"),
-              SizedBox(height: 1.v),
-              _buildProteinList(context),
-              SizedBox(height: 17.v),
+                SectionHeader(title: "Protein", seeAllText: "See all"),
+                SizedBox(height: 1.v),
+                _buildProteinList(context),
+                SizedBox(height: 17.v),
 
-              SectionHeader(title: "Carbs", seeAllText: "See all"),
-              SizedBox(height: 1.v),
-              _buildCarbsList(context),
-              SizedBox(height: 17.v),
-            ],
+                SectionHeader(title: "Carbs", seeAllText: "See all"),
+                SizedBox(height: 1.v),
+                _buildCarbsList(context),
+                SizedBox(height: 17.v),
+              ],
+            ),
           ),
         ),
       ),

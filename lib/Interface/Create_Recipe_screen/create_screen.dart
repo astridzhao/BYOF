@@ -250,6 +250,7 @@ class CreateScreenState extends State<CreateScreen> {
         bool isSelected = selectedIngredients.contains(data);
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
               backgroundColor:
                   isSelected ? Colors.grey : appTheme.green_primary),
           onPressed: () {
@@ -291,6 +292,7 @@ class CreateScreenState extends State<CreateScreen> {
         bool isSelected = selectedIngredients.contains(data);
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
               backgroundColor:
                   isSelected ? Colors.grey : appTheme.green_primary),
           onPressed: () {
@@ -332,6 +334,8 @@ class CreateScreenState extends State<CreateScreen> {
         bool isSelected = selectedIngredients.contains(data);
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 1),
+              foregroundColor: Colors.white,
               backgroundColor:
                   isSelected ? Colors.grey : appTheme.green_primary),
           onPressed: () {

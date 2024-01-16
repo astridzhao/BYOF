@@ -54,7 +54,7 @@ class HomepagePageState extends State<HomepagePage> {
                       left: 22.h,
                       right: 29.h,
                     ),
-                    child: _buildMyMealPlanSection(
+                    child: _buildDividerSection(
                       context,
                       text: "My Favorite Recipes",
                       text1: "See all",
@@ -73,7 +73,7 @@ class HomepagePageState extends State<HomepagePage> {
                       left: 22.h,
                       right: 29.h,
                     ),
-                    child: _buildMyMealPlanSection(
+                    child: _buildDividerSection(
                       context,
                       text: "My Meal Plan",
                       text1: "View",
@@ -160,7 +160,7 @@ class HomepagePageState extends State<HomepagePage> {
   /// Section Widget
   Widget _buildSavingSummary(BuildContext context) {
     return SizedBox(
-      height: 160.v,
+      height: 170.v,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -264,10 +264,10 @@ class HomepagePageState extends State<HomepagePage> {
                   ),
                   Spacer(),
                   Container(
-                    width: 113.h,
+                    width: 120.h,
                     margin: EdgeInsets.only(
                       top: 16.v,
-                      bottom: 37.v,
+                      bottom: 33.v,
                     ),
                     child: Text(
                       "Save Time\nSave Money\nSave Enviornment",
@@ -395,7 +395,7 @@ class HomepagePageState extends State<HomepagePage> {
   // }
 
   /// Common widget
-  Widget _buildMyMealPlanSection(
+  Widget _buildDividerSection(
     BuildContext context, {
     required String text,
     required String text1,

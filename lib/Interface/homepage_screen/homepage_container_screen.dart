@@ -4,7 +4,8 @@ import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/ho
 import 'package:astridzhao_s_food_app/Interface/_favorites_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/myfridge_screen/_myfridge_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:botton_nav_bar/botton_nav_bar.dart';
+// import 'package:botton_nav_bar/botton_nav_bar.dart';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/bottom_bar.dart';
 
 // ignore_for_file: must_be_immutable
 class HomepageContainerScreen extends StatefulWidget {
@@ -35,38 +36,39 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
                 pageBuilder: (ctx, ani, ani1) =>
                     getCurrentPage(routeSetting.name!),
                 transitionDuration: Duration(seconds: 0))),
-        bottomNavigationBar: BottomNavBar(
-          notchedRadius: 30,
-          centerNotched: true,
-          fabIcon: Icon(Icons.emoji_events),
-          fabBackGroundColor: Color.fromARGB(255, 243, 164, 53),
-          bottomNavBarColor: Color(0xFFEDBA8E),
-          bottomItems: <BottomBarItem>[
-            BottomBarItem(
-              bottomItemSelectedColor: Color(0xFF5A7756),
-              label: 'Home',
-              screen: HomepagePage(),
-              selectedIcon: Icons.collections_bookmark_outlined,
-            ),
-            BottomBarItem(
-              bottomItemSelectedColor: Color(0xFF5A7756),
-              label: 'My Favorite',
-              screen: FavoriteRecipePage(),
-              selectedIcon: Icons.collections_bookmark_outlined,
-            ),
-            BottomBarItem(
-              bottomItemSelectedColor: Color(0xFF5A7756),
-              label: 'Create Recipe',
-              selectedIcon: Icons.dinner_dining_rounded,
-              screen: CreateScreen(),
-            ),
-            BottomBarItem(
-              bottomItemSelectedColor: Color(0xFF5A7756),
-              label: 'My Fridge',
-              screen: MyfridgePage(),
-              selectedIcon: Icons.notifications_active,
-            ),
-          ],
+        bottomNavigationBar: Container(
+          child: BottomNavBar(
+            notchedRadius: 20,
+            centerNotched: false,
+            fabIcon: Icon(Icons.emoji_events),
+            fabBackGroundColor:appTheme.yellow_secondary,
+            bottomItems: <BottomBarItem>[
+              BottomBarItem(
+                bottomItemSelectedColor: appTheme.yellow_secondary,
+                label: 'Home',
+                screen: HomepagePage(),
+                selectedIcon: Icons.home,
+              ),
+              BottomBarItem(
+                bottomItemSelectedColor: appTheme.yellow_secondary,
+                label: 'My Favorite',
+                screen: FavoriteRecipePage(),
+                selectedIcon: Icons.collections_bookmark_outlined,
+              ),
+              BottomBarItem(
+                bottomItemSelectedColor: appTheme.yellow_secondary,
+                label: 'Create',
+                selectedIcon: Icons.dinner_dining_rounded,
+                screen: CreateScreen(),
+              ),
+              BottomBarItem(
+                bottomItemSelectedColor: appTheme.yellow_secondary,
+                label: 'My Fridge',
+                screen: MyfridgePage(),
+                selectedIcon: Icons.notifications_active,
+              ),
+            ],
+          ),
         ),
       ),
     );
