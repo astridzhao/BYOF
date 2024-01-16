@@ -1,6 +1,6 @@
 /// Still WIP favorite screen.
-import 'package:astridzhao_s_food_app/database/recipe_dal.dart';
-import 'package:astridzhao_s_food_app/model/recipe.dart';
+import 'package:astridzhao_s_food_app/database/database.dart';
+import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -13,7 +13,7 @@ class FavoriteRecipePage extends StatefulWidget {
 
 class FavoriteRecipePageState extends State<FavoriteRecipePage> {
   Future<List<Recipe>>? futureRecipes;
-  final dal = RecipeDal();
+  final recipe_dao = RecipesDao(DatabaseService().database);
 
   @override
   void initState() {
@@ -23,7 +23,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
 
   void fetchAllFavorite() {
     setState(() {
-      futureRecipes = dal.selectAll();
+      futureRecipes = recipe_dao.select(recipe_dao.recipes).get();
     });
   }
 
