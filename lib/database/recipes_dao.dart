@@ -10,10 +10,14 @@ part 'recipes_dao.g.dart';
 /// // Inserts
 /// // ...
 /// final llmJson = <...>
-/// await recipes_dao.into(recipes_dao.recipes).insert(RecipeCompanion.insertFromLLMJson(llmJson));
+/// final recipe = RecipeFromLLMJson(llmJson);
+/// // do whatever
+/// ...
+/// // on save:
+/// await recipes_dao.into(recipes_dao.recipes).insert();
 /// 
-/// // Selects
-/// List<Recipe> allRecipes = await db.select(db.recipes).get();
+/// // Select all recipes
+/// List<Recipe> allRecipes = await recipes_dao.select(recipes_dao.recipes).get();
 /// 
 /// ```
 @DriftAccessor(tables: [Recipes])
