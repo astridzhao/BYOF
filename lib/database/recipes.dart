@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:drift/drift.dart';
 
 class StringListConverter extends TypeConverter<List<String>, String> {
@@ -26,3 +27,16 @@ class Recipes extends Table {
   TextColumn get notes => text()();
   IntColumn get saveAt => integer()();
 }
+
+  /// Parses a LLM generated recipe into an insertable Recipe Dataclass.
+RecipesCompanion RecipeFromLLMJson(String llmResult) {
+    final decoded = jsonDecode(llmResult) as Map<String, dynamic>;
+    return RecipesCompanion.insert(
+        title: decoded['Title'] as String,
+        ingredients: List<String>.from(['Ingredient List']),
+        instructions: List<String>.from(decoded['Step-by-Step Instructions']),
+        cookTime: decoded['Expected Cooking Time'] as int,
+        notes: decoded['Note'] as String,
+        saveAt: DateTime.now().millisecondsSinceEpoch);
+}
+
