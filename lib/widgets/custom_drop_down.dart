@@ -24,6 +24,7 @@ class CustomDropDown extends StatefulWidget {
     this.filled = true,
     this.validator,
     this.onChanged,
+    this.initialValue = '',
     // required this.dropDownKey,
   }) : super(
           key: key,
@@ -67,12 +68,20 @@ class CustomDropDown extends StatefulWidget {
 
   final Function(String)? onChanged;
 
+  final String? initialValue;
+
   @override
   _CustomDropDownState createState() => _CustomDropDownState();
 }
 
 class _CustomDropDownState extends State<CustomDropDown> {
   String? selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.initialValue;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,12 +113,13 @@ class _CustomDropDownState extends State<CustomDropDown> {
           }).toList(),
           decoration: decoration,
           validator: widget.validator,
-          onChanged: (selectedValue) {
+          onChanged: (String? newValue) {
             setState(() {
-              this.selectedValue = selectedValue as String?;
+              selectedValue = newValue!;
             });
-            // widget.onChanged!(selectedValue.toString());
-            widget.onChanged?.call(selectedValue.toString());
+            if (newValue != null && widget.onChanged != null) {
+              widget.onChanged!(newValue);
+            }
           },
         ),
       );

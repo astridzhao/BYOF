@@ -1,7 +1,11 @@
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
+import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:astridzhao_s_food_app/database/database.dart';
+import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
+import 'dart:async';
 
 class GenerationScreen extends StatefulWidget {
   final String resultCompletion;
@@ -14,6 +18,8 @@ class GenerationScreen extends StatefulWidget {
 }
 
 class _GenerationScreenState extends State<GenerationScreen> {
+  final recipe_dao = RecipesDao(DatabaseService().database);
+
   IconData copyIcon = Icons.content_copy_rounded;
   @override
   Widget build(BuildContext context) {
@@ -82,7 +88,10 @@ class _GenerationScreenState extends State<GenerationScreen> {
                           horizontal: 12.0,
                           vertical: 8.0), // Button internal padding
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      //TODO:
+                      // recipe_dao.update(table);
+                    },
                     icon: Icon(Icons.favorite_border_outlined),
                     label: Text(
                       "Add to My Favorite",

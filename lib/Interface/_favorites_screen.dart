@@ -51,11 +51,16 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                         ),
                       ),
                     )
-                  : ListView.separated(
+                  : GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 6,
+                        crossAxisCount: 1, // Number of items per row
+                        crossAxisSpacing: 12, // Horizontal space between items
+                        mainAxisSpacing: 12, // Vertical space between items
+                      ),
                       itemBuilder: (context, i) {
                         final recipe = recipes[i];
                         final subtitle = recipe.ingredients.join(', ');
-
                         return ListTile(
                           title: Text(recipe.title,
                               style:
@@ -63,8 +68,6 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                           subtitle: Text(subtitle),
                         );
                       },
-                      separatorBuilder: (context, i) =>
-                          const SizedBox(height: 12),
                       itemCount: recipes.length);
             }
           }),

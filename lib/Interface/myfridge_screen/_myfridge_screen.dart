@@ -3,7 +3,7 @@ import 'carbslist_item_widget.dart';
 import 'fiberlist_item_widget.dart';
 import 'proteinlist_item_widget.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-
+import 'package:keyboard_actions/keyboard_actions.dart';
 // enum ItemType { fiber, protein, carbs }
 
 class MyfridgePage extends StatefulWidget {
@@ -23,6 +23,31 @@ class MyfridgePageState extends State<MyfridgePage> {
   List<String> fiberItems = ["tomato"];
   List<String> proteinItems = ["egg"];
   List<String> carbsItems = ["chicken"];
+
+  final FocusNode input_keyboard = FocusNode();
+
+  /// Creates the [KeyboardActionsConfig] to hook up the fields
+  /// and their focus nodes to our [FormKeyboardActions].
+  KeyboardActionsConfig _buildConfigurationKeyboard(BuildContext context) {
+    return KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor: Colors.grey[200],
+      nextFocus: true,
+      actions: [
+        KeyboardActionsItem(focusNode: input_keyboard, toolbarButtons: [
+          (node) {
+            return GestureDetector(
+              onTap: () => node.unfocus(),
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(Icons.close),
+              ),
+            );
+          }
+        ]),
+      ],
+    );
+  }
 
   void addFiberItem() async {
     String? newIngredient = await _showAddIngredientDialog(context);

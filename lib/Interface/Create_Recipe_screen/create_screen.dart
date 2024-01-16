@@ -2,7 +2,9 @@ import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/constant.dart';
+import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/RecipeSettingBottomSheet.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
+
 import 'package:dart_openai/dart_openai.dart';
 import 'package:language_picker/language_picker.dart';
 import 'package:language_picker/languages.dart';
@@ -32,37 +34,38 @@ class CreateScreenState extends State<CreateScreen> {
   String selectedCookingMethod = "";
   String selectedDishType = "";
   String selectedDietaryRestriction = "";
-
-  List<String> dropdownItemList1_cuisine = ["Asian", "Italian", "Mexican"];
-
-  List<String> dropdownItemList2_cooking_ethod = [
-    "No Preference",
-    "Pan Fry",
-    "Oven"
-  ];
-
-  List<String> dropdownItemList3_dish_type = [
-    "No Preference",
-    "Breakfast",
-    "Lunch",
-    "Dinner",
-    "Quick Meal"
-  ];
-
-  List<String> dropdownItemList4_restriction = [
-    "No Restriction",
-    "Vegetarian",
-    "Low-Carb/Keto"
-  ];
+  String selectedServingSize = "";
 
   List<String> ingredients_protein = [
-    "chicken",
-    "beef",
-    "bacon",
-    "turkey",
+    "chicken breast",
+    "chicken thigh",
+    "beef brisket",
+    "beef tendor",
+    "turkey bacon",
+    "pork ribs",
+    "egg",
   ];
-  List<String> ingredients_vege = ["tomato", "onion", "brocolli"];
-  List<String> ingredients_carb = ["egg noodle", "white rice", "gnocchi"];
+  List<String> ingredients_vege = [
+    "tomato",
+    "onion",
+    "brocolli",
+    "mushroom",
+    "pepper",
+    "cucumber",
+    "califlower",
+    "zuchinni"
+  ];
+  List<String> ingredients_carb = [
+    "egg noodle",
+    "white rice",
+    "rice cake",
+    "pasta",
+    "potato",
+    "corn",
+    "sweet potato",
+    "pumpkin",
+    "gnocchi"
+  ];
   List<String> selectedIngredients = [];
 
   @override
@@ -117,39 +120,42 @@ class CreateScreenState extends State<CreateScreen> {
         ],
       ),
       body: Stack(children: [
-        Container(
-          alignment: Alignment.topLeft,
-          child: (_buildLanguagePicker(context)),
-        ),
-        // Positioned(
-        //   top: 20, // Adjust this value as needed
-        //   left: 0,
-        //   right: 0,
-        //   child: Column(
-        //     children: [
-        //       Text(selectedCuisine),
-        //       Text(selectedCookingMethod),
-        //       Text(selectedDishType),
-        //       Text(selectedDietaryRestriction),
-        //     ],
-        //   ),
-        // ),
         SingleChildScrollView(
             child: Container(
-                height: 1108.v,
                 width: double.maxFinite,
                 margin: EdgeInsets.only(bottom: 6.v),
-                child: Stack(alignment: Alignment.bottomCenter, children: [
+                child: Stack(children: [
                   Align(
                       alignment: Alignment.topCenter,
                       child: Padding(
                           padding: EdgeInsets.only(left: 30.h, right: 30.h),
-                          child:
-                              Column(mainAxisSize: MainAxisSize.min, children: [
-                            SizedBox(height: 40.v),
-                            _buildIngredientInputSection(context),
-                            SizedBox(height: 40.v),
-                          ]))),
+                          child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                // Container(
+                                //   alignment: Alignment.topRight,
+                                //   child: (_buildLanguagePicker(context)),
+                                // ),
+                                Positioned(
+                                  top: 60, // Adjust this value as needed
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 20,
+                                  child: Column(
+                                    children: [
+                                      Text("Your selections:"),
+                                      Text(selectedCuisine),
+                                      Text(selectedCookingMethod),
+                                      Text(selectedDishType),
+                                      Text(selectedDietaryRestriction),
+                                      Text(selectedServingSize),
+                                    ],
+                                  ),
+                                ),
+                                _buildIngredientInputSection(context),
+                                SizedBox(height: 40.v),
+                              ]))),
                 ]))),
       ]),
     ));
@@ -196,6 +202,7 @@ class CreateScreenState extends State<CreateScreen> {
       children: [
         SizedBox(height: 4.v),
         TextFormField(
+          readOnly: true,
           maxLines: null,
           // keyboardType: TextInputType.text,
           controller: atomInputContainerController,
@@ -243,6 +250,7 @@ class CreateScreenState extends State<CreateScreen> {
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
           crossAxisCount: 3,
+          // childAspectRatio: MediaQuery.of(context).size.width *0.2,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10),
       itemBuilder: (context, index) {
@@ -250,6 +258,8 @@ class CreateScreenState extends State<CreateScreen> {
         bool isSelected = selectedIngredients.contains(data);
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 1),
+              textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
               foregroundColor: Colors.white,
               backgroundColor:
                   isSelected ? Colors.grey : appTheme.green_primary),
@@ -264,7 +274,8 @@ class CreateScreenState extends State<CreateScreen> {
                   selectedIngredients.add(data);
                 }
               }
-              atomInputContainerController.text = selectedIngredients.join(" ");
+              atomInputContainerController.text =
+                  selectedIngredients.join("  ");
             });
           },
           child: Text(data,
@@ -292,6 +303,8 @@ class CreateScreenState extends State<CreateScreen> {
         bool isSelected = selectedIngredients.contains(data);
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 1),
+              textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
               foregroundColor: Colors.white,
               backgroundColor:
                   isSelected ? Colors.grey : appTheme.green_primary),
@@ -306,7 +319,8 @@ class CreateScreenState extends State<CreateScreen> {
                   selectedIngredients.add(data);
                 }
               }
-              atomInputContainerController.text = selectedIngredients.join(" ");
+              atomInputContainerController.text =
+                  selectedIngredients.join("  ");
             });
           },
           child: Text(data,
@@ -335,6 +349,7 @@ class CreateScreenState extends State<CreateScreen> {
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(horizontal: 1),
+              textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
               foregroundColor: Colors.white,
               backgroundColor:
                   isSelected ? Colors.grey : appTheme.green_primary),
@@ -349,7 +364,8 @@ class CreateScreenState extends State<CreateScreen> {
                   selectedIngredients.add(data);
                 }
               }
-              atomInputContainerController.text = selectedIngredients.join(" ");
+              atomInputContainerController.text =
+                  selectedIngredients.join("  ");
             });
           },
           child: Text(data,
@@ -363,111 +379,157 @@ class CreateScreenState extends State<CreateScreen> {
     );
   }
 
-  void _buildRecipeSetting(BuildContext context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return Container(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.60,
-              color: appTheme.green_primary,
-              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 16.0), // Adjust the value as needed
-                  child: Row(children: <Widget>[
-                    Text("Set My Cooking Preference",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.fSize,
-                            fontFamily: 'Outfit',
-                            fontWeight: FontWeight.w600)),
-                    Spacer(),
-                    IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        icon: Icon(Icons.arrow_drop_down_circle,
-                            color: Colors.white)),
-                  ]),
-                ),
-                SizedBox(height: 24.v),
-                CustomDropDown(
-                  // dropDownKey: dropDownKey,
-                  width: MediaQuery.of(context).size.width * 0.60,
-                  hintText: "Cuisine Style",
-                  hintStyle:
-                      TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-                  items: dropdownItemList1_cuisine,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedCuisine = value;
-                    });
-                  },
-                ),
-                SizedBox(height: 24.v),
-                CustomDropDown(
-                    hintText: "Cooking Method",
-                    hintStyle:
-                        TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-                    width: MediaQuery.of(context).size.width * 0.60,
-                    items: dropdownItemList2_cooking_ethod,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedCookingMethod = value;
-                      });
-                    }),
-                SizedBox(height: 24.v),
-                CustomDropDown(
-                    hintText: "Dish Type",
-                    width: MediaQuery.of(context).size.width * 0.60,
-                    hintStyle:
-                        TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-                    items: dropdownItemList3_dish_type,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedDishType = value;
-                      });
-                    }),
-                SizedBox(height: 24.v),
-                CustomDropDown(
-                    hintText: "Dietary Restriction",
-                    width: MediaQuery.of(context).size.width * 0.60,
-                    hintStyle:
-                        TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-                    items: dropdownItemList4_restriction,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedDietaryRestriction = value;
-                      });
-                    }),
-                SizedBox(height: 24.v)
-              ]),
-            ),
-          );
-        });
+  void _buildRecipeSetting(BuildContext context) async {
+    final result = await showModalBottomSheet<Map<String, String>>(
+      context: context,
+      builder: (BuildContext bc) {
+        return RecipeSettingBottomSheet(
+          initialSelections: {
+            'cuisine': selectedCuisine,
+            'cookingMethod': selectedCookingMethod,
+            'dishType': selectedDishType,
+            'dietaryRestriction': selectedDietaryRestriction,
+            'servingsize': selectedServingSize,
+          },
+          onSelectionChanged: (selections) {
+            setState(() {
+              selectedCuisine = selections['cuisine'] ?? '';
+              selectedCookingMethod = selections['cookingMethod'] ?? '';
+              selectedDishType = selections['dishType'] ?? '';
+              selectedDietaryRestriction =
+                  selections['dietaryRestriction'] ?? '';
+              selectedServingSize = selections['servingsize'] ?? '';
+            });
+          },
+        );
+      },
+    );
+
+    if (result != null) {
+      setState(() {
+        selectedCuisine = result['cuisine'] ?? '';
+        selectedCookingMethod = result['cookingMethod'] ?? '';
+        selectedDishType = result['dishType'] ?? '';
+        selectedDietaryRestriction = result['dietaryRestriction'] ?? '';
+        selectedServingSize = result['dietaryRestriction'] ?? '';
+      });
+    }
   }
+
+  // void _buildRecipeSetting(BuildContext context) {
+  //   showModalBottomSheet(
+  //       context: context,
+  //       builder: (BuildContext bc) {
+  //         return Container(
+  //           child: Container(
+  //             height: MediaQuery.of(context).size.height * 0.60,
+  //             color: appTheme.green_primary,
+  //             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+  //               Padding(
+  //                 padding: EdgeInsets.symmetric(
+  //                     horizontal: 16.0,
+  //                     vertical: 16.0), // Adjust the value as needed
+  //                 child: Row(children: <Widget>[
+  //                   Text("Set My Cooking Preference",
+  //                       style: TextStyle(
+  //                           color: Colors.white,
+  //                           fontSize: 16.fSize,
+  //                           fontFamily: 'Outfit',
+  //                           fontWeight: FontWeight.w600)),
+  //                   Spacer(),
+  //                   IconButton(
+  //                       onPressed: () {
+  //                         Navigator.of(context).pop();
+  //                       },
+  //                       icon: Icon(Icons.arrow_drop_down_circle,
+  //                           color: Colors.white)),
+  //                 ]),
+  //               ),
+  //               SizedBox(height: 24.v),
+  //               CustomDropDown(
+  //                 // dropDownKey: dropDownKey,
+  //                 width: MediaQuery.of(context).size.width * 0.60,
+  //                 hintText: "Cuisine Style",
+  //                 hintStyle:
+  //                     TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
+  //                 items: dropdownItemList1_cuisine,
+  //                 onChanged: (value) {
+  //                   setState(() {
+  //                     selectedCuisine = value;
+  //                   });
+  //                 },
+  //               ),
+  //               SizedBox(height: 24.v),
+  //               CustomDropDown(
+  //                   hintText: "Cooking Method",
+  //                   hintStyle:
+  //                       TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
+  //                   width: MediaQuery.of(context).size.width * 0.60,
+  //                   items: dropdownItemList2_cooking_ethod,
+  //                   onChanged: (value) {
+  //                     setState(() {
+  //                       selectedCookingMethod = value;
+  //                     });
+  //                   }),
+  //               SizedBox(height: 24.v),
+  //               CustomDropDown(
+  //                   hintText: "Dish Type",
+  //                   width: MediaQuery.of(context).size.width * 0.60,
+  //                   hintStyle:
+  //                       TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
+  //                   items: dropdownItemList3_dish_type,
+  //                   onChanged: (value) {
+  //                     setState(() {
+  //                       selectedDishType = value;
+  //                     });
+  //                   }),
+  //               SizedBox(height: 24.v),
+  //               CustomDropDown(
+  //                   hintText: "Dietary Restriction",
+  //                   width: MediaQuery.of(context).size.width * 0.60,
+  //                   hintStyle:
+  //                       TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
+  //                   items: dropdownItemList4_restriction,
+  //                   onChanged: (value) {
+  //                     setState(() {
+  //                       selectedDietaryRestriction = value;
+  //                     });
+  //                   }),
+  //               SizedBox(height: 24.v)
+  //             ]),
+  //           ),
+  //         );
+  //       });
+  // }
 
   sendPrompt() async {
     OpenAI.apiKey = apiKey;
     final systemMessage = OpenAIChatCompletionChoiceMessageModel(
       content: "As a recipe-generating assistant, create a recipe by using " +
           selectedIngredients.join() +
-          " provided by the user. To ensure a precise and high-quality response, please follow these guidelines:" +
-          "\1. The response should include 5 sections: Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, and Note. Limit your response to 150-200 words." +
-          "\2. Return any message you are given as JSON." +
-          "\3. Using user's preference cooking way specified as " +
-          selectedCuisine +
-          selectedCookingMethod +
-          selectedDietaryRestriction +
-          selectedDishType,
+          " provided by the user. To ensure a precise and high-quality response, please return the response in create a JSON object which enumerates a set of 5 child objects." +
+          " Each objects are respectively named as Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, and Note." +
+          " The result JSON objetcs should be in this format: " +
+          "{Title: string, Ingredient List: list, Step-by-Step Instructions: list, Expected Cooking Time: integer, Note: String}." +
+          " Additionally, the unit of Expected Cooking Time is minutes",
       role: OpenAIChatMessageRole.assistant,
     );
 
     // the user message that will be sent to the request.
     final userMessage = OpenAIChatCompletionChoiceMessageModel(
-      content: "Give me a Asian Style Recipe",
+      content: "Give me a Recipe following these cooking preference: " +
+          "\1. Cuisine style should be " +
+          selectedCuisine +
+          ", so use some special sauce/spice. " +
+          "\2. Dish type should be " +
+          selectedDishType +
+          ". And the cooking method should be " +
+          selectedCookingMethod +
+          "\3. Be mindful of the user have " +
+          selectedDietaryRestriction +
+          " diet restriction." +
+          "\4. The serving size is " +
+          selectedServingSize,
       role: OpenAIChatMessageRole.user,
     );
 
