@@ -43,7 +43,12 @@ class CreateScreenState extends State<CreateScreen> {
     "beef tendor",
     "turkey bacon",
     "pork ribs",
+    "pork belly",
+    "shrimp",
+    "fish fillet",
+    "smocked salmon",
     "egg",
+    "tofu(firmed)",
   ];
   List<String> ingredients_vege = [
     "tomato",
@@ -53,7 +58,8 @@ class CreateScreenState extends State<CreateScreen> {
     "pepper",
     "cucumber",
     "califlower",
-    "zuchinni"
+    "zuchinni",
+    "eggplant",
   ];
   List<String> ingredients_carb = [
     "egg noodle",
@@ -64,7 +70,11 @@ class CreateScreenState extends State<CreateScreen> {
     "corn",
     "sweet potato",
     "pumpkin",
-    "gnocchi"
+    "gnocchi",
+    "bread",
+    "bagel",
+    "baguette",
+    "pie crust",
   ];
   List<String> selectedIngredients = [];
 

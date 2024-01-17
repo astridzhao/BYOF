@@ -86,7 +86,8 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
                 bottomItemSelectedColor: appTheme.yellow_secondary,
                 label: 'Create',
                 selectedIcon: Icons.dinner_dining_rounded,
-                screen: GenerationScreen(resultCompletion: resultCompletion),
+                screen: CreateScreen(),
+                // screen: GenerationScreen(resultCompletion: resultCompletion),
               ),
               BottomBarItem(
                 bottomItemSelectedColor: appTheme.yellow_secondary,

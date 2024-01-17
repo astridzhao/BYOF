@@ -28,6 +28,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
         body: Stack(
           children: [
             SingleChildScrollView(
+              scrollDirection: Axis.vertical,
               padding: EdgeInsets.only(top: 20.v),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,17 +43,19 @@ class _GenerationScreenState extends State<GenerationScreen> {
                   ),
                   SizedBox(height: 18.v),
                   group_info(context),
-                  SizedBox(height: 20.v),
                   instruction(context),
-                  SizedBox(height: 20.v),
-                  Divider(
-                    indent: 1.h,
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Divider(
+                      indent: 1.h,
+                    ),
                   ),
                   SizedBox(height: 13.v),
                   _buildTimerControls(context),
-                  SizedBox(height: 13.v),
+                  SizedBox(height: 30.v),
                   bottomSettingBar(context),
-                  SizedBox(height: 30),
+                  SizedBox(height: 40),
                 ],
               ),
             ),
@@ -90,8 +93,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
   /// Section Widget
   Widget title(BuildContext context) {
     return Container(
-        padding:
-            EdgeInsetsDirectional.symmetric(horizontal: 20.h, vertical: 20.v),
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
         alignment: Alignment.center,
         child: Text(
             RecipeFromLLMJson(widget.resultCompletion).title.value.toString(),
@@ -109,40 +111,63 @@ class _GenerationScreenState extends State<GenerationScreen> {
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.25,
-              width:
-                  MediaQuery.of(context).size.width * 0.4, // <-- Fixed width.
-              child: Container(
-                  padding: EdgeInsets.all(10),
+            Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(10, 0, 0, 10),
+                  padding: EdgeInsets.fromLTRB(0, 0, 5, 15),
                   decoration: AppDecoration.fillYellow.copyWith(
                     borderRadius: BorderRadiusStyle.roundedBorder10,
                   ),
-                  child: Text(
-                      RecipeFromLLMJson(widget.resultCompletion)
-                          .ingredients
-                          .value
-                          .join("\n"),
-                      style: TextStyle(
-                          fontFamily: "Outfit",
-                          fontSize: 12.fSize,
-                          fontWeight: FontWeight.normal))),
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  width: MediaQuery.of(context).size.width *
+                      0.5, // <-- Fixed width
+                  child: ListView.builder(
+                    itemCount: 1,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(
+                            RecipeFromLLMJson(widget.resultCompletion)
+                                .ingredients
+                                .value
+                                .join('\n'),
+                            style: TextStyle(
+                                fontFamily: "Outfit",
+                                fontSize: 12.fSize,
+                                fontWeight: FontWeight.normal)),
+                      );
+                    },
+                    // itemCount: RecipeFromLLMJson(widget.resultCompletion)
+                    //     .ingredients
+                    //     .value
+                    //     .length,
+                    // itemBuilder: (context, index) {
+                    //   return ListTile(
+                    //     title: Text(
+                    //         RecipeFromLLMJson(widget.resultCompletion)
+                    //             .ingredients
+                    //             .value
+                    //             .elementAt(index),
+                    //         style: TextStyle(
+                    //             fontFamily: "Outfit",
+                    //             fontSize: 12.fSize,
+                    //             fontWeight: FontWeight.normal)),
+                    //   );
+                    // },
+                  ),
+                ),
+              ],
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-              width: MediaQuery.of(context).size.width * 0.4,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.03,
-              width:
-                  MediaQuery.of(context).size.width * 0.4, // <-- Fixed width.
-              child: _cookingTime(context),
+              // <-- Fixed width.
+              child: cookingTime(context),
             ),
           ],
         ),
         //child 2: notes
         Container(
-            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
+            padding: EdgeInsets.fromLTRB(10, 10, 5, 15),
             height: MediaQuery.of(context).size.height * 0.3,
             width: MediaQuery.of(context).size.width * 0.4,
             decoration: AppDecoration.fillYellow.copyWith(
@@ -155,9 +180,71 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     .toString(),
                 style: TextStyle(
                     fontFamily: "Outfit",
-                    fontSize: 10.fSize,
+                    fontSize: 12.fSize,
                     fontWeight: FontWeight.normal))),
       ],
+    );
+  }
+
+  Widget instruction(BuildContext context) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(20),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 5.h),
+        padding: EdgeInsets.all(10),
+        decoration: AppDecoration.fillYellow.copyWith(
+          borderRadius: BorderRadiusStyle.roundedBorder10,
+        ),
+        child: Column(
+          children: [
+            SizedBox(height: 5),
+            Text(
+              "Instructions",
+              style: TextStyle(
+                  fontFamily: "Outfit",
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 5),
+              height: 200,
+              child: ListView.builder(
+                itemCount: 1,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(
+                        RecipeFromLLMJson(widget.resultCompletion)
+                            .instructions
+                            .value
+                            .join('\n \n'),
+                        style: TextStyle(
+                            fontFamily: "Outfit",
+                            fontSize: 12.fSize,
+                            fontWeight: FontWeight.normal)),
+                    // itemCount: RecipeFromLLMJson(widget.resultCompletion)
+                    //     .instructions
+                    //     .value
+                    //     .length,
+                    // itemBuilder: (context, index) {
+                    //   return ListTile(
+                    //     title: Text(
+                    //       RecipeFromLLMJson(widget.resultCompletion)
+                    //           .instructions
+                    //           .value
+                    //           .elementAt(index),
+                    //       style: TextStyle(
+                    //         fontFamily: "Outfit",
+                    //         fontSize: 12.fSize,
+                    //         fontWeight: FontWeight.normal,
+                    //       ),
+                    //     ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -198,7 +285,10 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     ),
                     child: Text(
                       "3",
-                      style: theme.textTheme.titleSmall,
+                      style: TextStyle(
+                          fontFamily: "Outfit",
+                          fontSize: 14,
+                          color: Colors.white70),
                     ),
                   ),
                   Padding(
@@ -209,7 +299,10 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     ),
                     child: Text(
                       "KG CO2",
-                      style: theme.textTheme.titleSmall,
+                      style: TextStyle(
+                          fontFamily: "Outfit",
+                          fontSize: 14,
+                          color: Colors.white70),
                     ),
                   ),
                   Spacer(
@@ -233,7 +326,10 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     ),
                     child: Text(
                       "4",
-                      style: theme.textTheme.titleSmall,
+                      style: TextStyle(
+                          fontFamily: "Outfit",
+                          fontSize: 14,
+                          color: Colors.white70),
                     ),
                   ),
                   Padding(
@@ -244,7 +340,10 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     ),
                     child: Text(
                       "DOLLARS",
-                      style: theme.textTheme.titleSmall,
+                      style: TextStyle(
+                          fontFamily: "Outfit",
+                          fontSize: 14,
+                          color: Colors.white70),
                     ),
                   ),
                 ],
@@ -252,20 +351,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget instruction(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.h),
-      padding: EdgeInsets.all(20),
-      decoration: AppDecoration.fillYellow.copyWith(
-        borderRadius: BorderRadiusStyle.roundedBorder10,
-      ),
-      child: Text(
-        RecipeFromLLMJson(widget.resultCompletion).instructions.value.join(),
-        style: TextStyle(fontFamily: "Outfit", fontSize: 12.fSize),
       ),
     );
   }
@@ -318,13 +403,14 @@ class _GenerationScreenState extends State<GenerationScreen> {
     );
   }
 
-  Widget _cookingTime(BuildContext context) {
+  Widget cookingTime(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 1.h),
       padding: EdgeInsets.symmetric(
-        horizontal: 5.h,
+        horizontal: 10.h,
         vertical: 2.v,
       ),
+      height: MediaQuery.of(context).size.height * 0.03,
+      width: MediaQuery.of(context).size.width * 0.5,
       decoration: AppDecoration.fillYellow.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder10,
       ),
@@ -333,9 +419,12 @@ class _GenerationScreenState extends State<GenerationScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           CustomImageView(
-            imagePath: ImageConstant.mushroom,
+            height: 20.h,
+            width: 20.v,
+            imagePath: ImageConstant.imgClasicAlarmClock,
             margin: EdgeInsets.only(top: 1.v),
           ),
+          Spacer(),
           Text(
             RecipeFromLLMJson(widget.resultCompletion)
                 .cookTime
@@ -343,6 +432,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                 .toString(),
             style: TextStyle(fontFamily: "Outfit", fontSize: 12.fSize),
           ),
+          Spacer(),
           Text(
             "minutes",
             style: theme.textTheme.bodySmall,
@@ -355,7 +445,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
   /// Section Widget
   Widget _buildTimerControls(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 1.h),
+      margin: EdgeInsets.symmetric(horizontal: 20.h),
       padding: EdgeInsets.symmetric(
         horizontal: 28.h,
         vertical: 12.v,
@@ -366,13 +456,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Padding(
-            padding: EdgeInsets.only(top: 59.v),
-            child: Text(
-              "Start",
-              style: theme.textTheme.bodySmall,
-            ),
-          ),
           CustomImageView(
             // imagePath: ImageConstant.imgImage24,
             height: 30.adaptSize,
@@ -384,10 +467,14 @@ class _GenerationScreenState extends State<GenerationScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(
-              left: 3.h,
-              top: 59.v,
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(
+              "Start",
+              style: theme.textTheme.bodySmall,
             ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
             child: Text(
               "End",
               style: theme.textTheme.bodySmall,

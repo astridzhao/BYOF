@@ -23,11 +23,18 @@ class _RecipeSettingBottomSheetState extends State<RecipeSettingBottomSheet> {
   late String selectedDishType;
   late String selectedDietaryRestriction;
   late String selectedServingSize;
-  List<String> dropdownItemList1_cuisine = ["Asian", "Italian", "Mexican"];
+  List<String> dropdownItemList1_cuisine = [
+    "Asian",
+    "Italian",
+    "Mexican",
+    "Chinese",
+    "Thai",
+  ];
 
   List<String> dropdownItemList2_cooking_ethod = [
     "No Preference",
     "Pan Fry",
+    "Air Fry",
     "Oven"
   ];
 
@@ -42,7 +49,7 @@ class _RecipeSettingBottomSheetState extends State<RecipeSettingBottomSheet> {
   List<String> dropdownItemList4_restriction = [
     "No Restriction",
     "Vegetarian",
-    "Low-Carb/Keto"
+    "Low-Carb/Keto",
   ];
 
   List<String> dropdownItemList5_servingsize = [
