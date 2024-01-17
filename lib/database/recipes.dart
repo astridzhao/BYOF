@@ -28,15 +28,14 @@ class Recipes extends Table {
   IntColumn get saveAt => integer()();
 }
 
-  /// Parses a LLM generated recipe into an insertable Recipe Dataclass.
+/// Parses a LLM generated recipe into an insertable Recipe Dataclass.
 RecipesCompanion RecipeFromLLMJson(String llmResult) {
-    final decoded = jsonDecode(llmResult) as Map<String, dynamic>;
-    return RecipesCompanion.insert(
-        title: decoded['Title'] as String,
-        ingredients: List<String>.from(['Ingredient List']),
-        instructions: List<String>.from(decoded['Step-by-Step Instructions']),
-        cookTime: decoded['Expected Cooking Time'] as int,
-        notes: decoded['Note'] as String,
-        saveAt: DateTime.now().millisecondsSinceEpoch);
+  final decoded = jsonDecode(llmResult) as Map<String, dynamic>;
+  return RecipesCompanion.insert(
+      title: decoded['Title'] as String,
+      ingredients: List<String>.from(decoded['Ingredient List']),
+      instructions: List<String>.from(decoded['Step-by-Step Instructions']),
+      cookTime: decoded['Expected Cooking Time'] as int,
+      notes: decoded['Note'] as String,
+      saveAt: DateTime.now().millisecondsSinceEpoch);
 }
-
