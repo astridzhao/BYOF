@@ -11,15 +11,13 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 part 'database.g.dart';
 
-
 class DatabaseService {
-  AppDatabase? _database;
+  static AppDatabase? _database;
 
   AppDatabase get database {
     _database ??= AppDatabase("recipe_app.db");
     return _database!;
   }
-
 }
 
 @DriftDatabase(tables: [Recipes])
@@ -53,4 +51,3 @@ LazyDatabase _openConnection(String dbName) {
     return NativeDatabase.createInBackground(file);
   });
 }
-

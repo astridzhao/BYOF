@@ -67,12 +67,18 @@ class _RecipeSettingBottomSheetState extends State<RecipeSettingBottomSheet> {
   @override
   void initState() {
     super.initState();
-    selectedCuisine = widget.initialSelections['cuisine'] ?? '';
-    selectedCookingMethod = widget.initialSelections['cookingMethod'] ?? '';
-    selectedDishType = widget.initialSelections['dishType'] ?? '';
+    selectedCuisine =
+        widget.initialSelections['cuisine'] ?? dropdownItemList1_cuisine.last;
+    ;
+    selectedCookingMethod = widget.initialSelections['cookingMethod'] ??
+        dropdownItemList2_cooking_ethod.last;
+    selectedDishType = widget.initialSelections['dishType'] ??
+        dropdownItemList3_dish_type.last;
     selectedDietaryRestriction =
-        widget.initialSelections['dietaryRestriction'] ?? '';
-    selectedServingSize = widget.initialSelections['servingsize'] ?? '';
+        widget.initialSelections['dietaryRestriction'] ??
+            dropdownItemList4_restriction.last;
+    selectedServingSize = widget.initialSelections['servingsize'] ??
+        dropdownItemList5_servingsize.last;
   }
 
   void _updateSelections() {
@@ -109,7 +115,9 @@ class _RecipeSettingBottomSheetState extends State<RecipeSettingBottomSheet> {
           ]),
         ),
         CustomDropDown(
-          hintText: "Cuisine Style",
+          // hintText: "Cuisine Style",
+          hintText: selectedCuisine,
+          // initialValue: selectedCuisine,
           width: MediaQuery.of(context).size.width * 0.60,
           hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
           items: dropdownItemList1_cuisine,
@@ -117,12 +125,15 @@ class _RecipeSettingBottomSheetState extends State<RecipeSettingBottomSheet> {
             setState(() {
               selectedCuisine = value;
             });
+
             _updateSelections();
           },
         ),
         SizedBox(height: 24),
         CustomDropDown(
-          hintText: "Cooking Method",
+          // hintText: "Cooking Method",
+          hintText: selectedCookingMethod,
+          // initialValue: selectedCookingMethod,
           width: MediaQuery.of(context).size.width * 0.60,
           hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
           items: dropdownItemList2_cooking_ethod,
@@ -135,7 +146,9 @@ class _RecipeSettingBottomSheetState extends State<RecipeSettingBottomSheet> {
         ),
         SizedBox(height: 24),
         CustomDropDown(
-          hintText: "Dish Type",
+          // hintText: "Dish Type",
+          hintText: selectedDishType,
+          // initialValue: selectedDishType,
           width: MediaQuery.of(context).size.width * 0.60,
           hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
           items: dropdownItemList3_dish_type,
@@ -148,7 +161,8 @@ class _RecipeSettingBottomSheetState extends State<RecipeSettingBottomSheet> {
         ),
         SizedBox(height: 24),
         CustomDropDown(
-          hintText: "Dietary Restriction",
+          // hintText: "Dietary Restriction",
+          hintText: selectedDietaryRestriction,
           width: MediaQuery.of(context).size.width * 0.60,
           hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
           items: dropdownItemList4_restriction,
@@ -161,7 +175,8 @@ class _RecipeSettingBottomSheetState extends State<RecipeSettingBottomSheet> {
         ),
         SizedBox(height: 24),
         CustomDropDown(
-          hintText: "Serving Size",
+          // hintText: "Serving Size",
+          hintText: selectedServingSize,
           width: MediaQuery.of(context).size.width * 0.60,
           hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
           items: dropdownItemList5_servingsize,

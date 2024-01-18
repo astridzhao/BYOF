@@ -24,7 +24,7 @@ class CustomDropDown extends StatefulWidget {
     this.filled = true,
     this.validator,
     this.onChanged,
-    this.initialValue = '',
+    this.initialValue,
     // required this.dropDownKey,
   }) : super(
           key: key,
