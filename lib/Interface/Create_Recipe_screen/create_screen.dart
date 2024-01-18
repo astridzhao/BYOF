@@ -1,9 +1,10 @@
+import 'dart:developer';
+
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/constant.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/RecipeSettingBottomSheet.dart';
-import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
 
 import 'package:dart_openai/dart_openai.dart';
 import 'package:language_picker/language_picker.dart';
@@ -424,6 +425,15 @@ class CreateScreenState extends State<CreateScreen> {
         selectedServingSize = result['dietaryRestriction'] ?? '';
       });
     }
+    // else {
+    //   setState(() {
+    //     selectedCuisine = 'Asian';
+    //     selectedCookingMethod = 'Pan Fry';
+    //     selectedDishType = 'Dinner';
+    //     selectedDietaryRestriction = 'No Restriction';
+    //     selectedServingSize = '2';
+    //   });
+    // }
   }
 
   // void _buildRecipeSetting(BuildContext context) {
@@ -550,9 +560,10 @@ class CreateScreenState extends State<CreateScreen> {
     ];
     final completion = await OpenAI.instance.chat
         .create(model: 'gpt-3.5-turbo', messages: requestMessages);
-    print(completion);
+
     setState(() {
       resultCompletion = completion.choices.first.message.content;
+      log(resultCompletion);
       // atomInputContainerController.clear();
       // selectedIngredients.clear();
     });

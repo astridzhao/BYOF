@@ -1,17 +1,20 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
-import 'package:astridzhao_s_food_app/database/recipes.dart';
-import 'package:flutter/rendering.dart';
+import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 
 class GenerationScreen extends StatefulWidget {
   final String resultCompletion;
+  final RecipesCompanion recipe;
 
   GenerationScreen({Key? key, required this.resultCompletion})
-      : super(key: key);
+      : recipe = RecipeFromLLMJson(resultCompletion),
+        super(key: key);
 
   @override
   _GenerationScreenState createState() => _GenerationScreenState();
@@ -19,6 +22,7 @@ class GenerationScreen extends StatefulWidget {
 
 class _GenerationScreenState extends State<GenerationScreen> {
   IconData copyIcon = Icons.content_copy_rounded;
+  RecipesDao recipesDao = RecipesDao(DatabaseService().database);
 
   @override
   Widget build(BuildContext context) {
@@ -95,8 +99,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
     return Container(
         padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
         alignment: Alignment.center,
-        child: Text(
-            RecipeFromLLMJson(widget.resultCompletion).title.value.toString(),
+        child: Text(widget.recipe.title.value.toString(),
             style: TextStyle(
                 fontFamily: "Outfit",
                 fontSize: 14.fSize,
@@ -126,11 +129,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     itemCount: 1,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        title: Text(
-                            RecipeFromLLMJson(widget.resultCompletion)
-                                .ingredients
-                                .value
-                                .join('\n'),
+                        title: Text(widget.recipe.ingredients.value.join('\n'),
                             style: TextStyle(
                                 fontFamily: "Outfit",
                                 fontSize: 12.fSize,
@@ -173,11 +172,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
             decoration: AppDecoration.fillYellow.copyWith(
               borderRadius: BorderRadiusStyle.roundedBorder10,
             ),
-            child: Text(
-                RecipeFromLLMJson(widget.resultCompletion)
-                    .notes
-                    .value
-                    .toString(),
+            child: Text(widget.recipe.notes.value.toString(),
                 style: TextStyle(
                     fontFamily: "Outfit",
                     fontSize: 12.fSize,
@@ -212,11 +207,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                 itemCount: 1,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(
-                        RecipeFromLLMJson(widget.resultCompletion)
-                            .instructions
-                            .value
-                            .join('\n \n'),
+                    title: Text(widget.recipe.instructions.value.join('\n \n'),
                         style: TextStyle(
                             fontFamily: "Outfit",
                             fontSize: 12.fSize,
@@ -355,54 +346,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
     );
   }
 
-  Widget bottomSettingBar(BuildContext context) {
-    return OverflowBar(
-      alignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        IconButton(
-          icon: Icon(copyIcon),
-          tooltip: "Copy",
-          onPressed: () {
-            FlutterClipboard.copy(widget.resultCompletion);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Copied")),
-            );
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.share),
-          tooltip: "Share",
-          onPressed: () {
-            // Add your share functionality here
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: TextButton.icon(
-            style: TextButton.styleFrom(
-              backgroundColor: appTheme.green_primary,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(
-                horizontal: 15.0,
-                vertical: 8.0,
-              ),
-            ),
-            onPressed: () {
-              // Add your favorite functionality here
-            },
-            icon: Icon(Icons.favorite_border_outlined),
-            label: Text(
-              "Add to My Favorite",
-              style: TextStyle(
-                fontFamily: "Outfit",
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget cookingTime(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -426,10 +369,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           ),
           Spacer(),
           Text(
-            RecipeFromLLMJson(widget.resultCompletion)
-                .cookTime
-                .value
-                .toString(),
+            widget.recipe.cookTime.value.toString(),
             style: TextStyle(fontFamily: "Outfit", fontSize: 12.fSize),
           ),
           Spacer(),
@@ -482,6 +422,56 @@ class _GenerationScreenState extends State<GenerationScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget bottomSettingBar(BuildContext context) {
+    return OverflowBar(
+      alignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(copyIcon),
+          tooltip: "Copy",
+          onPressed: () {
+            FlutterClipboard.copy(widget.resultCompletion);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Copied")),
+            );
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.share),
+          tooltip: "Share",
+          onPressed: () {
+            // Add your share functionality here
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10),
+          child: TextButton.icon(
+            style: TextButton.styleFrom(
+              backgroundColor: appTheme.green_primary,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(
+                horizontal: 15.0,
+                vertical: 8.0,
+              ),
+            ),
+            onPressed: () async {
+              // Add your favorite functionality here
+              log(widget.recipe.toString());
+              await recipesDao.into(recipesDao.recipes).insert(widget.recipe);
+            },
+            icon: Icon(Icons.favorite_border_outlined),
+            label: Text(
+              "Add to My Favorite",
+              style: TextStyle(
+                fontFamily: "Outfit",
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
