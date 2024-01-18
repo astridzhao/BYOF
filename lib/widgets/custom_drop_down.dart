@@ -134,7 +134,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
         contentPadding: widget.contentPadding ??
             EdgeInsets.symmetric(
               horizontal: 8,
-              vertical: 11,
+              vertical: 12,
             ),
         fillColor: widget.fillColor ??
             appTheme.yellow_secondary, // Change to your desired color

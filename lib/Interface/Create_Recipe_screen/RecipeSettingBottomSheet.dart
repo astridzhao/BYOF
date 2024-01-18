@@ -191,3 +191,89 @@ class _RecipeSettingBottomSheetState extends State<RecipeSettingBottomSheet> {
     );
   }
 }
+
+  // void _buildRecipeSetting(BuildContext context) {
+  //   showModalBottomSheet(
+  //       context: context,
+  //       builder: (BuildContext bc) {
+  //         return Container(
+  //           child: Container(
+  //             height: MediaQuery.of(context).size.height * 0.60,
+  //             color: appTheme.green_primary,
+  //             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+  //               Padding(
+  //                 padding: EdgeInsets.symmetric(
+  //                     horizontal: 16.0,
+  //                     vertical: 16.0), // Adjust the value as needed
+  //                 child: Row(children: <Widget>[
+  //                   Text("Set My Cooking Preference",
+  //                       style: TextStyle(
+  //                           color: Colors.white,
+  //                           fontSize: 16.fSize,
+  //                           fontFamily: 'Outfit',
+  //                           fontWeight: FontWeight.w600)),
+  //                   Spacer(),
+  //                   IconButton(
+  //                       onPressed: () {
+  //                         Navigator.of(context).pop();
+  //                       },
+  //                       icon: Icon(Icons.arrow_drop_down_circle,
+  //                           color: Colors.white)),
+  //                 ]),
+  //               ),
+  //               SizedBox(height: 24.v),
+  //               CustomDropDown(
+  //                 // dropDownKey: dropDownKey,
+  //                 width: MediaQuery.of(context).size.width * 0.60,
+  //                 hintText: "Cuisine Style",
+  //                 hintStyle:
+  //                     TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
+  //                 items: dropdownItemList1_cuisine,
+  //                 onChanged: (value) {
+  //                   setState(() {
+  //                     selectedCuisine = value;
+  //                   });
+  //                 },
+  //               ),
+  //               SizedBox(height: 24.v),
+  //               CustomDropDown(
+  //                   hintText: "Cooking Method",
+  //                   hintStyle:
+  //                       TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
+  //                   width: MediaQuery.of(context).size.width * 0.60,
+  //                   items: dropdownItemList2_cooking_ethod,
+  //                   onChanged: (value) {
+  //                     setState(() {
+  //                       selectedCookingMethod = value;
+  //                     });
+  //                   }),
+  //               SizedBox(height: 24.v),
+  //               CustomDropDown(
+  //                   hintText: "Dish Type",
+  //                   width: MediaQuery.of(context).size.width * 0.60,
+  //                   hintStyle:
+  //                       TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
+  //                   items: dropdownItemList3_dish_type,
+  //                   onChanged: (value) {
+  //                     setState(() {
+  //                       selectedDishType = value;
+  //                     });
+  //                   }),
+  //               SizedBox(height: 24.v),
+  //               CustomDropDown(
+  //                   hintText: "Dietary Restriction",
+  //                   width: MediaQuery.of(context).size.width * 0.60,
+  //                   hintStyle:
+  //                       TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
+  //                   items: dropdownItemList4_restriction,
+  //                   onChanged: (value) {
+  //                     setState(() {
+  //                       selectedDietaryRestriction = value;
+  //                     });
+  //                   }),
+  //               SizedBox(height: 24.v)
+  //             ]),
+  //           ),
+  //         );
+  //       });
+  // }
