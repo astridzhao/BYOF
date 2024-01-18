@@ -1,10 +1,11 @@
+import 'dart:developer';
+
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/constant.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/RecipeSettingBottomSheet.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
-
 import 'package:dart_openai/dart_openai.dart';
 import 'package:language_picker/language_picker.dart';
 import 'package:language_picker/languages.dart';
@@ -43,7 +44,12 @@ class CreateScreenState extends State<CreateScreen> {
     "beef tendor",
     "turkey bacon",
     "pork ribs",
+    "pork belly",
+    "shrimp",
+    "fish fillet",
+    "smocked salmon",
     "egg",
+    "tofu(firmed)",
   ];
   List<String> ingredients_vege = [
     "tomato",
@@ -53,7 +59,8 @@ class CreateScreenState extends State<CreateScreen> {
     "pepper",
     "cucumber",
     "califlower",
-    "zuchinni"
+    "zuchinni",
+    "eggplant",
   ];
   List<String> ingredients_carb = [
     "egg noodle",
@@ -64,10 +71,54 @@ class CreateScreenState extends State<CreateScreen> {
     "corn",
     "sweet potato",
     "pumpkin",
-    "gnocchi"
+    "gnocchi",
+    "bread",
+    "bagel",
+    "baguette",
+    "pie crust",
   ];
   List<String> selectedIngredients = [];
+  List<String> dropdownItemList1_cuisine = [
+    "No Preference",
+    "Asian",
+    "Italian",
+    "Mexican",
+    "Chinese",
+    "Korean",
+    "Thai",
+  ];
 
+  List<String> dropdownItemList2_cooking_ethod = [
+    "No Preference",
+    "Pan Fry",
+    "Steam",
+    "Air Fry",
+    "Oven"
+  ];
+
+  List<String> dropdownItemList3_dish_type = [
+    "No Preference",
+    "Breakfast",
+    "Lunch",
+    "Dinner",
+    "Dessert",
+    "Quick Meal"
+  ];
+
+  List<String> dropdownItemList4_restriction = [
+    "No Restriction",
+    "Vegetarian",
+    "Low-Carb/Keto",
+  ];
+
+  List<String> dropdownItemList5_servingsize = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+  ];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -95,15 +146,16 @@ class CreateScreenState extends State<CreateScreen> {
             fontWeight: FontWeight.bold,
             fontFamily: "Outfit"),
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.more_horiz),
-            color: Colors.blueGrey,
-            splashColor: appTheme.orange_primary,
-            tooltip: 'More Recipe Settings',
-            onPressed: () {
-              _buildRecipeSetting(context);
-            },
-          ),
+          //Testing:for UX
+          // IconButton(
+          //   icon: const Icon(Icons.more_horiz),
+          //   color: Colors.blueGrey,
+          //   splashColor: appTheme.orange_primary,
+          //   tooltip: 'More Recipe Settings',
+          //   onPressed: () {
+          //     _buildRecipeSetting(context);
+          //   },
+          // ),
           TextButton(
             child: Text(
               "Generate",
@@ -137,28 +189,185 @@ class CreateScreenState extends State<CreateScreen> {
                                 //   alignment: Alignment.topRight,
                                 //   child: (_buildLanguagePicker(context)),
                                 // ),
-                                Positioned(
-                                  top: 60, // Adjust this value as needed
-                                  left: 0,
-                                  right: 0,
-                                  bottom: 20,
-                                  child: Column(
-                                    children: [
-                                      Text("Your selections:"),
-                                      Text(selectedCuisine),
-                                      Text(selectedCookingMethod),
-                                      Text(selectedDishType),
-                                      Text(selectedDietaryRestriction),
-                                      Text(selectedServingSize),
+
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: appTheme.gray700,
+                                    borderRadius: BorderRadius.circular(
+                                      20.h,
+                                    ),
+                                  ),
+                                  child: GridView.count(
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    // padding:  EdgeInsets.all(2),
+                                    crossAxisSpacing: 15,
+                                    mainAxisSpacing: 1,
+                                    crossAxisCount: 2,
+                                    children: <Widget>[
+                                      cuisineStyle(context),
+                                      cookingMethod(context),
+                                      dishType(context),
+                                      dietaryRestriction(context),
+                                      servingSize(context),
+                                      //add number of dishes as an option
                                     ],
                                   ),
                                 ),
+
                                 _buildIngredientInputSection(context),
                                 SizedBox(height: 40.v),
                               ]))),
                 ]))),
       ]),
     ));
+  }
+
+  Widget cuisineStyle(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Cuisine Style",
+            style: TextStyle(
+                color: Colors.white, fontSize: 10, fontFamily: "Outfit"),
+          ),
+          SizedBox(height: 3),
+          CustomDropDown(
+            // hintText: "Cuisine Style",
+            hintText: dropdownItemList1_cuisine.first,
+            // width: MediaQuery.of(context).size.width *
+            //     0.40,
+
+            hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
+            items: dropdownItemList1_cuisine,
+            onChanged: (value) {
+              setState(() {
+                selectedCuisine = value;
+              });
+              // _updateSelections();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget cookingMethod(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Cooking Method",
+            style: TextStyle(
+                color: Colors.white, fontSize: 10, fontFamily: "Outfit"),
+          ),
+          SizedBox(height: 3),
+          CustomDropDown(
+            hintText: dropdownItemList2_cooking_ethod.first,
+            hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
+            items: dropdownItemList2_cooking_ethod,
+            onChanged: (value) {
+              setState(() {
+                selectedCookingMethod = value;
+              });
+              // _updateSelections();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget dishType(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Dish Type",
+            style: TextStyle(
+                color: Colors.white, fontSize: 10, fontFamily: "Outfit"),
+          ),
+          SizedBox(height: 3),
+          CustomDropDown(
+            hintText: dropdownItemList3_dish_type.first,
+            hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
+            items: dropdownItemList3_dish_type,
+            onChanged: (value) {
+              setState(() {
+                selectedDishType = value;
+              });
+              // _updateSelections();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget dietaryRestriction(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Dietary Restriction",
+            style: TextStyle(
+                color: Colors.white, fontSize: 10, fontFamily: "Outfit"),
+          ),
+          SizedBox(height: 3),
+          CustomDropDown(
+            hintText: dropdownItemList4_restriction.first,
+            hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
+            items: dropdownItemList4_restriction,
+            onChanged: (value) {
+              setState(() {
+                selectedDietaryRestriction = value;
+              });
+              // _updateSelections();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget servingSize(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Serving Size",
+            style: TextStyle(
+                color: Colors.white, fontSize: 10, fontFamily: "Outfit"),
+          ),
+          SizedBox(height: 3),
+          CustomDropDown(
+            hintText: dropdownItemList5_servingsize.first,
+            hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
+            items: dropdownItemList5_servingsize,
+            onChanged: (value) {
+              setState(() {
+                selectedServingSize = value;
+              });
+              // _updateSelections();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildLanguagePicker(BuildContext context) {
@@ -414,92 +623,25 @@ class CreateScreenState extends State<CreateScreen> {
         selectedServingSize = result['dietaryRestriction'] ?? '';
       });
     }
+    // else {
+    //   setState(() {
+    //     selectedCuisine = 'Asian';
+    //     selectedCookingMethod = 'Pan Fry';
+    //     selectedDishType = 'Dinner';
+    //     selectedDietaryRestriction = 'No Restriction';
+    //     selectedServingSize = '2';
+    //   });
+    // }
   }
 
-  // void _buildRecipeSetting(BuildContext context) {
-  //   showModalBottomSheet(
-  //       context: context,
-  //       builder: (BuildContext bc) {
-  //         return Container(
-  //           child: Container(
-  //             height: MediaQuery.of(context).size.height * 0.60,
-  //             color: appTheme.green_primary,
-  //             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-  //               Padding(
-  //                 padding: EdgeInsets.symmetric(
-  //                     horizontal: 16.0,
-  //                     vertical: 16.0), // Adjust the value as needed
-  //                 child: Row(children: <Widget>[
-  //                   Text("Set My Cooking Preference",
-  //                       style: TextStyle(
-  //                           color: Colors.white,
-  //                           fontSize: 16.fSize,
-  //                           fontFamily: 'Outfit',
-  //                           fontWeight: FontWeight.w600)),
-  //                   Spacer(),
-  //                   IconButton(
-  //                       onPressed: () {
-  //                         Navigator.of(context).pop();
-  //                       },
-  //                       icon: Icon(Icons.arrow_drop_down_circle,
-  //                           color: Colors.white)),
-  //                 ]),
-  //               ),
-  //               SizedBox(height: 24.v),
-  //               CustomDropDown(
-  //                 // dropDownKey: dropDownKey,
-  //                 width: MediaQuery.of(context).size.width * 0.60,
-  //                 hintText: "Cuisine Style",
-  //                 hintStyle:
-  //                     TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-  //                 items: dropdownItemList1_cuisine,
-  //                 onChanged: (value) {
-  //                   setState(() {
-  //                     selectedCuisine = value;
-  //                   });
-  //                 },
-  //               ),
-  //               SizedBox(height: 24.v),
-  //               CustomDropDown(
-  //                   hintText: "Cooking Method",
-  //                   hintStyle:
-  //                       TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-  //                   width: MediaQuery.of(context).size.width * 0.60,
-  //                   items: dropdownItemList2_cooking_ethod,
-  //                   onChanged: (value) {
-  //                     setState(() {
-  //                       selectedCookingMethod = value;
-  //                     });
-  //                   }),
-  //               SizedBox(height: 24.v),
-  //               CustomDropDown(
-  //                   hintText: "Dish Type",
-  //                   width: MediaQuery.of(context).size.width * 0.60,
-  //                   hintStyle:
-  //                       TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-  //                   items: dropdownItemList3_dish_type,
-  //                   onChanged: (value) {
-  //                     setState(() {
-  //                       selectedDishType = value;
-  //                     });
-  //                   }),
-  //               SizedBox(height: 24.v),
-  //               CustomDropDown(
-  //                   hintText: "Dietary Restriction",
-  //                   width: MediaQuery.of(context).size.width * 0.60,
-  //                   hintStyle:
-  //                       TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-  //                   items: dropdownItemList4_restriction,
-  //                   onChanged: (value) {
-  //                     setState(() {
-  //                       selectedDietaryRestriction = value;
-  //                     });
-  //                   }),
-  //               SizedBox(height: 24.v)
-  //             ]),
-  //           ),
-  //         );
-  //       });
+  // void _updateSelections() {
+  //   widget.onSelectionChanged({
+  //     'cuisine': selectedCuisine,
+  //     'cookingMethod': selectedCookingMethod,
+  //     'dishType': selectedDishType,
+  //     'dietaryRestriction': selectedDietaryRestriction,
+  //     'servingsize': selectedServingSize,
+  //   });
   // }
 
   sendPrompt() async {
@@ -540,9 +682,10 @@ class CreateScreenState extends State<CreateScreen> {
     ];
     final completion = await OpenAI.instance.chat
         .create(model: 'gpt-3.5-turbo', messages: requestMessages);
-    print(completion);
+
     setState(() {
       resultCompletion = completion.choices.first.message.content;
+      log(resultCompletion);
       // atomInputContainerController.clear();
       // selectedIngredients.clear();
     });
@@ -623,72 +766,3 @@ class CreateScreenState extends State<CreateScreen> {
 //       ],
 //     );
 //   }
-
-//   void _buildRecipeSetting(BuildContext context) {
-//     showModalBottomSheet(
-//         context: context,
-//         builder: (BuildContext bc) {
-//           return Container(
-//             child: Container(
-//               height: MediaQuery.of(context).size.height * 0.60,
-//               color: appTheme.green_primary,
-//               child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-//                 Padding(
-//                   padding: EdgeInsets.symmetric(
-//                       horizontal: 16.0,
-//                       vertical: 16.0), // Adjust the value as needed
-//                   child: Row(children: <Widget>[
-//                     Text("Set My Cooking Preference",
-//                         style: TextStyle(
-//                             color: Colors.white,
-//                             fontSize: 16.fSize,
-//                             fontFamily: 'Outfit',
-//                             fontWeight: FontWeight.w600)),
-//                     Spacer(),
-//                     IconButton(
-//                         onPressed: () {
-//                           Navigator.of(context).pop();
-//                         },
-//                         icon: Icon(Icons.arrow_drop_down_circle,
-//                             color: Colors.white)),
-//                   ]),
-//                 ),
-//                 SizedBox(height: 24.v),
-//                 CustomDropDown(
-//                     width: MediaQuery.of(context).size.width * 0.60,
-//                     hintText: "Cuisine Style",
-//                     hintStyle:
-//                         TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-//                     items: dropdownItemList1_cuisine,
-//                     onChanged: (value) {}),
-//                 SizedBox(height: 24.v),
-//                 CustomDropDown(
-//                     hintText: "Cooking Method",
-//                     hintStyle:
-//                         TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-//                     width: MediaQuery.of(context).size.width * 0.60,
-//                     items: dropdownItemList2_cooking_ethod,
-//                     onChanged: (value) {}),
-//                 SizedBox(height: 24.v),
-//                 CustomDropDown(
-//                     hintText: "Dish Type",
-//                     width: MediaQuery.of(context).size.width * 0.60,
-//                     hintStyle:
-//                         TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-//                     items: dropdownItemList3_dish_type,
-//                     onChanged: (value) {}),
-//                 SizedBox(height: 24.v),
-//                 CustomDropDown(
-//                     hintText: "Dietary Restriction",
-//                     width: MediaQuery.of(context).size.width * 0.60,
-//                     hintStyle:
-//                         TextStyle(fontSize: 12.fSize, fontFamily: "Outfit"),
-//                     items: dropdownItemList4_restriction,
-//                     onChanged: (value) {}),
-//                 SizedBox(height: 24.v)
-//               ]),
-//             ),
-//           );
-//         });
-//   }
-// }

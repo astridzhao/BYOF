@@ -96,7 +96,7 @@ class MyfridgePageState extends State<MyfridgePage> {
                 fit: BoxFit.fill),
           ),
           child: SingleChildScrollView(
-            padding: EdgeInsets.only(top: 20),
+            // padding: EdgeInsets.only(top: 20),
             child: Column(
               children: [
                 // buildSectionHeader(context, title: "Fiber", seeAllText: "See all"),

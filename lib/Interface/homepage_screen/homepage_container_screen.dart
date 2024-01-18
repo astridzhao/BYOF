@@ -1,5 +1,6 @@
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/homepage_page.dart';
 import 'package:astridzhao_s_food_app/Interface/_favorites_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/myfridge_screen/_myfridge_screen.dart';
@@ -17,6 +18,32 @@ class HomepageContainerScreen extends StatefulWidget {
 
 class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+  String resultCompletion = """{
+   "Title":"Asian Baked Chicken with Mushroom",
+   "Ingredient List":[
+      "2 chicken breasts",
+      "1 onion, sliced",
+      "1 cup mushrooms, sliced",
+      "2 tablespoons soy sauce",
+      "1 tablespoon hoisin sauce",
+      "1 tablespoon honey",
+      "1 tablespoon sesame oil",
+      "1 teaspoon garlic powder",
+      "1 teaspoon ginger powder",
+      "Salt and pepper, to taste"
+   ],
+   "Step-by-Step Instructions":[
+      "Preheat the oven to 375°F (190°C).",
+      "In a small bowl, mix together the soy sauce, hoisin sauce, honey, sesame oil, garlic powder, ginger powder, salt, and pepper.",
+      "Place the chicken breasts in a baking dish and pour the sauce mixture over them, making sure to coat each breast evenly.",
+      "Add the sliced onions and mushrooms around the chicken in the baking dish.",
+      "Cover the dish with aluminum foil and bake in the preheated oven for 25-30 minutes, or until the chicken is cooked through.",
+      "Remove the foil and continue baking for an additional 5 minutes to allow the chicken to brown slightly.",
+      "Serve the Asian baked chicken with mushroom over rice or alongside steamed vegetables."
+   ],
+   "Expected Cooking Time":40,
+   "Note":"You can adjust the cooking time slightly depending on the thickness of the chicken breasts."
+}""";
   // Function to navigate to CreateScreen
   void navigateToCreateScreen(BuildContext context) {
     Navigator.of(context).push(
@@ -41,7 +68,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
             notchedRadius: 20,
             centerNotched: false,
             fabIcon: Icon(Icons.emoji_events),
-            fabBackGroundColor:appTheme.yellow_secondary,
+            fabBackGroundColor: appTheme.yellow_secondary,
             bottomItems: <BottomBarItem>[
               BottomBarItem(
                 bottomItemSelectedColor: appTheme.yellow_secondary,
@@ -60,6 +87,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
                 label: 'Create',
                 selectedIcon: Icons.dinner_dining_rounded,
                 screen: CreateScreen(),
+                // screen: GenerationScreen(resultCompletion: resultCompletion),
               ),
               BottomBarItem(
                 bottomItemSelectedColor: appTheme.yellow_secondary,

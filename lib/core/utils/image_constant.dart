@@ -29,6 +29,10 @@ class ImageConstant {
 
   static String imgLock = '$imagePath/img_lock.svg';
 
+  static String imgClasicAlarmClock = '$imagePath/img_clasic_alarm_clock.png';
+
+  static String mushroom = "$imagePath/mushroom.png";
+
   static String imgLockOnsecondarycontainer =
       '$imagePath/img_lock_onsecondarycontainer.svg';
 
