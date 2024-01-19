@@ -1,9 +1,11 @@
 import 'dart:developer';
 
 import 'package:astridzhao_s_food_app/core/app_export.dart';
+import 'package:astridzhao_s_food_app/database/database.dart';
+import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/constant.dart';
+import 'package:astridzhao_s_food_app/key/api_key.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/RecipeSettingBottomSheet.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
 import 'package:dart_openai/dart_openai.dart';
@@ -14,6 +16,8 @@ import 'package:language_picker/languages.dart';
 
 // ignore_for_file: must_be_immutable
 class CreateScreen extends StatefulWidget {
+  // final RecipesCompanion recipe;
+
   CreateScreen({
     Key? key,
   }) : super(key: key);
@@ -24,18 +28,17 @@ class CreateScreen extends StatefulWidget {
 class CreateScreenState extends State<CreateScreen> {
   // Create a GlobalKey
   // final GlobalKey<_CustomDropDownState> dropDownKey = GlobalKey<_CustomDropDownState>();
-
+  String resultCompletion = "";
   TextEditingController atomInputContainerController = TextEditingController();
 
   String selectedLangauge = Languages.english.name;
-  String resultCompletion = "";
 
-  // Variables to hold the selected preferences
-  String selectedCuisine = "";
-  String selectedCookingMethod = "";
-  String selectedDishType = "";
-  String selectedDietaryRestriction = "";
-  String selectedServingSize = "";
+  // // Variables to hold the selected preferences
+  // String selectedCuisine = "";
+  // String selectedCookingMethod = "";
+  // String selectedDishType = "";
+  // String selectedDietaryRestriction = "";
+  // String selectedServingSize = "";
 
   List<String> ingredients_protein = [
     "chicken breast",
@@ -77,6 +80,7 @@ class CreateScreenState extends State<CreateScreen> {
     "baguette",
     "pie crust",
   ];
+
   List<String> selectedIngredients = [];
   List<String> dropdownItemList1_cuisine = [
     "No Preference",
@@ -119,6 +123,21 @@ class CreateScreenState extends State<CreateScreen> {
     "5",
     "6",
   ];
+
+  // Variables to hold the selected preferences
+  String selectedCuisine = "No Preference";
+  String selectedCookingMethod = "No Preference";
+  String selectedDishType = "No Preference";
+  String selectedDietaryRestriction = "No Restriction";
+  String selectedServingSize = "1";
+
+  String get contentUser =>
+      "Give me a Recipe following these cooking preferences: "
+      "\n1. Cuisine style should be $selectedCuisine, so use some special sauce/spice. "
+      "\n2. Dish type should be $selectedDishType. And the cooking method should be $selectedCookingMethod"
+      "\n3. Be mindful of the user have $selectedDietaryRestriction diet restriction."
+      "\n4. The serving size is $selectedServingSize";
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -163,7 +182,26 @@ class CreateScreenState extends State<CreateScreen> {
                   fontFamily: "Outfit", color: appTheme.green_primary),
             ),
             onPressed: () async {
+              // Show the dialog
+              showDialog(
+                context: context,
+                barrierDismissible:
+                    false, // User must tap button to close dialog
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: Row(
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(width: 20),
+                        Text("Crafting a culinary masterpiece..."),
+                      ],
+                    ),
+                  );
+                },
+              );
               await sendPrompt();
+              // Close the dialog
+              Navigator.of(context).pop();
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
                       GenerationScreen(resultCompletion: resultCompletion)));
@@ -192,7 +230,7 @@ class CreateScreenState extends State<CreateScreen> {
 
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
+                                      horizontal: 20, vertical: 20),
                                   decoration: BoxDecoration(
                                     color: appTheme.gray700,
                                     borderRadius: BorderRadius.circular(
@@ -645,7 +683,7 @@ class CreateScreenState extends State<CreateScreen> {
   // }
 
   sendPrompt() async {
-    OpenAI.apiKey = apiKey;
+    OpenAI.apiKey = azapiKey;
     final systemMessage = OpenAIChatCompletionChoiceMessageModel(
       content: "As a recipe-generating assistant, create a recipe by using " +
           selectedIngredients.join() +
@@ -659,19 +697,21 @@ class CreateScreenState extends State<CreateScreen> {
 
     // the user message that will be sent to the request.
     final userMessage = OpenAIChatCompletionChoiceMessageModel(
-      content: "Give me a Recipe following these cooking preference: " +
-          "\1. Cuisine style should be " +
-          selectedCuisine +
-          ", so use some special sauce/spice. " +
-          "\2. Dish type should be " +
-          selectedDishType +
-          ". And the cooking method should be " +
-          selectedCookingMethod +
-          "\3. Be mindful of the user have " +
-          selectedDietaryRestriction +
-          " diet restriction." +
-          "\4. The serving size is " +
-          selectedServingSize,
+      // content: "Give me a Recipe following these cooking preference: " +
+      //     "\1. Cuisine style should be " +
+      //     selectedCuisine +
+      //     ", so use some special sauce/spice. " +
+      //     "\2. Dish type should be " +
+      //     selectedDishType +
+      //     ". And the cooking method should be " +
+      //     selectedCookingMethod +
+      //     "\3. Be mindful of the user have " +
+      //     selectedDietaryRestriction +
+      //     " diet restriction." +
+      //     "\4. The serving size is " +
+      //     selectedServingSize,
+      content: contentUser,
+
       role: OpenAIChatMessageRole.user,
     );
 
@@ -685,7 +725,9 @@ class CreateScreenState extends State<CreateScreen> {
 
     setState(() {
       resultCompletion = completion.choices.first.message.content;
+
       log(resultCompletion);
+      log(contentUser);
       // atomInputContainerController.clear();
       // selectedIngredients.clear();
     });

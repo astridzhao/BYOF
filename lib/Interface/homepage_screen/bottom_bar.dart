@@ -150,9 +150,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 ),
           ),
         ),
-
         bottomNavigationBar: BottomAppBar(
-          height: MediaQuery.of(context).size.height *0.09,
+          height: MediaQuery.of(context).size.height * 0.09,
           color: appTheme.green_primary,
           shape: widget.centerNotched
               ? CenterNotchedShape(notchRadius: widget.notchedRadius!)
@@ -192,7 +191,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                             }
                           },
                           child: SizedBox(
-                            height: widget.bottomNavItemHeight ?? 40,
+                            height: widget.bottomNavItemHeight ?? 43,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
@@ -237,8 +236,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                                                 .bottomItemSelectedColor
                                             : widget.bottomItems[_pageIndex]
                                                     .bottomItemUnSelectedColor ??
-                                                Colors.grey,
+                                                Color.fromARGB(255, 62, 61, 61),
                                       ),
+                                ),
+                                SizedBox(
+                                  height: 2,
                                 ),
                                 SizedBox(
                                   height: widget.bottomNavItemLabelHeight ?? 15,
@@ -261,7 +263,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                                               .bottomItemSelectedColor
                                           : widget.bottomItems[_pageIndex]
                                                   .bottomItemUnSelectedColor ??
-                                              Colors.grey,
+                                              Color.fromARGB(255, 62, 61, 61),
                                       fontWeight:
                                           widget.bottomItemLabelFontWeight ??
                                               FontWeight.w600,

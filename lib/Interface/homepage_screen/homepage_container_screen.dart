@@ -102,7 +102,25 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
     );
   }
 
-  /// Section Widget
+  ///Handling page based on route
+  Widget getCurrentPage(String currentRoute) {
+    switch (currentRoute) {
+      case AppRoutes.homepagePage:
+        return HomepagePage();
+      case AppRoutes.createScreen:
+        return CreateScreen();
+      case AppRoutes.myFavoriteScreen:
+        return FavoriteRecipePage();
+      case AppRoutes.myFridgeScreen:
+        return MyfridgePage();
+      default:
+        return HomepagePage();
+    }
+  }
+}
+
+
+/// Section Widget
 //   Widget _buildBottomBar(BuildContext context) {
 //     return CustomBottomBar(onChanged: (BottomBarEnum type) {
 //       Navigator.pushNamed(navigatorKey.currentContext!, getCurrentRoute(type));
@@ -137,20 +155,3 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
 //       ),
 //     );
 //   }
-
-  ///Handling page based on route
-  Widget getCurrentPage(String currentRoute) {
-    switch (currentRoute) {
-      case AppRoutes.homepagePage:
-        return HomepagePage();
-      case AppRoutes.createScreen:
-        return CreateScreen();
-      case AppRoutes.myFavoriteScreen:
-        return FavoriteRecipePage();
-      case AppRoutes.myFridgeScreen:
-        return MyfridgePage();
-      default:
-        return HomepagePage();
-    }
-  }
-}
