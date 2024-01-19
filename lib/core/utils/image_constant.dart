@@ -69,4 +69,8 @@ class ImageConstant {
   static String imgManageAccount = '$imagePath/manage_accounts.svg';
 
   static String imgCollection = '$imagePath/collection.svg';
+
+  static String imggenerationpage_ingredient = '$imagePath/generate2.png';
+
+  static String imggenerationpage_notes = '$imagePath/img_image_19.png';
 }

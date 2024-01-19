@@ -14,6 +14,7 @@ class GenerationScreen extends StatefulWidget {
 
   GenerationScreen({Key? key, required this.resultCompletion})
       : recipe = RecipeFromLLMJson(resultCompletion),
+        // recipe_from_favorite ,
         super(key: key);
 
   @override
@@ -33,31 +34,31 @@ class _GenerationScreenState extends State<GenerationScreen> {
           children: [
             SingleChildScrollView(
               scrollDirection: Axis.vertical,
-              padding: EdgeInsets.only(top: 20.v),
+              padding: EdgeInsets.only(top: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   title(context),
-                  SizedBox(height: 5.v),
+                  SizedBox(height: 5),
                   saving_summery(context),
-                  SizedBox(height: 20.v),
+                  SizedBox(height: 20),
                   Divider(
-                    indent: 1.h,
+                    indent: 1,
                     color: appTheme.green_primary,
                   ),
-                  SizedBox(height: 18.v),
+                  SizedBox(height: 18),
                   group_info(context),
                   instruction(context),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 20),
                     width: MediaQuery.of(context).size.width * 0.9,
                     child: Divider(
-                      indent: 1.h,
+                      indent: 1,
                     ),
                   ),
-                  SizedBox(height: 13.v),
+                  SizedBox(height: 13),
                   _buildTimerControls(context),
-                  SizedBox(height: 30.v),
+                  SizedBox(height: 30),
                   bottomSettingBar(context),
                   SizedBox(height: 40),
                 ],
@@ -116,6 +117,16 @@ class _GenerationScreenState extends State<GenerationScreen> {
           children: [
             Column(
               children: [
+                // CustomImageView(
+                //   height: 40,
+                //   width: 40,
+                //   imagePath: ImageConstant.imggenerationpage_ingredient,
+                //   margin: EdgeInsets.only(
+                //     top: 5,
+                //     bottom: 5,
+                //   ),
+                // ),
+                // Spacer(),
                 Container(
                   margin: EdgeInsets.fromLTRB(10, 0, 0, 10),
                   padding: EdgeInsets.fromLTRB(0, 0, 5, 15),
@@ -164,19 +175,36 @@ class _GenerationScreenState extends State<GenerationScreen> {
           ],
         ),
         //child 2: notes
+        // Column(
+        //   children: [
+
         Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-            padding: EdgeInsets.fromLTRB(10, 10, 5, 15),
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.width * 0.4,
-            decoration: AppDecoration.fillYellow.copyWith(
-              borderRadius: BorderRadiusStyle.roundedBorder10,
-            ),
-            child: Text(widget.recipe.notes.value.toString(),
-                style: TextStyle(
-                    fontFamily: "Outfit",
-                    fontSize: 12.fSize,
-                    fontWeight: FontWeight.normal))),
+          margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
+          padding: EdgeInsets.fromLTRB(10, 10, 5, 15),
+          height: MediaQuery.of(context).size.height * 0.3,
+          width: MediaQuery.of(context).size.width * 0.4,
+          decoration: AppDecoration.fillYellow.copyWith(
+            borderRadius: BorderRadiusStyle.roundedBorder10,
+          ),
+          child: Column(
+            children: [
+              CustomImageView(
+                height: 40,
+                width: 40,
+                imagePath: ImageConstant.imggenerationpage_notes,
+                margin: EdgeInsets.only(bottom: 5, top: 2),
+              ),
+              Text(widget.recipe.notes.value.toString(),
+                  style: TextStyle(
+                      fontFamily: "Outfit",
+                      fontSize: 12.fSize,
+                      fontWeight: FontWeight.normal)),
+            ],
+          ),
+        ),
+
+        //   ],
+        // ),
       ],
     );
   }
