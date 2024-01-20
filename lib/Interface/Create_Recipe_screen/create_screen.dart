@@ -59,6 +59,8 @@ class CreateScreenState extends State<CreateScreen> {
     "onion",
     "brocolli",
     "mushroom",
+    "cabbage",
+    "lettuce",
     "pepper",
     "cucumber",
     "califlower",
@@ -191,7 +193,11 @@ class CreateScreenState extends State<CreateScreen> {
                   return AlertDialog(
                     content: Row(
                       children: [
-                        CircularProgressIndicator(),
+                        SizedBox(
+                          width: 20,
+                          height: 20, // Adjust the height as needed
+                          child: CircularProgressIndicator(),
+                        ),
                         SizedBox(width: 20),
                         Text("Crafting a culinary masterpiece..."),
                       ],
@@ -691,7 +697,8 @@ class CreateScreenState extends State<CreateScreen> {
           " Each objects are respectively named as Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, and Note." +
           " The result JSON objetcs should be in this format: " +
           "{Title: string, Ingredient List: list, Step-by-Step Instructions: list, Expected Cooking Time: integer, Note: String}." +
-          " Additionally, the unit of Expected Cooking Time is minutes",
+          " Additionally, the unit of Expected Cooking Time is minutes." +
+          " Also, make your recipe can be as similar as to some known dishes. ",
       role: OpenAIChatMessageRole.assistant,
     );
 

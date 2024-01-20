@@ -488,6 +488,10 @@ class _GenerationScreenState extends State<GenerationScreen> {
             onPressed: () async {
               // Add your favorite functionality here
               log(widget.recipe.toString());
+              // style:
+              TextButton.styleFrom(
+                foregroundColor: Colors.pink,
+              );
               await recipesDao.into(recipesDao.recipes).insert(widget.recipe);
             },
             icon: Icon(Icons.favorite_border_outlined),
