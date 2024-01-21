@@ -41,7 +41,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
     final image = await OpenAI.instance.image.create(
       n: 1,
       prompt:
-          'Using the $recipe to generate a corresponding dish page. The style should be cute and cartoon.',
+          'Using the $recipe to imagine a related dish image for a restaurant menu. The style should be cute and cartoon, and make the dish looks tasty to attract customers.',
     );
 
     setState(() {

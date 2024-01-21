@@ -38,5 +38,6 @@ RecipesCompanion RecipeFromLLMJson(String llmResult) {
       instructions: List<String>.from(decoded['Step-by-Step Instructions']),
       cookTime: decoded['Expected Cooking Time'] as int,
       notes: decoded['Note'] as String,
+      // image: decoded['Image Path'] as String,
       saveAt: DateTime.now().millisecondsSinceEpoch);
 }
