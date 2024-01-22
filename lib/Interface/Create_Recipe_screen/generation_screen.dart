@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
@@ -7,6 +8,9 @@ import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
+import 'package:astridzhao_s_food_app/key/api_key.dart';
+import 'package:dart_openai/dart_openai.dart';
+import 'dart:async';
 
 class GenerationScreen extends StatefulWidget {
   final String resultCompletion;
@@ -24,6 +28,10 @@ class GenerationScreen extends StatefulWidget {
 class _GenerationScreenState extends State<GenerationScreen> {
   IconData copyIcon = Icons.content_copy_rounded;
   RecipesDao recipesDao = RecipesDao(DatabaseService().database);
+  String generatedImageUrls = "";
+  Color enableColor = appTheme.green_primary;
+  Color disableColor = Colors.grey; //your color
+  int index_color = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +50,18 @@ class _GenerationScreenState extends State<GenerationScreen> {
                   SizedBox(height: 5),
                   saving_summery(context),
                   SizedBox(height: 20),
-                  Divider(
-                    indent: 1,
-                    color: appTheme.green_primary,
+                  //divider
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Divider(
+                      indent: 1,
+                    ),
                   ),
                   SizedBox(height: 18),
                   group_info(context),
                   instruction(context),
+                  //divider
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 20),
                     width: MediaQuery.of(context).size.width * 0.9,
@@ -70,6 +83,24 @@ class _GenerationScreenState extends State<GenerationScreen> {
     );
   }
 
+  Future<void> generateImage(String recipe) async {
+    OpenAI.apiKey = azapiKey;
+    final image = await OpenAI.instance.image.create(
+      n: 1,
+      prompt:
+          'Using the $recipe to imagine a related dish image for a restaurant menu. The style should be cute and cartoon, and make the dish looks tasty to attract customers.',
+    );
+
+    setState(() {
+      for (int index = 0; index < image.data.length; index++) {
+        final currentItem = image.data[index];
+        generatedImageUrls = currentItem.url.toString();
+        print(currentItem.url);
+      }
+      ;
+    });
+  }
+
   PreferredSizeWidget customeAppbar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
@@ -85,22 +116,82 @@ class _GenerationScreenState extends State<GenerationScreen> {
           );
         },
       ),
-      title: Text(
-        "YOUR RECIPE IS READY",
-        style: TextStyle(
-            fontFamily: "Outfit",
-            fontSize: 14.fSize,
-            fontWeight: FontWeight.w500),
+      // title: Text(
+      //   "YOUR RECIPE IS READY",
+      //   style: TextStyle(
+      //       fontFamily: "Outfit",
+      //       fontSize: 14.fSize,
+      //       fontWeight: FontWeight.w500),
+      // ),
+      actions: [
+        // TODO(astrid): save image locally + get local url
+        // final imageURL =
+        //     "path-to-image";
+        TextButton.icon(
+          icon: Icon(Icons.question_mark_rounded),
+          label: Text("Want to see what it looks like?",
+              style: TextStyle(
+                  color: Color.fromARGB(255, 174, 73, 6),
+                  fontFamily: "Outfit",
+                  fontSize: 13)),
+          onPressed: () async {
+            await generateImage(widget.recipe.ingredients.toString());
+            log(widget.recipe.ingredients.toString());
+
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => popupDialogImage(context),
+            );
+            log(generatedImageUrls);
+          },
+        ),
+      ],
+    );
+  }
+
+  // // class Tooltipimage extends State<GenerationScreen> {
+  // Widget Tooltipimage(BuildContext context) {
+  //   return Tooltip(
+  //     message: 'Click to generate',
+  //     child: Text("Do you want to see what it looks like?",
+  //         style: TextStyle(
+  //             color: Color.fromARGB(255, 174, 73, 6),
+  //             fontFamily: "Outfit",
+  //             fontSize: 13)),
+  //   );
+  // }
+
+  Widget popupDialogImage(BuildContext context) {
+    return new AlertDialog(
+      // title: const Text('Your dish looks like...'),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Image.network(generatedImageUrls),
+        ],
       ),
+      actions: <Widget>[
+        new TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            'Close',
+            style: TextStyle(color: Colors.black54),
+          ),
+        ),
+      ],
     );
   }
 
   /// Section Widget
   Widget title(BuildContext context) {
     return Container(
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+        padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
         alignment: Alignment.center,
         child: Text(widget.recipe.title.value.toString(),
+            maxLines: 2,
             style: TextStyle(
                 fontFamily: "Outfit",
                 fontSize: 14.fSize,
@@ -230,7 +321,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
             ),
             Container(
               padding: EdgeInsets.only(top: 5),
-              height: 200,
+              height: 300,
               child: ListView.builder(
                 itemCount: 1,
                 itemBuilder: (context, index) {
@@ -477,8 +568,15 @@ class _GenerationScreenState extends State<GenerationScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
           child: TextButton.icon(
+            icon: Icon(Icons.favorite_border_outlined),
+            label: Text(
+              "Add to My Favorite",
+              style: TextStyle(
+                fontFamily: "Outfit",
+              ),
+            ),
             style: TextButton.styleFrom(
-              backgroundColor: appTheme.green_primary,
+              backgroundColor: index_color == 1 ? disableColor : enableColor,
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(
                 horizontal: 15.0,
@@ -487,16 +585,18 @@ class _GenerationScreenState extends State<GenerationScreen> {
             ),
             onPressed: () async {
               // Add your favorite functionality here
+              index_color = 1;
+              log(generatedImageUrls);
+              //update recipecompanion column "imageURL" as the new generated URL
               log(widget.recipe.toString());
               await recipesDao.into(recipesDao.recipes).insert(widget.recipe);
+              log(widget.recipe.toString());
+              await (recipesDao.update(recipesDao.recipes)
+                    ..where((tbl) => tbl.id.equals(widget.recipe.id.value)))
+                  .write(RecipesCompanion(
+                      imageURL: drift.Value(generatedImageUrls)));
+              log(widget.recipe.imageURL.toString());
             },
-            icon: Icon(Icons.favorite_border_outlined),
-            label: Text(
-              "Add to My Favorite",
-              style: TextStyle(
-                fontFamily: "Outfit",
-              ),
-            ),
           ),
         ),
       ],

@@ -43,6 +43,7 @@ class CreateScreenState extends State<CreateScreen> {
   List<String> ingredients_protein = [
     "chicken breast",
     "chicken thigh",
+    "chicken wing",
     "beef brisket",
     "beef tendor",
     "turkey bacon",
@@ -53,17 +54,30 @@ class CreateScreenState extends State<CreateScreen> {
     "smocked salmon",
     "egg",
     "tofu(firmed)",
+    "slices cheese",
+    "string cheese"
   ];
   List<String> ingredients_vege = [
     "tomato",
     "onion",
     "brocolli",
     "mushroom",
+    "cabbage",
+    "spinach",
+    "baby spinach",
+    "lettuce",
     "pepper",
     "cucumber",
     "califlower",
     "zuchinni",
     "eggplant",
+    "carrot"
+  ];
+  List<String> ingredients_fruit = [
+    "apple",
+    "banana",
+    "strawberry",
+    "blueberry",
   ];
   List<String> ingredients_carb = [
     "egg noodle",
@@ -79,17 +93,31 @@ class CreateScreenState extends State<CreateScreen> {
     "bagel",
     "baguette",
     "pie crust",
+    "wrap"
+  ];
+  List<String> ingredients_others = [
+    "peanut butter",
+    "curry paste",
+    "milk",
+    "basil"
   ];
 
   List<String> selectedIngredients = [];
+
   List<String> dropdownItemList1_cuisine = [
     "No Preference",
     "Asian",
     "Italian",
     "Mexican",
+    "American",
+    "Indian",
     "Chinese",
     "Korean",
     "Thai",
+    "Japanese",
+    "German",
+    "French",
+    "Hungarian"
   ];
 
   List<String> dropdownItemList2_cooking_ethod = [
@@ -97,22 +125,28 @@ class CreateScreenState extends State<CreateScreen> {
     "Pan Fry",
     "Steam",
     "Air Fry",
-    "Oven"
+    "Oven",
+    "Boil",
+    "Blend"
   ];
 
   List<String> dropdownItemList3_dish_type = [
     "No Preference",
     "Breakfast",
-    "Lunch",
-    "Dinner",
+    "Lunch/Dinner",
+    "Baby Food",
     "Dessert",
-    "Quick Meal"
+    "Smoothie",
+    "Quick Meal",
+    "One-pot Meal",
+    "Low Calorie Meal"
   ];
 
   List<String> dropdownItemList4_restriction = [
     "No Restriction",
     "Vegetarian",
-    "Low-Carb/Keto",
+    "Vegan",
+    "Nuts Allergies"
   ];
 
   List<String> dropdownItemList5_servingsize = [
@@ -191,7 +225,11 @@ class CreateScreenState extends State<CreateScreen> {
                   return AlertDialog(
                     content: Row(
                       children: [
-                        CircularProgressIndicator(),
+                        SizedBox(
+                          width: 20,
+                          height: 20, // Adjust the height as needed
+                          child: CircularProgressIndicator(),
+                        ),
                         SizedBox(width: 20),
                         Text("Crafting a culinary masterpiece..."),
                       ],
@@ -486,6 +524,15 @@ class CreateScreenState extends State<CreateScreen> {
             )),
         SizedBox(height: 5),
         _buildButtonCarb(context),
+        SizedBox(height: 10),
+        Text("Choose Others",
+            textAlign: TextAlign.center,
+            softWrap: true,
+            style: TextStyle(
+              fontFamily: "Outfit",
+            )),
+        SizedBox(height: 5),
+        _buildButtonOthers(context),
       ],
     );
   }
@@ -547,6 +594,51 @@ class CreateScreenState extends State<CreateScreen> {
           crossAxisSpacing: 10),
       itemBuilder: (context, index) {
         String data = ingredients_vege[index];
+        bool isSelected = selectedIngredients.contains(data);
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 1),
+              textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
+              foregroundColor: Colors.white,
+              backgroundColor:
+                  isSelected ? Colors.grey : appTheme.green_primary),
+          onPressed: () {
+            setState(() {
+              if (selectedIngredients.contains(data)) {
+                // If the data is already selected, remove it
+                selectedIngredients.remove(data);
+              } else {
+                if (selectedIngredients.length < 5) {
+                  // If the data is not selected, add it
+                  selectedIngredients.add(data);
+                }
+              }
+              atomInputContainerController.text =
+                  selectedIngredients.join("  ");
+            });
+          },
+          child: Text(data,
+              textAlign: TextAlign.center,
+              softWrap: true,
+              style: TextStyle(
+                fontFamily: "Outfit",
+              )),
+        );
+      },
+    );
+  }
+
+  Widget _buildButtonOthers(BuildContext context) {
+    return GridView.builder(
+      shrinkWrap: true,
+      itemCount: ingredients_others.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisExtent: 40.v,
+          crossAxisCount: 3,
+          mainAxisSpacing: 10.0,
+          crossAxisSpacing: 10.0),
+      itemBuilder: (context, index) {
+        String data = ingredients_others[index];
         bool isSelected = selectedIngredients.contains(data);
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -661,26 +753,7 @@ class CreateScreenState extends State<CreateScreen> {
         selectedServingSize = result['dietaryRestriction'] ?? '';
       });
     }
-    // else {
-    //   setState(() {
-    //     selectedCuisine = 'Asian';
-    //     selectedCookingMethod = 'Pan Fry';
-    //     selectedDishType = 'Dinner';
-    //     selectedDietaryRestriction = 'No Restriction';
-    //     selectedServingSize = '2';
-    //   });
-    // }
   }
-
-  // void _updateSelections() {
-  //   widget.onSelectionChanged({
-  //     'cuisine': selectedCuisine,
-  //     'cookingMethod': selectedCookingMethod,
-  //     'dishType': selectedDishType,
-  //     'dietaryRestriction': selectedDietaryRestriction,
-  //     'servingsize': selectedServingSize,
-  //   });
-  // }
 
   sendPrompt() async {
     OpenAI.apiKey = azapiKey;
@@ -691,7 +764,8 @@ class CreateScreenState extends State<CreateScreen> {
           " Each objects are respectively named as Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, and Note." +
           " The result JSON objetcs should be in this format: " +
           "{Title: string, Ingredient List: list, Step-by-Step Instructions: list, Expected Cooking Time: integer, Note: String}." +
-          " Additionally, the unit of Expected Cooking Time is minutes",
+          " Additionally, the unit of Expected Cooking Time is minutes." +
+          " Also, make your recipe can be as similar as to some known dishes. ",
       role: OpenAIChatMessageRole.assistant,
     );
 

@@ -1,5 +1,5 @@
 /// Still WIP favorite screen.
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
@@ -7,10 +7,10 @@ import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/key/api_key.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
 import 'package:dart_openai/dart_openai.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'dart:developer';
 
 class FavoriteRecipePage extends StatefulWidget {
   const FavoriteRecipePage({Key? key}) : super(key: key);
@@ -22,6 +22,7 @@ class FavoriteRecipePage extends StatefulWidget {
 class FavoriteRecipePageState extends State<FavoriteRecipePage> {
   Future<List<Recipe>>? futureRecipes;
   final recipe_dao = RecipesDao(DatabaseService().database);
+
   Map<int, String> generatedImageUrls = {};
 
   @override
@@ -41,7 +42,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
     final image = await OpenAI.instance.image.create(
       n: 1,
       prompt:
-          'Using the $recipe to generate a corresponding dish page. The style should be cute and cartoon.',
+          'Using the $recipe to imagine a related dish image for a restaurant menu. The style should be cute and cartoon, and make the dish looks tasty to attract customers.',
     );
 
     setState(() {
@@ -103,7 +104,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                           "assets/images/img_image_23.png"
                         ];
                         // Randomly pick an index from your collection of local images
-                        final random = Random();
+                        final random = math.Random();
                         final randomImageIndex =
                             random.nextInt(localImages.length);
                         final randomImagePath = localImages[randomImageIndex];
@@ -166,12 +167,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                                                     horizontal: 15),
                                               ),
                                               onPressed: () {
-                                                // Remove the corresponding grid item
-                                                setState(() {
-                                                  recipes.removeAt(i);
-                                                  recipe_dao.delete(
-                                                      recipe_dao.recipes);
-                                                });
+                                                // view complete recipe
                                               },
                                               child: Text(
                                                 "View",
@@ -183,6 +179,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                                               ),
                                             ),
                                             SizedBox(width: 15),
+                                            // remove button
                                             ElevatedButton(
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: appTheme
@@ -191,8 +188,13 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                                                     horizontal: 15),
                                               ),
                                               onPressed: () {
-                                                // Remove the corresponding grid item
                                                 setState(() {
+                                                  (recipe_dao.delete(
+                                                          recipe_dao.recipes)
+                                                        ..where((tbl) => tbl.id
+                                                            .equals(
+                                                                recipes[i].id)))
+                                                      .go();
                                                   recipes.removeAt(i);
                                                 });
                                               },
@@ -228,22 +230,28 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                                                     return AlertDialog(
                                                       content: Row(
                                                         children: [
-                                                          CircularProgressIndicator(),
+                                                          SizedBox(
+                                                            width: 20,
+                                                            height:
+                                                                20, // Adjust the height as needed
+                                                            child:
+                                                                CircularProgressIndicator(),
+                                                          ),
                                                           SizedBox(width: 20),
                                                           Text(
-                                                              "Busy crafting a delightful dish image..."),
+                                                              "Crafting a delightful dish image..."),
                                                         ],
                                                       ),
                                                     );
                                                   },
                                                 );
-
-                                                Navigator.of(context).pop();
-
                                                 await generateImage(
                                                     i,
-                                                    recipe.instructions
+                                                    recipe.ingredients
                                                         .join('\n'));
+                                                Navigator.of(context).pop();
+                                                // recipe_dao.recipes.imageURL =
+                                                
                                               },
                                             )
                                           ],

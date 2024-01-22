@@ -19,6 +19,7 @@ class StringListConverter extends TypeConverter<List<String>, String> {
 
 @DataClassName('Recipe')
 class Recipes extends Table {
+  // columns from v1
   IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text()();
   TextColumn get ingredients => text().map(const StringListConverter())();
@@ -26,6 +27,9 @@ class Recipes extends Table {
   IntColumn get cookTime => integer()();
   TextColumn get notes => text()();
   IntColumn get saveAt => integer()();
+
+  // column from v2
+  TextColumn get imageURL => text()();
 }
 
 /// Parses a LLM generated recipe into an insertable Recipe Dataclass.
@@ -38,5 +42,6 @@ RecipesCompanion RecipeFromLLMJson(String llmResult) {
       instructions: List<String>.from(decoded['Step-by-Step Instructions']),
       cookTime: decoded['Expected Cooking Time'] as int,
       notes: decoded['Note'] as String,
+      // image: decoded['Image Path'] as String,
       saveAt: DateTime.now().millisecondsSinceEpoch);
 }
