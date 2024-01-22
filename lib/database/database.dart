@@ -6,6 +6,9 @@ import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqlite3/sqlite3.dart';
+import 'package:astridzhao_s_food_app/database/schema_versions.dart';
+import 'package:drift/internal/versioned_schema.dart';
+import 'package:drift_dev/api/migrations.dart';
 
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
@@ -20,12 +23,66 @@ class DatabaseService {
   }
 }
 
-@DriftDatabase(tables: [Recipes])
+const kDebugMode = true;
+
+@DriftDatabase(tables: [Recipes], include: {'recipes_dao.dart'})
 class AppDatabase extends _$AppDatabase {
   AppDatabase(String dbName) : super(_openConnection(dbName));
 
+  static const latestSchemaVersion = 2;
+
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => latestSchemaVersion;
+
+  // AppDatabase(super.connection);
+
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onUpgrade: (m, from, to) async {
+        // Following the advice from https://drift.simonbinder.eu/docs/advanced-features/migrations/#tips
+        await customStatement('PRAGMA foreign_keys = OFF');
+
+        await transaction(
+          () => VersionedSchema.runMigrationSteps(
+            migrator: m,
+            from: from,
+            to: to,
+            steps: _upgrade,
+          ),
+        );
+
+        if (kDebugMode) {
+          final wrongForeignKeys =
+              await customSelect('PRAGMA foreign_key_check').get();
+          assert(wrongForeignKeys.isEmpty,
+              '${wrongForeignKeys.map((e) => e.data)}');
+        }
+
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+      beforeOpen: (details) async {
+        // For Flutter apps, this should be wrapped in an if (kDebugMode) as
+        // suggested here: https://drift.simonbinder.eu/docs/advanced-features/migrations/#verifying-a-database-schema-at-runtime
+        await validateDatabaseSchema();
+      },
+    );
+  }
+
+  static final _upgrade = migrationSteps(
+    from1To2: (m, schema) async {
+      // Migration from 1 to 2: Add imageURL column in recipes.
+
+      await m.alterTable(
+        TableMigration(
+          schema.recipes,
+          columnTransformer: {
+            schema.recipes.imageURL: const Constant<String>(""),
+          },
+          newColumns: [schema.recipes.imageURL],
+        ),
+      );
+    },
+  );
 }
 
 LazyDatabase _openConnection(String dbName) {

@@ -1,15 +1,13 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
-part of 'database.dart';
-
+// GENERATED CODE, DO NOT EDIT BY HAND.
 // ignore_for_file: type=lint
-class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
+//@dart=2.12
+import 'package:drift/drift.dart';
+
+class Recipes extends Table with TableInfo<Recipes, RecipesData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $RecipesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
+  Recipes(this.attachedDatabase, [this._alias]);
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       hasAutoIncrement: true,
@@ -17,171 +15,87 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _titleMeta = const VerificationMeta('title');
-  @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
       'title', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _ingredientsMeta =
-      const VerificationMeta('ingredients');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<String>, String>
-      ingredients = GeneratedColumn<String>('ingredients', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<List<String>>($RecipesTable.$converteringredients);
-  static const VerificationMeta _instructionsMeta =
-      const VerificationMeta('instructions');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<String>, String>
-      instructions = GeneratedColumn<String>('instructions', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<List<String>>($RecipesTable.$converterinstructions);
-  static const VerificationMeta _cookTimeMeta =
-      const VerificationMeta('cookTime');
-  @override
+  late final GeneratedColumn<String> ingredients = GeneratedColumn<String>(
+      'ingredients', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> instructions = GeneratedColumn<String>(
+      'instructions', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   late final GeneratedColumn<int> cookTime = GeneratedColumn<int>(
       'cook_time', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
-  @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
       'notes', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _saveAtMeta = const VerificationMeta('saveAt');
-  @override
   late final GeneratedColumn<int> saveAt = GeneratedColumn<int>(
       'save_at', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _imageURLMeta =
-      const VerificationMeta('imageURL');
-  @override
-  late final GeneratedColumn<String> imageURL = GeneratedColumn<String>(
-      'image_u_r_l', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, title, ingredients, instructions, cookTime, notes, saveAt, imageURL];
+      [id, title, ingredients, instructions, cookTime, notes, saveAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'recipes';
   @override
-  VerificationContext validateIntegrity(Insertable<Recipe> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('title')) {
-      context.handle(
-          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
-    } else if (isInserting) {
-      context.missing(_titleMeta);
-    }
-    context.handle(_ingredientsMeta, const VerificationResult.success());
-    context.handle(_instructionsMeta, const VerificationResult.success());
-    if (data.containsKey('cook_time')) {
-      context.handle(_cookTimeMeta,
-          cookTime.isAcceptableOrUnknown(data['cook_time']!, _cookTimeMeta));
-    } else if (isInserting) {
-      context.missing(_cookTimeMeta);
-    }
-    if (data.containsKey('notes')) {
-      context.handle(
-          _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
-    } else if (isInserting) {
-      context.missing(_notesMeta);
-    }
-    if (data.containsKey('save_at')) {
-      context.handle(_saveAtMeta,
-          saveAt.isAcceptableOrUnknown(data['save_at']!, _saveAtMeta));
-    } else if (isInserting) {
-      context.missing(_saveAtMeta);
-    }
-    if (data.containsKey('image_u_r_l')) {
-      context.handle(_imageURLMeta,
-          imageURL.isAcceptableOrUnknown(data['image_u_r_l']!, _imageURLMeta));
-    } else if (isInserting) {
-      context.missing(_imageURLMeta);
-    }
-    return context;
-  }
-
-  @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Recipe map(Map<String, dynamic> data, {String? tablePrefix}) {
+  RecipesData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Recipe(
+    return RecipesData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       title: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      ingredients: $RecipesTable.$converteringredients.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}ingredients'])!),
-      instructions: $RecipesTable.$converterinstructions.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}instructions'])!),
+      ingredients: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}ingredients'])!,
+      instructions: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}instructions'])!,
       cookTime: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}cook_time'])!,
       notes: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}notes'])!,
       saveAt: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}save_at'])!,
-      imageURL: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}image_u_r_l'])!,
     );
   }
 
   @override
-  $RecipesTable createAlias(String alias) {
-    return $RecipesTable(attachedDatabase, alias);
+  Recipes createAlias(String alias) {
+    return Recipes(attachedDatabase, alias);
   }
-
-  static TypeConverter<List<String>, String> $converteringredients =
-      const StringListConverter();
-  static TypeConverter<List<String>, String> $converterinstructions =
-      const StringListConverter();
 }
 
-class Recipe extends DataClass implements Insertable<Recipe> {
+class RecipesData extends DataClass implements Insertable<RecipesData> {
   final int id;
   final String title;
-  final List<String> ingredients;
-  final List<String> instructions;
+  final String ingredients;
+  final String instructions;
   final int cookTime;
   final String notes;
   final int saveAt;
-  final String imageURL;
-  const Recipe(
+  const RecipesData(
       {required this.id,
       required this.title,
       required this.ingredients,
       required this.instructions,
       required this.cookTime,
       required this.notes,
-      required this.saveAt,
-      required this.imageURL});
+      required this.saveAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
-    {
-      map['ingredients'] = Variable<String>(
-          $RecipesTable.$converteringredients.toSql(ingredients));
-    }
-    {
-      map['instructions'] = Variable<String>(
-          $RecipesTable.$converterinstructions.toSql(instructions));
-    }
+    map['ingredients'] = Variable<String>(ingredients);
+    map['instructions'] = Variable<String>(instructions);
     map['cook_time'] = Variable<int>(cookTime);
     map['notes'] = Variable<String>(notes);
     map['save_at'] = Variable<int>(saveAt);
-    map['image_u_r_l'] = Variable<String>(imageURL);
     return map;
   }
 
@@ -194,22 +108,20 @@ class Recipe extends DataClass implements Insertable<Recipe> {
       cookTime: Value(cookTime),
       notes: Value(notes),
       saveAt: Value(saveAt),
-      imageURL: Value(imageURL),
     );
   }
 
-  factory Recipe.fromJson(Map<String, dynamic> json,
+  factory RecipesData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Recipe(
+    return RecipesData(
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
-      ingredients: serializer.fromJson<List<String>>(json['ingredients']),
-      instructions: serializer.fromJson<List<String>>(json['instructions']),
+      ingredients: serializer.fromJson<String>(json['ingredients']),
+      instructions: serializer.fromJson<String>(json['instructions']),
       cookTime: serializer.fromJson<int>(json['cookTime']),
       notes: serializer.fromJson<String>(json['notes']),
       saveAt: serializer.fromJson<int>(json['saveAt']),
-      imageURL: serializer.fromJson<String>(json['imageURL']),
     );
   }
   @override
@@ -218,25 +130,23 @@ class Recipe extends DataClass implements Insertable<Recipe> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
-      'ingredients': serializer.toJson<List<String>>(ingredients),
-      'instructions': serializer.toJson<List<String>>(instructions),
+      'ingredients': serializer.toJson<String>(ingredients),
+      'instructions': serializer.toJson<String>(instructions),
       'cookTime': serializer.toJson<int>(cookTime),
       'notes': serializer.toJson<String>(notes),
       'saveAt': serializer.toJson<int>(saveAt),
-      'imageURL': serializer.toJson<String>(imageURL),
     };
   }
 
-  Recipe copyWith(
+  RecipesData copyWith(
           {int? id,
           String? title,
-          List<String>? ingredients,
-          List<String>? instructions,
+          String? ingredients,
+          String? instructions,
           int? cookTime,
           String? notes,
-          int? saveAt,
-          String? imageURL}) =>
-      Recipe(
+          int? saveAt}) =>
+      RecipesData(
         id: id ?? this.id,
         title: title ?? this.title,
         ingredients: ingredients ?? this.ingredients,
@@ -244,49 +154,45 @@ class Recipe extends DataClass implements Insertable<Recipe> {
         cookTime: cookTime ?? this.cookTime,
         notes: notes ?? this.notes,
         saveAt: saveAt ?? this.saveAt,
-        imageURL: imageURL ?? this.imageURL,
       );
   @override
   String toString() {
-    return (StringBuffer('Recipe(')
+    return (StringBuffer('RecipesData(')
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('ingredients: $ingredients, ')
           ..write('instructions: $instructions, ')
           ..write('cookTime: $cookTime, ')
           ..write('notes: $notes, ')
-          ..write('saveAt: $saveAt, ')
-          ..write('imageURL: $imageURL')
+          ..write('saveAt: $saveAt')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(
-      id, title, ingredients, instructions, cookTime, notes, saveAt, imageURL);
+      id, title, ingredients, instructions, cookTime, notes, saveAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Recipe &&
+      (other is RecipesData &&
           other.id == this.id &&
           other.title == this.title &&
           other.ingredients == this.ingredients &&
           other.instructions == this.instructions &&
           other.cookTime == this.cookTime &&
           other.notes == this.notes &&
-          other.saveAt == this.saveAt &&
-          other.imageURL == this.imageURL);
+          other.saveAt == this.saveAt);
 }
 
-class RecipesCompanion extends UpdateCompanion<Recipe> {
+class RecipesCompanion extends UpdateCompanion<RecipesData> {
   final Value<int> id;
   final Value<String> title;
-  final Value<List<String>> ingredients;
-  final Value<List<String>> instructions;
+  final Value<String> ingredients;
+  final Value<String> instructions;
   final Value<int> cookTime;
   final Value<String> notes;
   final Value<int> saveAt;
-  final Value<String> imageURL;
   const RecipesCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -295,25 +201,22 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     this.cookTime = const Value.absent(),
     this.notes = const Value.absent(),
     this.saveAt = const Value.absent(),
-    this.imageURL = const Value.absent(),
   });
   RecipesCompanion.insert({
     this.id = const Value.absent(),
     required String title,
-    required List<String> ingredients,
-    required List<String> instructions,
+    required String ingredients,
+    required String instructions,
     required int cookTime,
     required String notes,
     required int saveAt,
-    this.imageURL = const Value.absent(),
   })  : title = Value(title),
         ingredients = Value(ingredients),
         instructions = Value(instructions),
         cookTime = Value(cookTime),
         notes = Value(notes),
         saveAt = Value(saveAt);
-  // imageURL = Value(imageURL);
-  static Insertable<Recipe> custom({
+  static Insertable<RecipesData> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<String>? ingredients,
@@ -321,7 +224,6 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     Expression<int>? cookTime,
     Expression<String>? notes,
     Expression<int>? saveAt,
-    Expression<String>? imageURL,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -331,19 +233,17 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
       if (cookTime != null) 'cook_time': cookTime,
       if (notes != null) 'notes': notes,
       if (saveAt != null) 'save_at': saveAt,
-      if (imageURL != null) 'image_u_r_l': imageURL,
     });
   }
 
   RecipesCompanion copyWith(
       {Value<int>? id,
       Value<String>? title,
-      Value<List<String>>? ingredients,
-      Value<List<String>>? instructions,
+      Value<String>? ingredients,
+      Value<String>? instructions,
       Value<int>? cookTime,
       Value<String>? notes,
-      Value<int>? saveAt,
-      Value<String>? imageURL}) {
+      Value<int>? saveAt}) {
     return RecipesCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -352,7 +252,6 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
       cookTime: cookTime ?? this.cookTime,
       notes: notes ?? this.notes,
       saveAt: saveAt ?? this.saveAt,
-      imageURL: imageURL ?? this.imageURL,
     );
   }
 
@@ -366,12 +265,10 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
       map['title'] = Variable<String>(title.value);
     }
     if (ingredients.present) {
-      map['ingredients'] = Variable<String>(
-          $RecipesTable.$converteringredients.toSql(ingredients.value));
+      map['ingredients'] = Variable<String>(ingredients.value);
     }
     if (instructions.present) {
-      map['instructions'] = Variable<String>(
-          $RecipesTable.$converterinstructions.toSql(instructions.value));
+      map['instructions'] = Variable<String>(instructions.value);
     }
     if (cookTime.present) {
       map['cook_time'] = Variable<int>(cookTime.value);
@@ -381,9 +278,6 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     }
     if (saveAt.present) {
       map['save_at'] = Variable<int>(saveAt.value);
-    }
-    if (imageURL.present) {
-      map['image_u_r_l'] = Variable<String>(imageURL.value);
     }
     return map;
   }
@@ -397,19 +291,20 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
           ..write('instructions: $instructions, ')
           ..write('cookTime: $cookTime, ')
           ..write('notes: $notes, ')
-          ..write('saveAt: $saveAt, ')
-          ..write('imageURL: $imageURL')
+          ..write('saveAt: $saveAt')
           ..write(')'))
         .toString();
   }
 }
 
-abstract class _$AppDatabase extends GeneratedDatabase {
-  _$AppDatabase(QueryExecutor e) : super(e);
-  late final $RecipesTable recipes = $RecipesTable(this);
+class DatabaseAtV1 extends GeneratedDatabase {
+  DatabaseAtV1(QueryExecutor e) : super(e);
+  late final Recipes recipes = Recipes(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [recipes];
+  @override
+  int get schemaVersion => 1;
 }

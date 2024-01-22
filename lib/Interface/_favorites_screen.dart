@@ -7,6 +7,7 @@ import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/key/api_key.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
 import 'package:dart_openai/dart_openai.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:developer';
@@ -249,6 +250,8 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                                                     recipe.ingredients
                                                         .join('\n'));
                                                 Navigator.of(context).pop();
+                                                // recipe_dao.recipes.imageURL =
+                                                
                                               },
                                             )
                                           ],

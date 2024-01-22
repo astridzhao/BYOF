@@ -753,26 +753,7 @@ class CreateScreenState extends State<CreateScreen> {
         selectedServingSize = result['dietaryRestriction'] ?? '';
       });
     }
-    // else {
-    //   setState(() {
-    //     selectedCuisine = 'Asian';
-    //     selectedCookingMethod = 'Pan Fry';
-    //     selectedDishType = 'Dinner';
-    //     selectedDietaryRestriction = 'No Restriction';
-    //     selectedServingSize = '2';
-    //   });
-    // }
   }
-
-  // void _updateSelections() {
-  //   widget.onSelectionChanged({
-  //     'cuisine': selectedCuisine,
-  //     'cookingMethod': selectedCookingMethod,
-  //     'dishType': selectedDishType,
-  //     'dietaryRestriction': selectedDietaryRestriction,
-  //     'servingsize': selectedServingSize,
-  //   });
-  // }
 
   sendPrompt() async {
     OpenAI.apiKey = azapiKey;

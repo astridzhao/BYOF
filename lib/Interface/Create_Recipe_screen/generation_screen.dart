@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
@@ -123,21 +124,26 @@ class _GenerationScreenState extends State<GenerationScreen> {
       //       fontWeight: FontWeight.w500),
       // ),
       actions: [
+        // TODO(astrid): save image locally + get local url
+        // final imageURL =
+        //     "path-to-image";
         TextButton.icon(
-          onPressed: () async {
-            await generateImage(widget.recipe.ingredients.toString());
-            log(widget.recipe.ingredients.toString());
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => popupDialogImage(context),
-            );
-          },
           icon: Icon(Icons.question_mark_rounded),
           label: Text("Want to see what it looks like?",
               style: TextStyle(
                   color: Color.fromARGB(255, 174, 73, 6),
                   fontFamily: "Outfit",
                   fontSize: 13)),
+          onPressed: () async {
+            await generateImage(widget.recipe.ingredients.toString());
+            log(widget.recipe.ingredients.toString());
+
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => popupDialogImage(context),
+            );
+            log(generatedImageUrls);
+          },
         ),
       ],
     );
@@ -562,8 +568,15 @@ class _GenerationScreenState extends State<GenerationScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
           child: TextButton.icon(
+            icon: Icon(Icons.favorite_border_outlined),
+            label: Text(
+              "Add to My Favorite",
+              style: TextStyle(
+                fontFamily: "Outfit",
+              ),
+            ),
             style: TextButton.styleFrom(
-              backgroundColor: index_color == 1 ? enableColor : disableColor,
+              backgroundColor: index_color == 1 ? disableColor : enableColor,
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(
                 horizontal: 15.0,
@@ -572,18 +585,18 @@ class _GenerationScreenState extends State<GenerationScreen> {
             ),
             onPressed: () async {
               // Add your favorite functionality here
+              index_color = 1;
+              log(generatedImageUrls);
+              //update recipecompanion column "imageURL" as the new generated URL
               log(widget.recipe.toString());
               await recipesDao.into(recipesDao.recipes).insert(widget.recipe);
-              // style:
-              index_color = 1;
+              log(widget.recipe.toString());
+              await (recipesDao.update(recipesDao.recipes)
+                    ..where((tbl) => tbl.id.equals(widget.recipe.id.value)))
+                  .write(RecipesCompanion(
+                      imageURL: drift.Value(generatedImageUrls)));
+              log(widget.recipe.imageURL.toString());
             },
-            icon: Icon(Icons.favorite_border_outlined),
-            label: Text(
-              "Add to My Favorite",
-              style: TextStyle(
-                fontFamily: "Outfit",
-              ),
-            ),
           ),
         ),
       ],

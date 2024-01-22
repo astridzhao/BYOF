@@ -8,5 +8,6 @@
 /.packages
 /ios/Podfile
 /pubspec.lock
+/lib/key/api_key.dart
 
 .DS_Store
