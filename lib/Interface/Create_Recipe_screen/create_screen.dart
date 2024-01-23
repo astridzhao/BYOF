@@ -33,19 +33,13 @@ class CreateScreenState extends State<CreateScreen> {
 
   String selectedLangauge = Languages.english.name;
 
-  // // Variables to hold the selected preferences
-  // String selectedCuisine = "";
-  // String selectedCookingMethod = "";
-  // String selectedDishType = "";
-  // String selectedDietaryRestriction = "";
-  // String selectedServingSize = "";
-
   List<String> ingredients_protein = [
     "chicken breast",
     "chicken thigh",
     "chicken wing",
     "beef brisket",
     "beef tendor",
+    "ground beef",
     "turkey bacon",
     "pork ribs",
     "pork belly",
@@ -167,10 +161,11 @@ class CreateScreenState extends State<CreateScreen> {
 
   String get contentUser =>
       "Give me a Recipe following these cooking preferences: "
-      "\n1. Cuisine style should be $selectedCuisine, so use some special sauce/spice. "
-      "\n2. Dish type should be $selectedDishType. And the cooking method should be $selectedCookingMethod"
-      "\n3. Be mindful of the user have $selectedDietaryRestriction diet restriction."
-      "\n4. The serving size is $selectedServingSize";
+          "\n 1. Cuisine style should be $selectedCuisine, so use some special sauce/spice. "
+          "\n 2. Dish type should be $selectedDishType. And the cooking method should be $selectedCookingMethod. "
+          "\n 3. Be mindful of the user have $selectedDietaryRestriction diet restriction. "
+          "\n 4. The serving size is $selectedServingSize. " +
+      "\n Additionally, do not use any other ingredients that I did not pick!";
 
   @override
   Widget build(BuildContext context) {
@@ -760,32 +755,20 @@ class CreateScreenState extends State<CreateScreen> {
     final systemMessage = OpenAIChatCompletionChoiceMessageModel(
       content: "As a recipe-generating assistant, create a recipe by using " +
           selectedIngredients.join() +
-          " provided by the user. To ensure a precise and high-quality response, please return the response in create a JSON object which enumerates a set of 5 child objects." +
-          " Each objects are respectively named as Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, and Note." +
+          " provided by the user. To ensure a precise and high-quality response, please return the response in create a JSON object which enumerates a set of 7 child objects." +
+          " Each objects are respectively named as Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, Note, Saving Co2, and Saving Money." +
           " The result JSON objetcs should be in this format: " +
-          "{Title: string, Ingredient List: list, Step-by-Step Instructions: list, Expected Cooking Time: integer, Note: String}." +
-          " Additionally, the unit of Expected Cooking Time is minutes." +
-          " Also, make your recipe can be as similar as to some known dishes. ",
+          "{Title: string, Ingredient List: list[String], Step-by-Step Instructions: list[String], Expected Cooking Time: integer, Note: String, Saving Co2: integer, Saving Money: integer}." +
+          " Additionally, following below rules: 1. the unit of Expected Cooking Time is in minutes; " +
+          " 2. make your recipe can be as similar to some signature known dishes as possible; " +
+          " 3. Saving Co2 should be an estimated integer of Co2 the user saved from this meal by reducing food waste. Total CO2 emissions=∑(Amount of each food type wasted×Emission factor for that food type); " +
+          " 4. Saving money should be estimated integer of money the user saved from not throw those ingredients.",
       role: OpenAIChatMessageRole.assistant,
     );
 
     // the user message that will be sent to the request.
     final userMessage = OpenAIChatCompletionChoiceMessageModel(
-      // content: "Give me a Recipe following these cooking preference: " +
-      //     "\1. Cuisine style should be " +
-      //     selectedCuisine +
-      //     ", so use some special sauce/spice. " +
-      //     "\2. Dish type should be " +
-      //     selectedDishType +
-      //     ". And the cooking method should be " +
-      //     selectedCookingMethod +
-      //     "\3. Be mindful of the user have " +
-      //     selectedDietaryRestriction +
-      //     " diet restriction." +
-      //     "\4. The serving size is " +
-      //     selectedServingSize,
       content: contentUser,
-
       role: OpenAIChatMessageRole.user,
     );
 
@@ -801,7 +784,7 @@ class CreateScreenState extends State<CreateScreen> {
       resultCompletion = completion.choices.first.message.content;
 
       log(resultCompletion);
-      log(contentUser);
+      // log(contentUser);
       // atomInputContainerController.clear();
       // selectedIngredients.clear();
     });

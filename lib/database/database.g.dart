@@ -56,11 +56,33 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
       const VerificationMeta('imageURL');
   @override
   late final GeneratedColumn<String> imageURL = GeneratedColumn<String>(
-      'image_u_r_l', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'image_u_r_l', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _savingSummary_CO2Meta =
+      const VerificationMeta('savingSummary_CO2');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, title, ingredients, instructions, cookTime, notes, saveAt, imageURL];
+  late final GeneratedColumn<int> savingSummary_CO2 = GeneratedColumn<int>(
+      'saving_summary_c_o2', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _savingSummary_moneyMeta =
+      const VerificationMeta('savingSummary_money');
+  @override
+  late final GeneratedColumn<int> savingSummary_money = GeneratedColumn<int>(
+      'saving_summary_money', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        title,
+        ingredients,
+        instructions,
+        cookTime,
+        notes,
+        saveAt,
+        imageURL,
+        savingSummary_CO2,
+        savingSummary_money
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -103,8 +125,22 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
     if (data.containsKey('image_u_r_l')) {
       context.handle(_imageURLMeta,
           imageURL.isAcceptableOrUnknown(data['image_u_r_l']!, _imageURLMeta));
+    }
+    if (data.containsKey('saving_summary_c_o2')) {
+      context.handle(
+          _savingSummary_CO2Meta,
+          savingSummary_CO2.isAcceptableOrUnknown(
+              data['saving_summary_c_o2']!, _savingSummary_CO2Meta));
     } else if (isInserting) {
-      context.missing(_imageURLMeta);
+      context.missing(_savingSummary_CO2Meta);
+    }
+    if (data.containsKey('saving_summary_money')) {
+      context.handle(
+          _savingSummary_moneyMeta,
+          savingSummary_money.isAcceptableOrUnknown(
+              data['saving_summary_money']!, _savingSummary_moneyMeta));
+    } else if (isInserting) {
+      context.missing(_savingSummary_moneyMeta);
     }
     return context;
   }
@@ -132,7 +168,11 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
       saveAt: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}save_at'])!,
       imageURL: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}image_u_r_l'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}image_u_r_l']),
+      savingSummary_CO2: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}saving_summary_c_o2'])!,
+      savingSummary_money: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}saving_summary_money'])!,
     );
   }
 
@@ -155,7 +195,9 @@ class Recipe extends DataClass implements Insertable<Recipe> {
   final int cookTime;
   final String notes;
   final int saveAt;
-  final String imageURL;
+  final String? imageURL;
+  final int savingSummary_CO2;
+  final int savingSummary_money;
   const Recipe(
       {required this.id,
       required this.title,
@@ -164,7 +206,9 @@ class Recipe extends DataClass implements Insertable<Recipe> {
       required this.cookTime,
       required this.notes,
       required this.saveAt,
-      required this.imageURL});
+      this.imageURL,
+      required this.savingSummary_CO2,
+      required this.savingSummary_money});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -181,7 +225,11 @@ class Recipe extends DataClass implements Insertable<Recipe> {
     map['cook_time'] = Variable<int>(cookTime);
     map['notes'] = Variable<String>(notes);
     map['save_at'] = Variable<int>(saveAt);
-    map['image_u_r_l'] = Variable<String>(imageURL);
+    if (!nullToAbsent || imageURL != null) {
+      map['image_u_r_l'] = Variable<String>(imageURL);
+    }
+    map['saving_summary_c_o2'] = Variable<int>(savingSummary_CO2);
+    map['saving_summary_money'] = Variable<int>(savingSummary_money);
     return map;
   }
 
@@ -194,7 +242,11 @@ class Recipe extends DataClass implements Insertable<Recipe> {
       cookTime: Value(cookTime),
       notes: Value(notes),
       saveAt: Value(saveAt),
-      imageURL: Value(imageURL),
+      imageURL: imageURL == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageURL),
+      savingSummary_CO2: Value(savingSummary_CO2),
+      savingSummary_money: Value(savingSummary_money),
     );
   }
 
@@ -209,7 +261,10 @@ class Recipe extends DataClass implements Insertable<Recipe> {
       cookTime: serializer.fromJson<int>(json['cookTime']),
       notes: serializer.fromJson<String>(json['notes']),
       saveAt: serializer.fromJson<int>(json['saveAt']),
-      imageURL: serializer.fromJson<String>(json['imageURL']),
+      imageURL: serializer.fromJson<String?>(json['imageURL']),
+      savingSummary_CO2: serializer.fromJson<int>(json['savingSummary_CO2']),
+      savingSummary_money:
+          serializer.fromJson<int>(json['savingSummary_money']),
     );
   }
   @override
@@ -223,7 +278,9 @@ class Recipe extends DataClass implements Insertable<Recipe> {
       'cookTime': serializer.toJson<int>(cookTime),
       'notes': serializer.toJson<String>(notes),
       'saveAt': serializer.toJson<int>(saveAt),
-      'imageURL': serializer.toJson<String>(imageURL),
+      'imageURL': serializer.toJson<String?>(imageURL),
+      'savingSummary_CO2': serializer.toJson<int>(savingSummary_CO2),
+      'savingSummary_money': serializer.toJson<int>(savingSummary_money),
     };
   }
 
@@ -235,7 +292,9 @@ class Recipe extends DataClass implements Insertable<Recipe> {
           int? cookTime,
           String? notes,
           int? saveAt,
-          String? imageURL}) =>
+          Value<String?> imageURL = const Value.absent(),
+          int? savingSummary_CO2,
+          int? savingSummary_money}) =>
       Recipe(
         id: id ?? this.id,
         title: title ?? this.title,
@@ -244,7 +303,9 @@ class Recipe extends DataClass implements Insertable<Recipe> {
         cookTime: cookTime ?? this.cookTime,
         notes: notes ?? this.notes,
         saveAt: saveAt ?? this.saveAt,
-        imageURL: imageURL ?? this.imageURL,
+        imageURL: imageURL.present ? imageURL.value : this.imageURL,
+        savingSummary_CO2: savingSummary_CO2 ?? this.savingSummary_CO2,
+        savingSummary_money: savingSummary_money ?? this.savingSummary_money,
       );
   @override
   String toString() {
@@ -256,14 +317,25 @@ class Recipe extends DataClass implements Insertable<Recipe> {
           ..write('cookTime: $cookTime, ')
           ..write('notes: $notes, ')
           ..write('saveAt: $saveAt, ')
-          ..write('imageURL: $imageURL')
+          ..write('imageURL: $imageURL, ')
+          ..write('savingSummary_CO2: $savingSummary_CO2, ')
+          ..write('savingSummary_money: $savingSummary_money')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(
-      id, title, ingredients, instructions, cookTime, notes, saveAt, imageURL);
+      id,
+      title,
+      ingredients,
+      instructions,
+      cookTime,
+      notes,
+      saveAt,
+      imageURL,
+      savingSummary_CO2,
+      savingSummary_money);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -275,7 +347,9 @@ class Recipe extends DataClass implements Insertable<Recipe> {
           other.cookTime == this.cookTime &&
           other.notes == this.notes &&
           other.saveAt == this.saveAt &&
-          other.imageURL == this.imageURL);
+          other.imageURL == this.imageURL &&
+          other.savingSummary_CO2 == this.savingSummary_CO2 &&
+          other.savingSummary_money == this.savingSummary_money);
 }
 
 class RecipesCompanion extends UpdateCompanion<Recipe> {
@@ -286,7 +360,9 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
   final Value<int> cookTime;
   final Value<String> notes;
   final Value<int> saveAt;
-  final Value<String> imageURL;
+  final Value<String?> imageURL;
+  final Value<int> savingSummary_CO2;
+  final Value<int> savingSummary_money;
   const RecipesCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -296,6 +372,8 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     this.notes = const Value.absent(),
     this.saveAt = const Value.absent(),
     this.imageURL = const Value.absent(),
+    this.savingSummary_CO2 = const Value.absent(),
+    this.savingSummary_money = const Value.absent(),
   });
   RecipesCompanion.insert({
     this.id = const Value.absent(),
@@ -305,14 +383,17 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     required int cookTime,
     required String notes,
     required int saveAt,
-    this.imageURL = const Value.absent(),
+    this.imageURL = const Value.ofNullable(""),
+    required int savingSummary_CO2,
+    required int savingSummary_money,
   })  : title = Value(title),
         ingredients = Value(ingredients),
         instructions = Value(instructions),
         cookTime = Value(cookTime),
         notes = Value(notes),
-        saveAt = Value(saveAt);
-  // imageURL = Value(imageURL);
+        saveAt = Value(saveAt),
+        savingSummary_CO2 = Value(savingSummary_CO2),
+        savingSummary_money = Value(savingSummary_money);
   static Insertable<Recipe> custom({
     Expression<int>? id,
     Expression<String>? title,
@@ -322,6 +403,8 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     Expression<String>? notes,
     Expression<int>? saveAt,
     Expression<String>? imageURL,
+    Expression<int>? savingSummary_CO2,
+    Expression<int>? savingSummary_money,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -332,6 +415,9 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
       if (notes != null) 'notes': notes,
       if (saveAt != null) 'save_at': saveAt,
       if (imageURL != null) 'image_u_r_l': imageURL,
+      if (savingSummary_CO2 != null) 'saving_summary_c_o2': savingSummary_CO2,
+      if (savingSummary_money != null)
+        'saving_summary_money': savingSummary_money,
     });
   }
 
@@ -343,7 +429,9 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
       Value<int>? cookTime,
       Value<String>? notes,
       Value<int>? saveAt,
-      Value<String>? imageURL}) {
+      Value<String?>? imageURL,
+      Value<int>? savingSummary_CO2,
+      Value<int>? savingSummary_money}) {
     return RecipesCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -353,6 +441,8 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
       notes: notes ?? this.notes,
       saveAt: saveAt ?? this.saveAt,
       imageURL: imageURL ?? this.imageURL,
+      savingSummary_CO2: savingSummary_CO2 ?? this.savingSummary_CO2,
+      savingSummary_money: savingSummary_money ?? this.savingSummary_money,
     );
   }
 
@@ -385,6 +475,12 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     if (imageURL.present) {
       map['image_u_r_l'] = Variable<String>(imageURL.value);
     }
+    if (savingSummary_CO2.present) {
+      map['saving_summary_c_o2'] = Variable<int>(savingSummary_CO2.value);
+    }
+    if (savingSummary_money.present) {
+      map['saving_summary_money'] = Variable<int>(savingSummary_money.value);
+    }
     return map;
   }
 
@@ -398,7 +494,9 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
           ..write('cookTime: $cookTime, ')
           ..write('notes: $notes, ')
           ..write('saveAt: $saveAt, ')
-          ..write('imageURL: $imageURL')
+          ..write('imageURL: $imageURL, ')
+          ..write('savingSummary_CO2: $savingSummary_CO2, ')
+          ..write('savingSummary_money: $savingSummary_money')
           ..write(')'))
         .toString();
   }

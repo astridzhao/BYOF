@@ -2,7 +2,7 @@ name: astridzhao_s_food_app
 description: A new Flutter project.
 version: 1.0.0+1
 environment: 
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: '>=3.2.0'
 dependencies: 
   flutter: 
     sdk: flutter
@@ -26,6 +26,7 @@ dependencies:
   sqlite3: ^2.3.0
   keyboard_actions: ^4.2.0
   test: ^1.24.9
+  http: ^0.13.6
 dev_dependencies: 
   build_runner: ^2.4.8
   drift_dev: ^2.14.1

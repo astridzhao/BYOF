@@ -1,6 +1,11 @@
 /// Still WIP favorite screen.
+import 'dart:core';
+import 'dart:io';
 import 'dart:math' as math;
-
+import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
@@ -23,7 +28,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
   Future<List<Recipe>>? futureRecipes;
   final recipe_dao = RecipesDao(DatabaseService().database);
 
-  Map<int, String> generatedImageUrls = {};
+  Map<int, File?> generatedImageUrls = {};
 
   @override
   void initState() {
@@ -37,22 +42,36 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
     });
   }
 
-  Future<void> generateImage(int imageIdex, String recipe) async {
-    OpenAI.apiKey = azapiKey;
-    final image = await OpenAI.instance.image.create(
-      n: 1,
-      prompt:
-          'Using the $recipe to imagine a related dish image for a restaurant menu. The style should be cute and cartoon, and make the dish looks tasty to attract customers.',
-    );
+  Future<void> generateImage(int i, int id, String recipe) async {
+    try {
+      OpenAI.apiKey = azapiKey;
+      final image = await OpenAI.instance.image.create(
+        n: 1,
+        prompt:
+            'Using the $recipe to imagine a related dish image for a restaurant menu. The style should be cute and cartoon, and make the dish looks tasty to attract customers.',
+      );
 
-    setState(() {
       for (int index = 0; index < image.data.length; index++) {
         final currentItem = image.data[index];
-        generatedImageUrls[imageIdex] = currentItem.url.toString();
-        print(currentItem.url);
+        String currentUrls = currentItem.url.toString();
+        //save image to local --> set generateImageURLS[i]
+        var response = await http.get(Uri.parse(currentUrls));
+        Directory documentdirectory = await getApplicationDocumentsDirectory();
+        File file = new File(
+            path.join(documentdirectory.path, path.basename(currentUrls)));
+        await file.writeAsBytes(response.bodyBytes);
+        log(file.toString());
+        await (recipe_dao.update(recipe_dao.recipes)..where((tbl) => tbl.id.equals(id)))
+          ..write(RecipesCompanion(imageURL: drift.Value(file.path)));
+
+        setState(() {
+          generatedImageUrls[i] = file;
+        });
       }
-      ;
-    });
+    } catch (e) {
+      log('Error in generateImage: $e');
+      // Handle the error or show a message to the user
+    }
   }
 
   @override
@@ -75,6 +94,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else {
+              // Handling for data state
               final recipes = snapshot.data! as List<Recipe>;
 
               return recipes.isEmpty
@@ -95,7 +115,13 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                         mainAxisSpacing: 20, // Vertical space between items
                       ),
                       itemBuilder: (context, i) {
+                        // each recipe
                         final recipe = recipes[i];
+                        generatedImageUrls[i] = recipe.imageURL != null
+                            ? File(recipe.imageURL!)
+                            : null;
+
+                        log(generatedImageUrls[i].toString());
 
                         // Get a list of local image paths
                         final List<String> localImages = [
@@ -115,10 +141,10 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              (generatedImageUrls.isNotEmpty &&
-                                      generatedImageUrls[i] != null)
+                              (generatedImageUrls[i] != ' ' &&
+                                      generatedImageUrls.isNotEmpty)
                                   ? ClipOval(
-                                      child: Image.network(
+                                      child: Image.file(
                                         generatedImageUrls[i]!,
                                         width:
                                             80, // Set the width to your desired size
@@ -245,13 +271,15 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                                                     );
                                                   },
                                                 );
+
                                                 await generateImage(
                                                     i,
+                                                    recipe.id,
                                                     recipe.ingredients
                                                         .join('\n'));
+
                                                 Navigator.of(context).pop();
                                                 // recipe_dao.recipes.imageURL =
-                                                
                                               },
                                             )
                                           ],

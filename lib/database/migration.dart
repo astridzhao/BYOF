@@ -12,6 +12,10 @@ MigrationStrategy get migration {
         // version 2
         await m.addColumn(schema.recipes, schema.recipes.imageURL);
       },
+      from2To3: (m, schema) async {
+        await m.addColumn(schema.recipes, schema.recipes.savingSummary_CO2);
+        await m.addColumn(schema.recipes, schema.recipes.savingSummary_money);
+      },
     ),
   );
 }

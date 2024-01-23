@@ -28,8 +28,12 @@ class Recipes extends Table {
   TextColumn get notes => text()();
   IntColumn get saveAt => integer()();
 
-  // column from v2
-  TextColumn get imageURL => text()();
+  // column from v2 + update in v3, making imageURL be nullable
+  TextColumn get imageURL => text().nullable()();
+
+  // column from v3
+  IntColumn get savingSummary_CO2 => integer()();
+  IntColumn get savingSummary_money => integer()();
 }
 
 /// Parses a LLM generated recipe into an insertable Recipe Dataclass.
@@ -37,11 +41,13 @@ RecipesCompanion RecipeFromLLMJson(String llmResult) {
   print(llmResult);
   final decoded = jsonDecode(llmResult) as Map<String, dynamic>;
   return RecipesCompanion.insert(
-      title: decoded['Title'] as String,
-      ingredients: List<String>.from(decoded['Ingredient List']),
-      instructions: List<String>.from(decoded['Step-by-Step Instructions']),
-      cookTime: decoded['Expected Cooking Time'] as int,
-      notes: decoded['Note'] as String,
-      // image: decoded['Image Path'] as String,
-      saveAt: DateTime.now().millisecondsSinceEpoch);
+    title: decoded['Title'] as String,
+    ingredients: List<String>.from(decoded['Ingredient List']),
+    instructions: List<String>.from(decoded['Step-by-Step Instructions']),
+    cookTime: decoded['Expected Cooking Time'] as int,
+    notes: decoded['Note'] as String,
+    saveAt: DateTime.now().millisecondsSinceEpoch,
+    savingSummary_CO2: decoded['Saving Co2'] as int,
+    savingSummary_money: decoded['Saving Money'] as int,
+  );
 }
