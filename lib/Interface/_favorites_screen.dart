@@ -54,13 +54,13 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
       for (int index = 0; index < image.data.length; index++) {
         final currentItem = image.data[index];
         String currentUrls = currentItem.url.toString();
-        //save image to local --> set generateImageURLS[i]
+
+        // save image to local --> set generateImageURLS[i]
         var response = await http.get(Uri.parse(currentUrls));
         Directory documentdirectory = await getApplicationDocumentsDirectory();
         File file = new File(
             path.join(documentdirectory.path, path.basename(currentUrls)));
         await file.writeAsBytes(response.bodyBytes);
-        log(file.toString());
         await (recipe_dao.update(recipe_dao.recipes)..where((tbl) => tbl.id.equals(id)))
           ..write(RecipesCompanion(imageURL: drift.Value(file.path)));
 
@@ -120,9 +120,6 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                         generatedImageUrls[i] = recipe.imageURL != null
                             ? File(recipe.imageURL!)
                             : null;
-
-                        log(generatedImageUrls[i].toString());
-
                         // Get a list of local image paths
                         final List<String> localImages = [
                           'assets/images/generate1.png',
@@ -141,27 +138,47 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              (generatedImageUrls[i] != ' ' &&
+                              // Check if the URL is not empty and the list is not empty
+                              (generatedImageUrls[i] != null &&
                                       generatedImageUrls.isNotEmpty)
-                                  ? ClipOval(
-                                      child: Image.file(
-                                        generatedImageUrls[i]!,
-                                        width:
-                                            80, // Set the width to your desired size
-                                        height:
-                                            80, // Set the height to your desired size
-                                        fit: BoxFit.cover,
-                                      ),
+                                  ? FutureBuilder(
+                                      future: generatedImageUrls[i]!.exists(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<bool> snapshot) {
+                                        // Check if the future is completed and the file exists
+                                        if (snapshot.connectionState ==
+                                                ConnectionState.done &&
+                                            snapshot.data == true) {
+                                          return ClipOval(
+                                            child: Image.file(
+                                              generatedImageUrls[i]!,
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          );
+                                        } else {
+                                          // If file does not exist, show the asset image
+                                          return ClipOval(
+                                            child: Image.asset(
+                                              randomImagePath,
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          );
+                                        }
+                                      },
                                     )
                                   : ClipOval(
                                       child: Image.asset(
                                         randomImagePath,
-                                        width:
-                                            80, // Set the width to your desired size
+                                        width: 80,
                                         height: 80,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
+
                               SizedBox(width: 5),
                               Expanded(
                                 child: Column(
@@ -275,8 +292,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                                                 await generateImage(
                                                     i,
                                                     recipe.id,
-                                                    recipe.ingredients
-                                                        .join('\n'));
+                                                    recipe.title.toString());
 
                                                 Navigator.of(context).pop();
                                                 // recipe_dao.recipes.imageURL =
@@ -302,5 +318,15 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
       //   onPressed: () {},
       // ),
     );
+  }
+
+  Future<bool> _checkFileExists(String path) async {
+    if (path.startsWith('assets/')) {
+      // Assuming asset paths start with 'assets/', no need to check file existence
+      return true;
+    } else {
+      final file = File(path);
+      return file.exists();
+    }
   }
 }
