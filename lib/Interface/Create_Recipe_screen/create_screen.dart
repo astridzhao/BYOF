@@ -98,6 +98,8 @@ class CreateScreenState extends State<CreateScreen> {
 
   List<String> selectedIngredients = [];
 
+  List<String> currentIngredientList = [];
+
   List<String> dropdownItemList1_cuisine = [
     "No Preference",
     "Asian",
@@ -535,7 +537,7 @@ class CreateScreenState extends State<CreateScreen> {
   Widget _buildButtonProtein(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
-      itemCount: ingredients_protein.length,
+      itemCount: ingredients_protein.length + 1,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
           crossAxisCount: 3,
@@ -543,127 +545,135 @@ class CreateScreenState extends State<CreateScreen> {
           mainAxisSpacing: 10,
           crossAxisSpacing: 10),
       itemBuilder: (context, index) {
-        String data = ingredients_protein[index];
-        bool isSelected = selectedIngredients.contains(data);
-        return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 1),
-              textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
-              foregroundColor: Colors.white,
-              backgroundColor:
-                  isSelected ? Colors.grey : appTheme.green_primary),
-          onPressed: () {
-            setState(() {
-              if (selectedIngredients.contains(data)) {
-                // If the data is already selected, remove it
-                selectedIngredients.remove(data);
-              } else {
-                if (selectedIngredients.length < 5) {
-                  // If the data is not selected, add it
-                  selectedIngredients.add(data);
+        if (index == ingredients_protein.length) {
+          // This is the "Add" button
+
+          return SizedBox(
+              height: 5,
+              width: 5,
+              child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: FloatingActionButton(
+                    // You can adjust this as needed
+                    tooltip: "Add a new protein",
+                    onPressed: () {
+                      currentIngredientList = ingredients_protein;
+                      addIngredientItem();
+                    },
+                    child: Icon(Icons.add),
+                    backgroundColor: appTheme.orange_primary,
+                    // shape: RoundedRectangleBorder(
+                    //     borderRadius:
+                    //         BorderRadius.all(Radius.circular(10)))
+                  )));
+        } else {
+          String data = ingredients_protein[index];
+          bool isSelected = selectedIngredients.contains(data);
+          return ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 1),
+                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
+                foregroundColor: Colors.white,
+                backgroundColor:
+                    isSelected ? Colors.grey : appTheme.green_primary),
+            onPressed: () {
+              setState(() {
+                if (selectedIngredients.contains(data)) {
+                  // If the data is already selected, remove it
+                  selectedIngredients.remove(data);
+                } else {
+                  if (selectedIngredients.length < 5) {
+                    // If the data is not selected, add it
+                    selectedIngredients.add(data);
+                  }
                 }
-              }
-              atomInputContainerController.text =
-                  selectedIngredients.join("  ");
-            });
-          },
-          child: Text(data,
-              textAlign: TextAlign.center,
-              softWrap: true,
-              style: TextStyle(
-                fontFamily: "Outfit",
-              )),
-        );
+                atomInputContainerController.text =
+                    selectedIngredients.join("  ");
+              });
+            },
+            child: Text(data,
+                textAlign: TextAlign.center,
+                softWrap: true,
+                style: TextStyle(
+                  fontFamily: "Outfit",
+                )),
+          );
+        }
       },
     );
+  }
+
+  void addIngredientItem() async {
+    String? newIngredient = await _showAddIngredientDialog(context);
+    if (newIngredient != null && newIngredient.isNotEmpty) {
+      setState(() {
+        currentIngredientList.add(newIngredient);
+      });
+    }
   }
 
   Widget _buildButtonVegetable(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
-      itemCount: ingredients_vege.length,
+      itemCount: ingredients_vege.length + 1, // Add 1 for the "Add" button
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
           crossAxisCount: 3,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10),
       itemBuilder: (context, index) {
-        String data = ingredients_vege[index];
-        bool isSelected = selectedIngredients.contains(data);
-        return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 1),
-              textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
-              foregroundColor: Colors.white,
-              backgroundColor:
-                  isSelected ? Colors.grey : appTheme.green_primary),
-          onPressed: () {
-            setState(() {
-              if (selectedIngredients.contains(data)) {
-                // If the data is already selected, remove it
-                selectedIngredients.remove(data);
-              } else {
-                if (selectedIngredients.length < 5) {
-                  // If the data is not selected, add it
-                  selectedIngredients.add(data);
-                }
-              }
-              atomInputContainerController.text =
-                  selectedIngredients.join("  ");
-            });
-          },
-          child: Text(data,
-              textAlign: TextAlign.center,
-              softWrap: true,
-              style: TextStyle(
-                fontFamily: "Outfit",
-              )),
-        );
-      },
-    );
-  }
+        if (index == ingredients_vege.length) {
+          // This is the "Add" button
 
-  Widget _buildButtonOthers(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      itemCount: ingredients_others.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisExtent: 40.v,
-          crossAxisCount: 3,
-          mainAxisSpacing: 10.0,
-          crossAxisSpacing: 10.0),
-      itemBuilder: (context, index) {
-        String data = ingredients_others[index];
-        bool isSelected = selectedIngredients.contains(data);
-        return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 1),
-              textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
-              foregroundColor: Colors.white,
-              backgroundColor:
-                  isSelected ? Colors.grey : appTheme.green_primary),
-          onPressed: () {
-            setState(() {
-              if (selectedIngredients.contains(data)) {
-                // If the data is already selected, remove it
-                selectedIngredients.remove(data);
-              } else {
-                if (selectedIngredients.length < 5) {
-                  // If the data is not selected, add it
-                  selectedIngredients.add(data);
+          return SizedBox(
+              height: 5,
+              width: 5,
+              child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: FloatingActionButton(
+                    // You can adjust this as needed
+                    tooltip: "Add a new vegetable",
+                    onPressed: () {
+                      currentIngredientList = ingredients_vege;
+                      addIngredientItem();
+                    },
+                    child: Icon(Icons.add),
+                    backgroundColor: appTheme.orange_primary,
+                    // shape: RoundedRectangleBorder(
+                    //     borderRadius:
+                    //         BorderRadius.all(Radius.circular(10)))
+                  )));
+        } else {
+          String data = ingredients_vege[index];
+          bool isSelected = selectedIngredients.contains(data);
+          return ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 1),
+                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
+                foregroundColor: Colors.white,
+                backgroundColor:
+                    isSelected ? Colors.grey : appTheme.green_primary),
+            onPressed: () {
+              setState(() {
+                if (selectedIngredients.contains(data)) {
+                  selectedIngredients.remove(data);
+                } else {
+                  if (selectedIngredients.length < 5) {
+                    selectedIngredients.add(data);
+                  }
                 }
-              }
-              atomInputContainerController.text =
-                  selectedIngredients.join("  ");
-            });
-          },
-          child: Text(data,
-              textAlign: TextAlign.center,
-              softWrap: true,
-              style: TextStyle(
-                fontFamily: "Outfit",
-              )),
-        );
+                atomInputContainerController.text =
+                    selectedIngredients.join("  ");
+              });
+            },
+            child: Text(data,
+                textAlign: TextAlign.center,
+                softWrap: true,
+                style: TextStyle(
+                  fontFamily: "Outfit",
+                )),
+          );
+        }
       },
     );
   }
@@ -671,44 +681,135 @@ class CreateScreenState extends State<CreateScreen> {
   Widget _buildButtonCarb(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
-      itemCount: ingredients_carb.length,
+      itemCount: ingredients_carb.length + 1, // Add 1 for the "Add" button
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
           crossAxisCount: 3,
           mainAxisSpacing: 10.0,
           crossAxisSpacing: 10.0),
       itemBuilder: (context, index) {
-        String data = ingredients_carb[index];
-        bool isSelected = selectedIngredients.contains(data);
-        return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 1),
-              textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
-              foregroundColor: Colors.white,
-              backgroundColor:
-                  isSelected ? Colors.grey : appTheme.green_primary),
-          onPressed: () {
-            setState(() {
-              if (selectedIngredients.contains(data)) {
-                // If the data is already selected, remove it
-                selectedIngredients.remove(data);
-              } else {
-                if (selectedIngredients.length < 5) {
-                  // If the data is not selected, add it
-                  selectedIngredients.add(data);
+        if (index == ingredients_carb.length) {
+          // This is the "Add" button
+          currentIngredientList = ingredients_carb;
+          return SizedBox(
+              height: 5,
+              width: 5,
+              child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: FloatingActionButton(
+                    // You can adjust this as needed
+                    tooltip: "Add a new carb",
+                    onPressed: () {
+                      currentIngredientList = ingredients_carb;
+                      addIngredientItem();
+                    },
+                    child: Icon(Icons.add),
+                    backgroundColor: appTheme.orange_primary,
+                    // shape: RoundedRectangleBorder(
+                    //     borderRadius:
+                    //         BorderRadius.all(Radius.circular(10)))
+                  )));
+        } else {
+          String data = ingredients_carb[index];
+          bool isSelected = selectedIngredients.contains(data);
+          return ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 1),
+                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
+                foregroundColor: Colors.white,
+                backgroundColor:
+                    isSelected ? Colors.grey : appTheme.green_primary),
+            onPressed: () {
+              setState(() {
+                if (selectedIngredients.contains(data)) {
+                  // If the data is already selected, remove it
+                  selectedIngredients.remove(data);
+                } else {
+                  if (selectedIngredients.length < 5) {
+                    // If the data is not selected, add it
+                    selectedIngredients.add(data);
+                  }
                 }
-              }
-              atomInputContainerController.text =
-                  selectedIngredients.join("  ");
-            });
-          },
-          child: Text(data,
-              textAlign: TextAlign.center,
-              softWrap: true,
-              style: TextStyle(
-                fontFamily: "Outfit",
-              )),
-        );
+                atomInputContainerController.text =
+                    selectedIngredients.join("  ");
+              });
+            },
+            child: Text(data,
+                textAlign: TextAlign.center,
+                softWrap: true,
+                style: TextStyle(
+                  fontFamily: "Outfit",
+                )),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildButtonOthers(BuildContext context) {
+    return GridView.builder(
+      shrinkWrap: true,
+      itemCount: ingredients_others.length + 1, // Add 1 for the "Add" button
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisExtent: 40.v,
+          crossAxisCount: 3,
+          mainAxisSpacing: 10.0,
+          crossAxisSpacing: 10.0),
+      itemBuilder: (context, index) {
+        if (index == ingredients_others.length) {
+          // This is the "Add" button
+          currentIngredientList = ingredients_others;
+          return SizedBox(
+              height: 5,
+              width: 5,
+              child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: FloatingActionButton(
+                    // You can adjust this as needed
+                    tooltip: "Add",
+                    onPressed: () {
+                      currentIngredientList = ingredients_others;
+                      addIngredientItem();
+                    },
+                    child: Icon(Icons.add),
+                    backgroundColor: appTheme.orange_primary,
+                    // shape: RoundedRectangleBorder(
+                    //     borderRadius:
+                    //         BorderRadius.all(Radius.circular(10)))
+                  )));
+        } else {
+          String data = ingredients_others[index];
+          bool isSelected = selectedIngredients.contains(data);
+          return ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 1),
+                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
+                foregroundColor: Colors.white,
+                backgroundColor:
+                    isSelected ? Colors.grey : appTheme.green_primary),
+            onPressed: () {
+              setState(() {
+                if (selectedIngredients.contains(data)) {
+                  // If the data is already selected, remove it
+                  selectedIngredients.remove(data);
+                } else {
+                  if (selectedIngredients.length < 5) {
+                    // If the data is not selected, add it
+                    selectedIngredients.add(data);
+                  }
+                }
+                atomInputContainerController.text =
+                    selectedIngredients.join("  ");
+              });
+            },
+            child: Text(data,
+                textAlign: TextAlign.center,
+                softWrap: true,
+                style: TextStyle(
+                  fontFamily: "Outfit",
+                )),
+          );
+        }
       },
     );
   }
@@ -791,77 +892,41 @@ class CreateScreenState extends State<CreateScreen> {
   }
 }
 
+Future<String?> _showAddIngredientDialog(BuildContext context) async {
+  String? ingredientName;
 
-// class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-//   MyAppBar({Key? key}) : super(key: key);
-//   Size get preferredSize => Size.fromHeight(kToolbarHeight);
-//   List<String> dropdownItemList1_cuisine = ["Asian", "Italian", "Mexican"];
-
-//   List<String> dropdownItemList2_cooking_ethod = [
-//     "No Preference",
-//     "Pan Fry",
-//     "Oven"
-//   ];
-
-//   List<String> dropdownItemList3_dish_type = [
-//     "No Preference",
-//     "Breakfast",
-//     "Lunch",
-//     "Dinner",
-//     "Quick Meal"
-//   ];
-
-//   List<String> dropdownItemList4_restriction = [
-//     "No Restriction",
-//     "Vegetarian",
-//     "Low-Carb/Keto"
-//   ];
-
-//   Widget build(BuildContext context) {
-//     return AppBar(
-//       leading: IconButton(
-//         icon: const Icon(Icons.arrow_back_ios_new_rounded),
-//         tooltip: 'Back to home page',
-//         color: Colors.blueGrey,
-//         splashColor: appTheme.orange_primary,
-//         onPressed: () {
-//           Navigator.of(context).pop(MaterialPageRoute(
-//               builder: (context) => HomepageContainerScreen()));
-//         },
-//       ),
-//       backgroundColor: appTheme.yellow_secondary,
-//       title: const Text('BRING YOUR OWN FRIDGE'),
-//       toolbarHeight: 80,
-//       // backgroundColor: Color(0xFF5A7756),
-//       titleTextStyle: TextStyle(
-//           color: Colors.black54, fontSize: 14, fontWeight: FontWeight.bold),
-//       actions: <Widget>[
-//         IconButton(
-//           icon: const Icon(Icons.more_horiz),
-//           color: Colors.blueGrey,
-//           splashColor: appTheme.orange_primary,
-//           tooltip: 'More Recipe Settings',
-//           onPressed: () {
-//             _buildRecipeSetting(context);
-//           },
-//         ),
-//         TextButton(
-//           child: Text(
-//             "Generate",
-//             style:
-//                 TextStyle(fontFamily: "Outfit", color: appTheme.green_primary),
-//           ),
-//           // style: ButtonStyle(
-//           //   fixedSize: MaterialStateProperty.all<Size>(Size(80, 2)),
-//           //   backgroundColor:
-//           //   MaterialStateProperty.all<Color>(appTheme.orange_primary),
-//           // ),
-//           onPressed: () {
-//             sendPrompt();
-//             Navigator.of(context).push(
-//                 MaterialPageRoute(builder: (context) => GenerationScreen()));
-//           },
-//         ),
-//       ],
-//     );
-//   }
+  return showDialog<String>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Add Ingredient'),
+        content: TextField(
+          onChanged: (value) {
+            ingredientName = value;
+          },
+          decoration: InputDecoration(hintText: "Enter ingredient name"),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.black),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text(
+              'Add',
+              style: TextStyle(color: Colors.black),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop(ingredientName);
+            },
+          ),
+        ],
+      );
+    },
+  );
+}

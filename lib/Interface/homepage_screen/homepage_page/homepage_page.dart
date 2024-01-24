@@ -31,7 +31,7 @@ class HomepagePageState extends State<HomepagePage> {
 
   Stream<List<String?>> getFilteringValues() {
     final imageURL = recipe_dao.recipes.imageURL;
-    print(imageURL);
+    // print(imageURL);
     // Assuming 'select' and 'get' are correctly defined in your DAO
     final query = recipe_dao.selectOnly(recipe_dao.recipes, distinct: true)
       ..addColumns([imageURL]);
@@ -40,7 +40,7 @@ class HomepagePageState extends State<HomepagePage> {
         .watch()
         .map((rows) => rows.map((row) => row.read(imageURL)).toList());
 
-    print(recipeImageURL);
+    // print(recipeImageURL);
     return recipeImageURL;
     // return query.map((row) => row.read(imageURL));
   }
