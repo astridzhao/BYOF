@@ -1,3 +1,10 @@
+import 'dart:io';
+
+import 'package:astridzhao_s_food_app/Interface/_favorites_screen.dart';
+import 'package:astridzhao_s_food_app/database/database.dart';
+import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
+import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
+
 import '../homepage_page/widgets/recipecontentrow_item_widget.dart';
 import 'widgets/saving_summery_widget.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
@@ -5,6 +12,10 @@ import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_image.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:drift/drift.dart' as drift;
+import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:developer';
 
 // ignore_for_file: must_be_immutable
 class HomepagePage extends StatefulWidget {
@@ -16,6 +27,26 @@ class HomepagePage extends StatefulWidget {
 }
 
 class HomepagePageState extends State<HomepagePage> {
+  final recipe_dao = RecipesDao(DatabaseService().database);
+
+  Stream<List<String?>> getFilteringValues() {
+    final imageURL = recipe_dao.recipes.imageURL;
+    // print(imageURL);
+    // Assuming 'select' and 'get' are correctly defined in your DAO
+    final query = recipe_dao.selectOnly(recipe_dao.recipes, distinct: true)
+      ..addColumns([imageURL]);
+    // Map the results of the query to a list of strings (image URLs)
+    Stream<List<String?>> recipeImageURL = query
+        .watch()
+        .map((rows) => rows.map((row) => row.read(imageURL)).toList());
+
+    // print(recipeImageURL);
+    return recipeImageURL;
+    // return query.map((row) => row.read(imageURL));
+  }
+
+  Map<int, String> allRecipeImageURLs = {};
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -54,7 +85,7 @@ class HomepagePageState extends State<HomepagePage> {
                       left: 22.h,
                       right: 29.h,
                     ),
-                    child: _buildDividerSection(
+                    child: _buildDividerSection_favorite_page(
                       context,
                       text: "My Favorite Recipes",
                       text1: "See all",
@@ -73,7 +104,7 @@ class HomepagePageState extends State<HomepagePage> {
                       left: 22.h,
                       right: 29.h,
                     ),
-                    child: _buildDividerSection(
+                    child: _buildDividerSection_mealPlan(
                       context,
                       text: "My Meal Plan",
                       text1: "View",
@@ -180,25 +211,44 @@ class HomepagePageState extends State<HomepagePage> {
     );
   }
 
-  /// Section Widget
   Widget _buildFavoriteRecipeRow(BuildContext context) {
     return Container(
-      height: 85.v,
-      padding: EdgeInsets.symmetric(vertical: 9.v),
-      child: ListView.separated(
-        padding: EdgeInsets.only(left: 10.h),
-        scrollDirection: Axis.horizontal,
-        separatorBuilder: (
-          context,
-          index,
-        ) {
-          return SizedBox(
-            width: 24.h,
+      height: 76.v,
+      padding: EdgeInsets.symmetric(vertical: 5.v),
+      child: StreamBuilder<List<String?>>(
+        stream: getFilteringValues(), // This is your stream of image URLs
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show loading indicator while waiting for data
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            // Display an error message if something went wrong
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            // Display a message if there are no recipes
+            return Center(child: Text('No favorites yet...'));
+          }
+
+          // Here we have data
+          List<String?> urls = snapshot.hasData ? snapshot.data! : [];
+          String default_image_url = "assets/images/generate2.png";
+          // // If no URLs are fetched, add a default URL to the list
+          // if (urls.isEmpty) {
+          //   urls.add(
+          //       default_image_url); // Replace with your actual default image URL
+          // }
+          return ListView.separated(
+            padding: EdgeInsets.only(left: 10.h),
+            scrollDirection: Axis.horizontal,
+            separatorBuilder: (context, index) => SizedBox(width: 15),
+            itemCount: urls.length,
+            itemBuilder: (context, index) {
+              // Use the URL if it's not null, otherwise use the default image URL
+              String imageUrl = urls[index] ??
+                  default_image_url; // Replace with your actual default image URL
+              return RecipecontentrowItemWidget(imagefilePath: imageUrl);
+            },
           );
-        },
-        itemCount: 8,
-        itemBuilder: (context, index) {
-          return RecipecontentrowItemWidget();
         },
       ),
     );
@@ -291,111 +341,8 @@ class HomepagePageState extends State<HomepagePage> {
     );
   }
 
-  // Widget _buildCreateRecipeButton(BuildContext context) {
-  //   return Positioned(
-  //     child: CustomElevatedButton(
-  //       alignment: Alignment.bottomCenter,
-  //       height: 48.v,
-  //       width: 160.h, // This ensures the button stretches across the width
-  //       text: "Create Recipe",
-  //       buttonTextStyle: TextStyle(
-  //         fontSize: 16, // Example size
-  //         fontWeight: FontWeight.bold, // Example weight
-  //         color: Colors.white, // Example color
-  //       ),
-  //       buttonStyle: CustomButtonStyles.fillYellow,
-  //       onPressed: () {
-  //         navigateToNextScreen(context);
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // void navigateToNextScreen(BuildContext context) {
-  //   Navigator.of(context)
-  //       .push(MaterialPageRoute(builder: (context) => CreateTwoScreen()));
-  // }
-
-  // /// Saving Widget
-  // Widget _buildFiberList(BuildContext context) {
-  //   return SizedBox(
-  //     height: 88.v,
-  //     child: ListView.separated(
-  //       padding: EdgeInsets.only(
-  //         left: 24.h,
-  //         right: 12.h,
-  //       ),
-  //       scrollDirection: Axis.horizontal,
-  //       separatorBuilder: (
-  //         context,
-  //         index,
-  //       ) {
-  //         return SizedBox(
-  //           width: 12.h,
-  //         );
-  //       },
-  //       itemCount: 4,
-  //       itemBuilder: (context, index) {
-  //         return FiberlistItemWidget();
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // /// Section Widget
-  // Widget _buildProteinList(BuildContext context) {
-  //   return SizedBox(
-  //     height: 58.v,
-  //     child: ListView.separated(
-  //       padding: EdgeInsets.only(
-  //         left: 24.h,
-  //         right: 12.h,
-  //       ),
-  //       scrollDirection: Axis.horizontal,
-  //       separatorBuilder: (
-  //         context,
-  //         index,
-  //       ) {
-  //         return SizedBox(
-  //           width: 12.h,
-  //         );
-  //       },
-  //       itemCount: 4,
-  //       itemBuilder: (context, index) {
-  //         return ProteinlistItemWidget();
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // /// Section Widget
-  // Widget _buildCarbsList(BuildContext context) {
-  //   return SizedBox(
-  //     height: 58.v,
-  //     child: ListView.separated(
-  //       padding: EdgeInsets.only(
-  //         left: 25.h,
-  //         right: 11.h,
-  //       ),
-  //       scrollDirection: Axis.horizontal,
-  //       separatorBuilder: (
-  //         context,
-  //         index,
-  //       ) {
-  //         return SizedBox(
-  //           width: 12.h,
-  //         );
-  //       },
-  //       itemCount: 4,
-  //       itemBuilder: (context, index) {
-  //         return CarbslistItemWidget();
-  //       },
-  //     ),
-  //   );
-  // }
-
   /// Common widget
-  Widget _buildDividerSection(
+  Widget _buildDividerSection_favorite_page(
     BuildContext context, {
     required String text,
     required String text1,
@@ -417,66 +364,65 @@ class HomepagePageState extends State<HomepagePage> {
         ),
         Padding(
           padding: EdgeInsets.only(bottom: 4.v),
-          child: Text(
-            text1,
-            style: TextStyle(
-              color: appTheme.gray700,
-              fontSize: 14.fSize,
-              fontFamily: 'Outfit',
-              fontWeight: FontWeight.w400,
+          child: TextButton(
+            child: Text(
+              text1,
+              style: TextStyle(
+                color: appTheme.gray700,
+                fontSize: 14.fSize,
+                fontFamily: 'Outfit',
+                fontWeight: FontWeight.w400,
+              ),
             ),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => FavoriteRecipePage()));
+            },
           ),
         ),
       ],
     );
   }
 
-  // /// Common widget
-  // Widget _buildProtein(
-  //   BuildContext context, {
-  //   required String proteinText,
-  //   required String seeAllText,
-  // }) {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.center,
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text(
-  //         proteinText,
-  //         style: TextStyle(
-  //           color: appTheme.black900,
-  //           fontSize: 14.fSize,
-  //           fontFamily: 'Inter',
-  //           fontWeight: FontWeight.w500,
-  //         ),
-  //       ),
-  //       Spacer(),
-  //       Padding(
-  //         padding: EdgeInsets.only(bottom: 2.v),
-  //         child: Text(
-  //           seeAllText,
-  //           style: TextStyle(
-  //             color: theme.colorScheme.secondaryContainer,
-  //             fontSize: 12.fSize,
-  //             fontFamily: 'Inter',
-  //             fontWeight: FontWeight.w500,
-  //           ),
-  //         ),
-  //       ),
-  //       CustomImageView(
-  //         imagePath: ImageConstant.imgArrowRight,
-  //         height: 10.adaptSize,
-  //         width: 10.adaptSize,
-  //         radius: BorderRadius.circular(
-  //           5.h,
-  //         ),
-  //         margin: EdgeInsets.only(
-  //           left: 1.h,
-  //           top: 2.v,
-  //           bottom: 4.v,
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget _buildDividerSection_mealPlan(
+    BuildContext context, {
+    required String text,
+    required String text1,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 1.v),
+          child: Text(
+            text,
+            style: TextStyle(
+              color: appTheme.black900,
+              fontSize: 16.fSize,
+              fontFamily: 'Outfit',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(bottom: 4.v),
+          child: TextButton(
+            child: Text(
+              text1,
+              style: TextStyle(
+                color: appTheme.gray700,
+                fontSize: 14.fSize,
+                fontFamily: 'Outfit',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => FavoriteRecipePage()));
+            },
+          ),
+        ),
+      ],
+    );
+  }
 }

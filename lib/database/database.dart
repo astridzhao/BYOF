@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
@@ -29,7 +30,7 @@ const kDebugMode = true;
 class AppDatabase extends _$AppDatabase {
   AppDatabase(String dbName) : super(_openConnection(dbName));
 
-  static const latestSchemaVersion = 2;
+  static const latestSchemaVersion = 3;
 
   @override
   int get schemaVersion => latestSchemaVersion;
@@ -57,10 +58,9 @@ class AppDatabase extends _$AppDatabase {
           assert(wrongForeignKeys.isEmpty,
               '${wrongForeignKeys.map((e) => e.data)}');
         }
-
-        await customStatement('PRAGMA foreign_keys = ON');
       },
       beforeOpen: (details) async {
+        await customStatement('PRAGMA foreign_keys = ON');
         // For Flutter apps, this should be wrapped in an if (kDebugMode) as
         // suggested here: https://drift.simonbinder.eu/docs/advanced-features/migrations/#verifying-a-database-schema-at-runtime
         await validateDatabaseSchema();
@@ -70,8 +70,7 @@ class AppDatabase extends _$AppDatabase {
 
   static final _upgrade = migrationSteps(
     from1To2: (m, schema) async {
-      // Migration from 1 to 2: Add imageURL column in recipes.
-
+      // Migration from 1 to 2: Add imageURL column in recipes, use "" as default.
       await m.alterTable(
         TableMigration(
           schema.recipes,
@@ -81,6 +80,11 @@ class AppDatabase extends _$AppDatabase {
           newColumns: [schema.recipes.imageURL],
         ),
       );
+    },
+    from2To3: (m, schema) async {
+      // Migration from 2 to 3: Add savingSummary_CO2+_Money column in recipes.
+      await m.addColumn(schema.recipes, schema.recipes.savingSummary_CO2);
+      await m.addColumn(schema.recipes, schema.recipes.savingSummary_money);
     },
   );
 }

@@ -1,5 +1,6 @@
 import 'dart:developer';
-
+import 'dart:core';
+import 'dart:io';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:clipboard/clipboard.dart';
@@ -10,7 +11,9 @@ import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:astridzhao_s_food_app/key/api_key.dart';
 import 'package:dart_openai/dart_openai.dart';
-import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 class GenerationScreen extends StatefulWidget {
   final String resultCompletion;
@@ -87,8 +90,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
     OpenAI.apiKey = azapiKey;
     final image = await OpenAI.instance.image.create(
       n: 1,
-      prompt:
-          'Using the $recipe to imagine a related dish image for a restaurant menu. The style should be cute and cartoon, and make the dish looks tasty to attract customers.',
+      prompt: 'Create a cartoon-style image of a related dish for a restaurant menu using the provided $recipe.' +
+          'Ensure the dish looks appetizing to attract customers and provides users with an idea of the overall appearance of the complete dish.',
     );
 
     setState(() {
@@ -116,13 +119,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
           );
         },
       ),
-      // title: Text(
-      //   "YOUR RECIPE IS READY",
-      //   style: TextStyle(
-      //       fontFamily: "Outfit",
-      //       fontSize: 14.fSize,
-      //       fontWeight: FontWeight.w500),
-      // ),
       actions: [
         // TODO(astrid): save image locally + get local url
         // final imageURL =
@@ -135,14 +131,12 @@ class _GenerationScreenState extends State<GenerationScreen> {
                   fontFamily: "Outfit",
                   fontSize: 13)),
           onPressed: () async {
-            await generateImage(widget.recipe.ingredients.toString());
-            log(widget.recipe.ingredients.toString());
-
+            await generateImage(widget.recipe.title.toString());
             showDialog(
               context: context,
               builder: (BuildContext context) => popupDialogImage(context),
             );
-            log(generatedImageUrls);
+            log("imageURL" + generatedImageUrls);
           },
         ),
       ],
@@ -173,6 +167,13 @@ class _GenerationScreenState extends State<GenerationScreen> {
       ),
       actions: <Widget>[
         new TextButton(
+          onPressed: () {},
+          child: Text(
+            'Save Image',
+            style: TextStyle(color: Colors.black54),
+          ),
+        ),
+        new TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -188,9 +189,10 @@ class _GenerationScreenState extends State<GenerationScreen> {
   /// Section Widget
   Widget title(BuildContext context) {
     return Container(
-        padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
-        alignment: Alignment.center,
+        padding: EdgeInsets.fromLTRB(60, 0, 60, 20),
+        alignment: Alignment.topCenter,
         child: Text(widget.recipe.title.value.toString(),
+            textAlign: TextAlign.center,
             maxLines: 2,
             style: TextStyle(
                 fontFamily: "Outfit",
@@ -238,23 +240,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
                                 fontWeight: FontWeight.normal)),
                       );
                     },
-                    // itemCount: RecipeFromLLMJson(widget.resultCompletion)
-                    //     .ingredients
-                    //     .value
-                    //     .length,
-                    // itemBuilder: (context, index) {
-                    //   return ListTile(
-                    //     title: Text(
-                    //         RecipeFromLLMJson(widget.resultCompletion)
-                    //             .ingredients
-                    //             .value
-                    //             .elementAt(index),
-                    //         style: TextStyle(
-                    //             fontFamily: "Outfit",
-                    //             fontSize: 12.fSize,
-                    //             fontWeight: FontWeight.normal)),
-                    //   );
-                    // },
                   ),
                 ),
               ],
@@ -265,9 +250,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
             ),
           ],
         ),
-        //child 2: notes
-        // Column(
-        //   children: [
 
         Container(
           margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
@@ -331,23 +313,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
                             fontFamily: "Outfit",
                             fontSize: 12.fSize,
                             fontWeight: FontWeight.normal)),
-                    // itemCount: RecipeFromLLMJson(widget.resultCompletion)
-                    //     .instructions
-                    //     .value
-                    //     .length,
-                    // itemBuilder: (context, index) {
-                    //   return ListTile(
-                    //     title: Text(
-                    //       RecipeFromLLMJson(widget.resultCompletion)
-                    //           .instructions
-                    //           .value
-                    //           .elementAt(index),
-                    //       style: TextStyle(
-                    //         fontFamily: "Outfit",
-                    //         fontSize: 12.fSize,
-                    //         fontWeight: FontWeight.normal,
-                    //       ),
-                    //     ),
                   );
                 },
               ),
@@ -375,9 +340,12 @@ class _GenerationScreenState extends State<GenerationScreen> {
         children: [
           SizedBox(height: 5.v),
           Text(
-            "You saved",
+            "You will save",
             style: TextStyle(
-                fontFamily: "Outfit", fontSize: 14, color: Colors.white70),
+                fontFamily: "Outfit",
+                fontSize: 14,
+                color: Colors.white70,
+                fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 12.v),
           Align(
@@ -394,10 +362,11 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       bottom: 11.v,
                     ),
                     child: Text(
-                      "3",
+                      widget.recipe.savingSummary_CO2.value.toString(),
                       style: TextStyle(
                           fontFamily: "Outfit",
-                          fontSize: 14,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                           color: Colors.white70),
                     ),
                   ),
@@ -435,10 +404,11 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       bottom: 10.v,
                     ),
                     child: Text(
-                      "4",
+                      widget.recipe.savingSummary_money.value.toString(),
                       style: TextStyle(
                           fontFamily: "Outfit",
-                          fontSize: 14,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                           color: Colors.white70),
                     ),
                   ),
@@ -562,7 +532,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           icon: Icon(Icons.share),
           tooltip: "Share",
           onPressed: () {
-            // Add your share functionality here
+            // TODO: Add share functionality here
           },
         ),
         Padding(
@@ -584,18 +554,30 @@ class _GenerationScreenState extends State<GenerationScreen> {
               ),
             ),
             onPressed: () async {
-              // Add your favorite functionality here
-              index_color = 1;
+              setState(() {
+                index_color = 1;
+              });
+
+              final insertedRecipe = await recipesDao
+                  .into(recipesDao.recipes)
+                  .insertReturning(widget.recipe);
+
+              int currentID = insertedRecipe.id;
+              log("ID: " + currentID.toString());
               log(generatedImageUrls);
-              //update recipecompanion column "imageURL" as the new generated URL
-              log(widget.recipe.toString());
-              await recipesDao.into(recipesDao.recipes).insert(widget.recipe);
-              log(widget.recipe.toString());
-              await (recipesDao.update(recipesDao.recipes)
-                    ..where((tbl) => tbl.id.equals(widget.recipe.id.value)))
-                  .write(RecipesCompanion(
-                      imageURL: drift.Value(generatedImageUrls)));
-              log(widget.recipe.imageURL.toString());
+              if (generatedImageUrls != "") {
+                //save image to local -> generatedImageUrls
+                var response = await http.get(Uri.parse(generatedImageUrls));
+                // store pictures in document directory
+                Directory documentdirectory =
+                    await getApplicationDocumentsDirectory();
+                File file = new File(path.join(
+                    documentdirectory.path, path.basename(generatedImageUrls)));
+                await file.writeAsBytes(response.bodyBytes);
+                log("image saving path: " + file.path);
+                await (recipesDao.update(recipesDao.recipes)..where((tbl) => tbl.id.equals(currentID)))
+                  ..write(RecipesCompanion(imageURL: drift.Value(file.path)));
+              }
             },
           ),
         ),

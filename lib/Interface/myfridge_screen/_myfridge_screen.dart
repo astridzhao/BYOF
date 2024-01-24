@@ -160,6 +160,7 @@ class MyfridgePageState extends State<MyfridgePage> {
           right: 16.h,
           bottom: 16.v,
           child: FloatingActionButton(
+            heroTag: null,
             onPressed: addFiberItem,
             child: Icon(Icons.add),
           ),
@@ -168,31 +169,6 @@ class MyfridgePageState extends State<MyfridgePage> {
     );
   }
 
-  /// Section Widget
-  // Widget _buildProteinList(BuildContext context) {
-  //   return SizedBox(
-  //     height: 58.v,
-  //     child: ListView.separated(
-  //       padding: EdgeInsets.only(
-  //         left: 24.h,
-  //         right: 12.h,
-  //       ),
-  //       scrollDirection: Axis.horizontal,
-  //       separatorBuilder: (
-  //         context,
-  //         index,
-  //       ) {
-  //         return SizedBox(
-  //           width: 12.h,
-  //         );
-  //       },
-  //       itemCount: 4,
-  //       itemBuilder: (context, index) {
-  //         return ProteinlistItemWidget();
-  //       },
-  //     ),
-  //   );
-  // }
   Widget _buildProteinList(BuildContext context) {
     return Stack(
       children: [
@@ -226,6 +202,7 @@ class MyfridgePageState extends State<MyfridgePage> {
           right: 16.h,
           bottom: 16.v,
           child: FloatingActionButton(
+            heroTag: null,
             onPressed: addProteinItem,
             child: Icon(Icons.add),
           ),
@@ -267,6 +244,7 @@ class MyfridgePageState extends State<MyfridgePage> {
           right: 16.h,
           bottom: 16.v,
           child: FloatingActionButton(
+            heroTag: null,
             onPressed: addCarbItem,
             child: Icon(Icons.add),
           ),

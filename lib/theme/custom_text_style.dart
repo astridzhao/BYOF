@@ -151,9 +151,4 @@ extension on TextStyle {
     );
   }
 
-  TextStyle get sora {
-    return copyWith(
-      fontFamily: 'Sora',
-    );
-  }
 }
