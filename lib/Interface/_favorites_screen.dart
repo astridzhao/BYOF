@@ -29,6 +29,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
   final recipe_dao = RecipesDao(DatabaseService().database);
 
   Map<int, File?> generatedImageUrls = {};
+  String currentUrls_fordisplay = "";
 
   @override
   void initState() {
@@ -53,13 +54,14 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
 
       for (int index = 0; index < image.data.length; index++) {
         final currentItem = image.data[index];
-        String currentUrls = currentItem.url.toString();
-
+        currentUrls_fordisplay = currentItem.url.toString();
+        //Testing:
+        print("generated image: " + currentUrls_fordisplay);
         // save image to local --> set generateImageURLS[i]
-        var response = await http.get(Uri.parse(currentUrls));
+        var response = await http.get(Uri.parse(currentUrls_fordisplay));
         Directory documentdirectory = await getApplicationDocumentsDirectory();
-        File file = new File(
-            path.join(documentdirectory.path, path.basename(currentUrls)));
+        File file = new File(path.join(
+            documentdirectory.path, path.basename(currentUrls_fordisplay)));
         await file.writeAsBytes(response.bodyBytes);
         await (recipe_dao.update(recipe_dao.recipes)..where((tbl) => tbl.id.equals(id)))
           ..write(RecipesCompanion(imageURL: drift.Value(file.path)));
@@ -138,7 +140,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              // Check if the URL is not empty and the list is not empty
+                              //Check if the URL is not empty and the list is not empty
                               (generatedImageUrls[i] != null &&
                                       generatedImageUrls.isNotEmpty)
                                   ? FutureBuilder(
@@ -294,8 +296,16 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                                                     recipe.id,
                                                     recipe.title.toString());
 
+                                                // pop alert waiting box
                                                 Navigator.of(context).pop();
-                                                // recipe_dao.recipes.imageURL =
+
+                                                // show image box
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      popupDialogImage(context),
+                                                );
                                               },
                                             )
                                           ],
@@ -317,6 +327,37 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
       //   child: const Icon(Icons.add),
       //   onPressed: () {},
       // ),
+    );
+  }
+
+  Widget popupDialogImage(BuildContext context) {
+    return new AlertDialog(
+      // title: const Text('Your dish looks like...'),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Image.network(currentUrls_fordisplay),
+        ],
+      ),
+      actions: <Widget>[
+        new TextButton(
+          onPressed: () {},
+          child: Text(
+            'Save Image',
+            style: TextStyle(color: Colors.black54),
+          ),
+        ),
+        new TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            'Close',
+            style: TextStyle(color: Colors.black54),
+          ),
+        ),
+      ],
     );
   }
 

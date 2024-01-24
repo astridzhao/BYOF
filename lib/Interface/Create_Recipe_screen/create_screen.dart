@@ -554,6 +554,7 @@ class CreateScreenState extends State<CreateScreen> {
               child: FittedBox(
                   fit: BoxFit.contain,
                   child: FloatingActionButton(
+                    heroTag: null,
                     // You can adjust this as needed
                     tooltip: "Add a new protein",
                     onPressed: () {
@@ -631,7 +632,7 @@ class CreateScreenState extends State<CreateScreen> {
               child: FittedBox(
                   fit: BoxFit.contain,
                   child: FloatingActionButton(
-                    // You can adjust this as needed
+                    heroTag: null,
                     tooltip: "Add a new vegetable",
                     onPressed: () {
                       currentIngredientList = ingredients_vege;
@@ -697,7 +698,7 @@ class CreateScreenState extends State<CreateScreen> {
               child: FittedBox(
                   fit: BoxFit.contain,
                   child: FloatingActionButton(
-                    // You can adjust this as needed
+                    heroTag: null,
                     tooltip: "Add a new carb",
                     onPressed: () {
                       currentIngredientList = ingredients_carb;
@@ -765,7 +766,7 @@ class CreateScreenState extends State<CreateScreen> {
               child: FittedBox(
                   fit: BoxFit.contain,
                   child: FloatingActionButton(
-                    // You can adjust this as needed
+                    heroTag: null,
                     tooltip: "Add",
                     onPressed: () {
                       currentIngredientList = ingredients_others;
@@ -884,7 +885,7 @@ class CreateScreenState extends State<CreateScreen> {
     setState(() {
       resultCompletion = completion.choices.first.message.content;
 
-      log(resultCompletion);
+      // log(resultCompletion);
       // log(contentUser);
       // atomInputContainerController.clear();
       // selectedIngredients.clear();

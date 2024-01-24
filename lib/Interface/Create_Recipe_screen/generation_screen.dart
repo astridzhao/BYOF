@@ -11,7 +11,6 @@ import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:astridzhao_s_food_app/key/api_key.dart';
 import 'package:dart_openai/dart_openai.dart';
-import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
@@ -190,9 +189,10 @@ class _GenerationScreenState extends State<GenerationScreen> {
   /// Section Widget
   Widget title(BuildContext context) {
     return Container(
-        padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
-        alignment: Alignment.center,
+        padding: EdgeInsets.fromLTRB(60, 0, 60, 20),
+        alignment: Alignment.topCenter,
         child: Text(widget.recipe.title.value.toString(),
+            textAlign: TextAlign.center,
             maxLines: 2,
             style: TextStyle(
                 fontFamily: "Outfit",
@@ -532,7 +532,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           icon: Icon(Icons.share),
           tooltip: "Share",
           onPressed: () {
-            // Add your share functionality here
+            // TODO: Add share functionality here
           },
         ),
         Padding(
@@ -554,8 +554,9 @@ class _GenerationScreenState extends State<GenerationScreen> {
               ),
             ),
             onPressed: () async {
-              // Add your favorite functionality here
-              index_color = 1;
+              setState(() {
+                index_color = 1;
+              });
 
               final insertedRecipe = await recipesDao
                   .into(recipesDao.recipes)
@@ -573,7 +574,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                 File file = new File(path.join(
                     documentdirectory.path, path.basename(generatedImageUrls)));
                 await file.writeAsBytes(response.bodyBytes);
-                log(file.path);
+                log("image saving path: " + file.path);
                 await (recipesDao.update(recipesDao.recipes)..where((tbl) => tbl.id.equals(currentID)))
                   ..write(RecipesCompanion(imageURL: drift.Value(file.path)));
               }

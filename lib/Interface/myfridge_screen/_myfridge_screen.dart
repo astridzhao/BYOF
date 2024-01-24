@@ -160,6 +160,7 @@ class MyfridgePageState extends State<MyfridgePage> {
           right: 16.h,
           bottom: 16.v,
           child: FloatingActionButton(
+            heroTag: null,
             onPressed: addFiberItem,
             child: Icon(Icons.add),
           ),
@@ -201,6 +202,7 @@ class MyfridgePageState extends State<MyfridgePage> {
           right: 16.h,
           bottom: 16.v,
           child: FloatingActionButton(
+            heroTag: null,
             onPressed: addProteinItem,
             child: Icon(Icons.add),
           ),
@@ -242,6 +244,7 @@ class MyfridgePageState extends State<MyfridgePage> {
           right: 16.h,
           bottom: 16.v,
           child: FloatingActionButton(
+            heroTag: null,
             onPressed: addCarbItem,
             child: Icon(Icons.add),
           ),

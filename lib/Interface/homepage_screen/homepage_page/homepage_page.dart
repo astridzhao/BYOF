@@ -237,11 +237,10 @@ class HomepagePageState extends State<HomepagePage> {
           //   urls.add(
           //       default_image_url); // Replace with your actual default image URL
           // }
-
           return ListView.separated(
             padding: EdgeInsets.only(left: 10.h),
             scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => SizedBox(width: 24),
+            separatorBuilder: (context, index) => SizedBox(width: 15),
             itemCount: urls.length,
             itemBuilder: (context, index) {
               // Use the URL if it's not null, otherwise use the default image URL
