@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:astridzhao_s_food_app/Interface/_favorites_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/_favorites_screen.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
@@ -29,18 +29,21 @@ class HomepagePage extends StatefulWidget {
 class Savings {
   final int co2;
   final int dollar;
-
   Savings(this.co2, this.dollar);
 }
 
 class HomepagePageState extends State<HomepagePage> {
   //call database
   final recipe_dao = RecipesDao(DatabaseService().database);
+  //TODO: Saving data in the database : userID
+  int savingCo2 = 0;
+  int savingDollar = 0;
 
+// retrieve saving model data
   Savings getSavingNums() {
     final savingsModel = Provider.of<SavingsModel>(context, listen: false);
-    int savingCo2 = savingsModel.savingCo2;
-    int savingDollar = savingsModel.savingDollar;
+    savingCo2 = savingsModel.savingCo2;
+    savingDollar = savingsModel.savingDollar;
     return Savings(savingCo2, savingDollar);
     // Use savingCo2 as needed
   }
@@ -206,6 +209,7 @@ class HomepagePageState extends State<HomepagePage> {
   /// Section Widget
   Widget _buildSavingSummary(BuildContext context) {
     Savings savings = getSavingNums();
+
     return SizedBox(
       height: 170.v,
       child: Row(
@@ -262,26 +266,7 @@ class HomepagePageState extends State<HomepagePage> {
 
               // log(imageFile.path);
               // return RecipecontentrowItemWidget(imagefilePath: imageUrl);
-
-              // return FutureBuilder<bool>(
-              //   future: imageFile.exists(),
-              //   builder: (context, snapshot) {
-              //     if (snapshot.data == true) {
-              //       return RecipecontentrowItemWidget(imagefilePath: imageUrl);
-              //     } else {
-              //       // Fallback to a default image if the file doesn't exist
-              //       return RecipecontentrowItemWidget(
-              //           imagefilePath: default_image_url);
-              //     }
-              //   },
-              // );
             },
-            // itemBuilder: (context, index) {
-            //   // Use the URL if it's not null, otherwise use the default image URL
-            //   String imageUrl = urls[index] ??
-            //       default_image_url; // Replace with your actual default image URL
-            //   return RecipecontentrowItemWidget(imagefilePath: imageUrl);
-            // },
           );
         },
       ),

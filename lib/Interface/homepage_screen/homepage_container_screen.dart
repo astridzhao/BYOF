@@ -2,7 +2,7 @@ import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/homepage_page.dart';
-import 'package:astridzhao_s_food_app/Interface/_favorites_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/_favorites_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/myfridge_screen/_myfridge_screen.dart';
 import 'package:flutter/material.dart';
 // import 'package:botton_nav_bar/botton_nav_bar.dart';
