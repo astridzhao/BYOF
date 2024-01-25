@@ -7,9 +7,13 @@ class SavingsModel extends ChangeNotifier {
   int get savingCo2 => _savingCo2;
   int get savingDollar => _savingDollar;
 
-  void incrementSavings(int co2, int dollar) {
-    _savingCo2 += co2;
-    _savingDollar += dollar;
+  set savingCo2(int value) {
+    _savingCo2 = value;
+    notifyListeners();
+  }
+
+  set savingDollar(int value) {
+    _savingDollar = value;
     notifyListeners();
   }
 }

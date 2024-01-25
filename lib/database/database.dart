@@ -101,7 +101,7 @@ LazyDatabase _openConnection(String dbName) {
     // for your app.
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, dbName));
-    print(file.path);
+    // print(file.path);
 
     // Also work around limitations on old Android versions
     if (Platform.isAndroid) {

@@ -8,6 +8,8 @@ import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_scre
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
+import 'package:astridzhao_s_food_app/Interface/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:astridzhao_s_food_app/key/api_key.dart';
 import 'package:dart_openai/dart_openai.dart';
@@ -35,6 +37,17 @@ class _GenerationScreenState extends State<GenerationScreen> {
   Color enableColor = appTheme.orange_primary;
   Color disableColor = Colors.grey; //your color
   int index_color = -1;
+  //initialize variables
+  int savingCo2 = 0;
+  int savingDollar = 0;
+
+  void incrementSavingNums(int co2, int dollar) {
+    print("add co2: " + co2.toString());
+    print("add dollar: " + dollar.toString());
+    final savingsModel = Provider.of<SavingsModel>(context, listen: false);
+    savingsModel.savingCo2 = co2;
+    savingsModel.savingDollar = dollar;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,9 +135,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
         },
       ),
       actions: [
-        // TODO(astrid): save image locally + get local url
-        // final imageURL =
-        //     "path-to-image";
         TextButton.icon(
           icon: Icon(Icons.question_mark_rounded),
           label: Text("Want to see what it looks like?",
@@ -623,10 +633,13 @@ class _GenerationScreenState extends State<GenerationScreen> {
               vertical: 8.0,
             ),
           ),
-          onPressed: () async {
+          onPressed: () {
             setState(() {
               index_color == 1;
             });
+
+            incrementSavingNums(widget.recipe.savingSummary_CO2.value,
+                widget.recipe.savingSummary_money.value);
           }),
     );
   }

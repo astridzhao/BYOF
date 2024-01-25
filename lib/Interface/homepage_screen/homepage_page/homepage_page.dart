@@ -26,13 +26,22 @@ class HomepagePage extends StatefulWidget {
   HomepagePageState createState() => HomepagePageState();
 }
 
+class Savings {
+  final int co2;
+  final int dollar;
+
+  Savings(this.co2, this.dollar);
+}
+
 class HomepagePageState extends State<HomepagePage> {
+  //call database
   final recipe_dao = RecipesDao(DatabaseService().database);
 
-  void someMethod() {
+  Savings getSavingNums() {
     final savingsModel = Provider.of<SavingsModel>(context, listen: false);
     int savingCo2 = savingsModel.savingCo2;
     int savingDollar = savingsModel.savingDollar;
+    return Savings(savingCo2, savingDollar);
     // Use savingCo2 as needed
   }
 
@@ -196,6 +205,7 @@ class HomepagePageState extends State<HomepagePage> {
 
   /// Section Widget
   Widget _buildSavingSummary(BuildContext context) {
+    Savings savings = getSavingNums();
     return SizedBox(
       height: 170.v,
       child: Row(
@@ -204,13 +214,13 @@ class HomepagePageState extends State<HomepagePage> {
           SavingSummeryWidget(
               title: "Reduced",
               imagePath: ImageConstant.co2,
-              counter: 2,
+              counter: savings.co2,
               unit: "KG"),
           SizedBox(width: 28),
           SavingSummeryWidget(
               title: "Saved",
               imagePath: ImageConstant.moneybig,
-              counter: 3,
+              counter: savings.dollar,
               unit: "USD"),
         ],
       ),

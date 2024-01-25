@@ -38,7 +38,7 @@ class Recipes extends Table {
 
 /// Parses a LLM generated recipe into an insertable Recipe Dataclass.
 RecipesCompanion RecipeFromLLMJson(String llmResult) {
-  print(llmResult);
+  // print(llmResult);
   final decoded = jsonDecode(llmResult) as Map<String, dynamic>;
   return RecipesCompanion.insert(
     title: decoded['Title'] as String,

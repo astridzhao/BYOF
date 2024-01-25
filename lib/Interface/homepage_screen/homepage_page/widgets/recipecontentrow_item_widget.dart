@@ -22,7 +22,7 @@ class _RecipecontentrowItemWidgetState
   @override
   Widget build(BuildContext context) {
     //Testing:
-    print('build: Image file name is ${widget.imagefilePath}');
+    // print('build: Image file name is ${widget.imagefilePath}');
 
     return Container(
       height: 64.adaptSize,
@@ -56,8 +56,9 @@ class _RecipecontentrowItemWidgetState
         builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData && snapshot.data!.existsSync()) {
-              // If the file exists, display it
-              print('File exists: ${snapshot.data}');
+              // Testing: If the file exists, display it
+
+              // print('File exists: ${snapshot.data}');
               return ClipOval(
                 child: Image.file(
                   snapshot.data!,
@@ -65,8 +66,8 @@ class _RecipecontentrowItemWidgetState
                 ),
               );
             } else {
-              // If the file doesn't exist, display a default image
-              print('File does not exists');
+              // Testing: If the file doesn't exist, display a default image
+              // print('File does not exists');
               return ClipOval(
                 child: Image.asset(
                   "assets/images/generate2.png",

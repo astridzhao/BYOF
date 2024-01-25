@@ -62,7 +62,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
         String imageName = path.basename(currentUrls_fordisplay);
         File file = new File(path.join(documentdirectory.path, imageName));
         await file.writeAsBytes(response.bodyBytes);
-        print("local directory: " + documentdirectory.path);
+        // print("local directory: " + documentdirectory.path);
         // store image into local directory
         await (recipe_dao.update(recipe_dao.recipes)..where((tbl) => tbl.id.equals(id)))
           ..write(RecipesCompanion(imageURL: drift.Value(imageName)));
@@ -124,10 +124,10 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                         generatedImageUrls[i] =
                             recipe.imageURL != null ? recipe.imageURL : null;
 //Testing:
-                        log("recipe title: " +
-                            recipe.title +
-                            " file path name:" +
-                            generatedImageUrls[i].toString());
+                        // log("recipe title: " +
+                        //     recipe.title +
+                        //     " file path name:" +
+                        //     generatedImageUrls[i].toString());
 
                         // Get a list of local image paths
                         final List<String> localImages = [
