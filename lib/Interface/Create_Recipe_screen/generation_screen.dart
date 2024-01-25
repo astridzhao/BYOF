@@ -89,16 +89,16 @@ class _GenerationScreenState extends State<GenerationScreen> {
   Future<void> generateImage(String recipe) async {
     OpenAI.apiKey = azapiKey;
     final image = await OpenAI.instance.image.create(
-      n: 1,
-      prompt: 'Create a cartoon-style image of a related dish for a restaurant menu using the provided $recipe.' +
-          'Ensure the dish looks appetizing to attract customers and provides users with an idea of the overall appearance of the complete dish.',
-    );
+        n: 1,
+        prompt: "You act as a professional image-generating assistant. By referencing the recipe title $recipe, use your imagination to create a related dish image can put on my restaurant menu. " +
+            "The image style should be cute and cartoon, and make it looks tasty to attract customers. " +
+            "Do not put any text on the image. ");
 
     setState(() {
       for (int index = 0; index < image.data.length; index++) {
         final currentItem = image.data[index];
         generatedImageUrls = currentItem.url.toString();
-        print(currentItem.url);
+        // print(currentItem.url);
       }
       ;
     });
@@ -136,7 +136,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
               context: context,
               builder: (BuildContext context) => popupDialogImage(context),
             );
-            log("imageURL" + generatedImageUrls);
+            // log("imageURL" + generatedImageUrls);
           },
         ),
       ],
@@ -563,8 +563,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
                   .insertReturning(widget.recipe);
 
               int currentID = insertedRecipe.id;
-              log("ID: " + currentID.toString());
-              log(generatedImageUrls);
+              // log("ID: " + currentID.toString());
+              // log(generatedImageUrls);
               if (generatedImageUrls != "") {
                 //save image to local -> generatedImageUrls
                 var response = await http.get(Uri.parse(generatedImageUrls));
@@ -576,7 +576,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
                 await file.writeAsBytes(response.bodyBytes);
                 log("image saving path: " + file.path);
                 await (recipesDao.update(recipesDao.recipes)..where((tbl) => tbl.id.equals(currentID)))
-                  ..write(RecipesCompanion(imageURL: drift.Value(file.path)));
+                  ..write(RecipesCompanion(imageURL: drift.Value(path.basename(generatedImageUrls))));
+                log("image saving name: " + path.basename(generatedImageUrls));
               }
             },
           ),

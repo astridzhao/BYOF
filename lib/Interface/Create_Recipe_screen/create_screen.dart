@@ -162,12 +162,13 @@ class CreateScreenState extends State<CreateScreen> {
   String selectedServingSize = "1";
 
   String get contentUser =>
-      "Give me a Recipe following these cooking preferences: "
-          "\n 1. Cuisine style should be $selectedCuisine, so use some special sauce/spice. "
-          "\n 2. Dish type should be $selectedDishType. And the cooking method should be $selectedCookingMethod. "
-          "\n 3. Be mindful of the user have $selectedDietaryRestriction diet restriction. "
-          "\n 4. The serving size is $selectedServingSize. " +
-      "\n Additionally, do not use any other ingredients that I did not pick!";
+      "My ingredients are denoted by backticks: ```$selectedIngredients``` ;" +
+      "and please following below cooking preferences: "
+          "1. Cuisine style should be $selectedCuisine. "
+          "2. Dish type should be $selectedDishType. " +
+      "3. Using cooking method $selectedCookingMethod to cook. "
+          "4. Be mindful of I have $selectedDietaryRestriction diet restriction. "
+          "5. I have $selectedServingSize people to eat. ";
 
   @override
   Widget build(BuildContext context) {
@@ -855,16 +856,16 @@ class CreateScreenState extends State<CreateScreen> {
   sendPrompt() async {
     OpenAI.apiKey = azapiKey;
     final systemMessage = OpenAIChatCompletionChoiceMessageModel(
-      content: "As a recipe-generating assistant, create a recipe by using " +
-          selectedIngredients.join() +
-          " provided by the user. To ensure a precise and high-quality response, please return the response in create a JSON object which enumerates a set of 7 child objects." +
+      content: "I want to provide delicious recipe for users by using their leftover ingredients. You act as a professional personal recipe-generating assistant who need to create ONE recipe using provided ingredients. " +
+          " To ensure a precise and high-quality response, you should following below rules: 1. please return the response in create a JSON object which enumerates a set of 7 child objects, " +
           " Each objects are respectively named as Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, Note, Saving Co2, and Saving Money." +
           " The result JSON objetcs should be in this format: " +
           "{Title: string, Ingredient List: list[String], Step-by-Step Instructions: list[String], Expected Cooking Time: integer, Note: String, Saving Co2: integer, Saving Money: integer}." +
-          " Additionally, following below rules: 1. the unit of Expected Cooking Time is in minutes; " +
-          " 2. make your recipe can be as similar to some signature known dishes as possible; " +
-          " 3. Saving Co2 should be an estimated integer of Co2 the user saved from this meal by reducing food waste. Total CO2 emissions=∑(Amount of each food type wasted×Emission factor for that food type); " +
-          " 4. Saving money should be estimated integer of money the user saved from not throw those ingredients.",
+          " 2. the unit of 'Expected Cooking Time' is in minutes; " +
+          " 3. make your recipe be as similar to some authentic known dishes as possible; " +
+          " 4. 'Saving Co2' should be an estimated integer of Co2 the user saved from this meal by reducing food waste. Total CO2 emissions=∑(Amount of each food type wasted×Emission factor for that food type); " +
+          " 5. 'Saving money' should be estimated integer of money the user saved from not throw those ingredients; " +
+          " 6. Do not use any other ingredients that users did not pick, but you can use other pantry or spices.",
       role: OpenAIChatMessageRole.assistant,
     );
 

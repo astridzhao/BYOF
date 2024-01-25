@@ -40,7 +40,6 @@ class HomepagePageState extends State<HomepagePage> {
         .watch()
         .map((rows) => rows.map((row) => row.read(imageURL)).toList());
 
-    // print(recipeImageURL);
     return recipeImageURL;
     // return query.map((row) => row.read(imageURL));
   }
@@ -216,7 +215,7 @@ class HomepagePageState extends State<HomepagePage> {
       height: 76.v,
       padding: EdgeInsets.symmetric(vertical: 5.v),
       child: StreamBuilder<List<String?>>(
-        stream: getFilteringValues(), // This is your stream of image URLs
+        stream: getFilteringValues(), // have image name (second half of path)
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Show loading indicator while waiting for data
@@ -232,11 +231,7 @@ class HomepagePageState extends State<HomepagePage> {
           // Here we have data
           List<String?> urls = snapshot.hasData ? snapshot.data! : [];
           String default_image_url = "assets/images/generate2.png";
-          // // If no URLs are fetched, add a default URL to the list
-          // if (urls.isEmpty) {
-          //   urls.add(
-          //       default_image_url); // Replace with your actual default image URL
-          // }
+
           return ListView.separated(
             padding: EdgeInsets.only(left: 10.h),
             scrollDirection: Axis.horizontal,
@@ -244,10 +239,32 @@ class HomepagePageState extends State<HomepagePage> {
             itemCount: urls.length,
             itemBuilder: (context, index) {
               // Use the URL if it's not null, otherwise use the default image URL
-              String imageUrl = urls[index] ??
-                  default_image_url; // Replace with your actual default image URL
+              String imageUrl = urls[index] ?? default_image_url;
+              File imageFile = File(imageUrl);
               return RecipecontentrowItemWidget(imagefilePath: imageUrl);
+
+              // log(imageFile.path);
+              // return RecipecontentrowItemWidget(imagefilePath: imageUrl);
+
+              // return FutureBuilder<bool>(
+              //   future: imageFile.exists(),
+              //   builder: (context, snapshot) {
+              //     if (snapshot.data == true) {
+              //       return RecipecontentrowItemWidget(imagefilePath: imageUrl);
+              //     } else {
+              //       // Fallback to a default image if the file doesn't exist
+              //       return RecipecontentrowItemWidget(
+              //           imagefilePath: default_image_url);
+              //     }
+              //   },
+              // );
             },
+            // itemBuilder: (context, index) {
+            //   // Use the URL if it's not null, otherwise use the default image URL
+            //   String imageUrl = urls[index] ??
+            //       default_image_url; // Replace with your actual default image URL
+            //   return RecipecontentrowItemWidget(imagefilePath: imageUrl);
+            // },
           );
         },
       ),
