@@ -157,7 +157,8 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                                         // Check if the future is complete
                                         if (snapshot.connectionState ==
                                             ConnectionState.done) {
-                                          print(snapshot.data!);
+                                          //Testing:
+                                          // print(snapshot.data!);
                                           // Check if the snapshot has data and the file exists
                                           if (snapshot.hasData &&
                                               snapshot.data!.existsSync()) {
@@ -267,6 +268,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                                               ),
                                             ),
                                             SizedBox(width: 15),
+
                                             ElevatedButton(
                                               style: ElevatedButton.styleFrom(
                                                   padding: EdgeInsets.symmetric(
@@ -279,48 +281,56 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
                                                     fontFamily: "Outfit",
                                                     fontSize: 10),
                                               ),
-                                              onPressed: () async {
-                                                showDialog(
-                                                  context: context,
-                                                  barrierDismissible:
-                                                      false, // User must tap button to close dialog
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return AlertDialog(
-                                                      content: Row(
-                                                        children: [
-                                                          SizedBox(
-                                                            width: 20,
-                                                            height:
-                                                                20, // Adjust the height as needed
-                                                            child:
-                                                                CircularProgressIndicator(),
-                                                          ),
-                                                          SizedBox(width: 20),
-                                                          Text(
-                                                              "Crafting a delightful dish image..."),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  },
-                                                );
+                                              // if the user already generated a image once, disable the button
+                                              onPressed: generatedImageUrls[i]!
+                                                      .isEmpty
+                                                  ? () async {
+                                                      showDialog(
+                                                        context: context,
+                                                        barrierDismissible:
+                                                            false, // User must tap button to close dialog
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            content: Row(
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: 20,
+                                                                  height:
+                                                                      20, // Adjust the height as needed
+                                                                  child:
+                                                                      CircularProgressIndicator(),
+                                                                ),
+                                                                SizedBox(
+                                                                    width: 20),
+                                                                Text(
+                                                                    "Crafting a delightful dish image..."),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
 
-                                                await generateImage(
-                                                    i,
-                                                    recipe.id,
-                                                    recipe.title.toString());
+                                                      await generateImage(
+                                                          i,
+                                                          recipe.id,
+                                                          recipe.title
+                                                              .toString());
 
-                                                // pop alert waiting box
-                                                Navigator.of(context).pop();
+                                                      // pop alert waiting box
+                                                      Navigator.of(context)
+                                                          .pop();
 
-                                                // show image box
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (BuildContext
-                                                          context) =>
-                                                      popupDialogImage(context),
-                                                );
-                                              },
+                                                      // show image box
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            popupDialogImage(
+                                                                context),
+                                                      );
+                                                    }
+                                                  : null,
                                             )
                                           ],
                                         )

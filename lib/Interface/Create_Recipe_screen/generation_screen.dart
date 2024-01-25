@@ -32,7 +32,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
   IconData copyIcon = Icons.content_copy_rounded;
   RecipesDao recipesDao = RecipesDao(DatabaseService().database);
   String generatedImageUrls = "";
-  Color enableColor = appTheme.green_primary;
+  Color enableColor = appTheme.orange_primary;
   Color disableColor = Colors.grey; //your color
   int index_color = -1;
 
@@ -53,6 +53,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
                   SizedBox(height: 5),
                   saving_summery(context),
                   SizedBox(height: 20),
+                  buttons_group(context),
+                  SizedBox(height: 10),
                   //divider
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 20),
@@ -200,6 +202,19 @@ class _GenerationScreenState extends State<GenerationScreen> {
                 fontWeight: FontWeight.w500)));
   }
 
+  Widget buttons_group(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          favoriteButton(context),
+          madeButton(context),
+        ],
+      ),
+    );
+  }
+
   Widget group_info(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -210,16 +225,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
           children: [
             Column(
               children: [
-                // CustomImageView(
-                //   height: 40,
-                //   width: 40,
-                //   imagePath: ImageConstant.imggenerationpage_ingredient,
-                //   margin: EdgeInsets.only(
-                //     top: 5,
-                //     bottom: 5,
-                //   ),
-                // ),
-                // Spacer(),
                 Container(
                   margin: EdgeInsets.fromLTRB(10, 0, 0, 10),
                   padding: EdgeInsets.fromLTRB(0, 0, 5, 15),
@@ -293,7 +298,13 @@ class _GenerationScreenState extends State<GenerationScreen> {
         ),
         child: Column(
           children: [
-            SizedBox(height: 5),
+            CustomImageView(
+              height: 80,
+              width: 80,
+              imagePath: ImageConstant.imgLogo2RemovebgPreview,
+              margin: EdgeInsets.only(bottom: 0, top: 2),
+            ),
+            // SizedBox(height: 5),
             Text(
               "Instructions",
               style: TextStyle(
@@ -344,7 +355,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
             style: TextStyle(
                 fontFamily: "Outfit",
                 fontSize: 14,
-                color: Colors.white70,
+                color: Colors.white,
                 fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 12.v),
@@ -367,7 +378,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                           fontFamily: "Outfit",
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white70),
+                          color: Colors.white),
                     ),
                   ),
                   Padding(
@@ -381,7 +392,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       style: TextStyle(
                           fontFamily: "Outfit",
                           fontSize: 14,
-                          color: Colors.white70),
+                          color: Colors.white),
                     ),
                   ),
                   Spacer(
@@ -392,7 +403,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     child: VerticalDivider(
                       width: 1.h,
                       thickness: 1.v,
-                      color: Colors.white60,
+                      color: Colors.white,
                     ),
                   ),
                   Spacer(
@@ -409,7 +420,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                           fontFamily: "Outfit",
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white70),
+                          color: Colors.white),
                     ),
                   ),
                   Padding(
@@ -423,7 +434,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       style: TextStyle(
                           fontFamily: "Outfit",
                           fontSize: 14,
-                          color: Colors.white70),
+                          color: Colors.white),
                     ),
                   ),
                 ],
@@ -516,7 +527,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
 
   Widget bottomSettingBar(BuildContext context) {
     return OverflowBar(
-      alignment: MainAxisAlignment.spaceEvenly,
+      alignment: MainAxisAlignment.end,
+      spacing: 10,
       children: <Widget>[
         IconButton(
           icon: Icon(copyIcon),
@@ -530,59 +542,92 @@ class _GenerationScreenState extends State<GenerationScreen> {
         ),
         IconButton(
           icon: Icon(Icons.share),
+          padding: EdgeInsets.only(right: 30),
           tooltip: "Share",
           onPressed: () {
             // TODO: Add share functionality here
           },
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: TextButton.icon(
-            icon: Icon(Icons.favorite_border_outlined),
-            label: Text(
-              "Add to My Favorite",
-              style: TextStyle(
-                fontFamily: "Outfit",
-              ),
-            ),
-            style: TextButton.styleFrom(
-              backgroundColor: index_color == 1 ? disableColor : enableColor,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(
-                horizontal: 15.0,
-                vertical: 8.0,
-              ),
-            ),
-            onPressed: () async {
-              setState(() {
-                index_color = 1;
-              });
+      ],
+    );
+  }
 
-              final insertedRecipe = await recipesDao
-                  .into(recipesDao.recipes)
-                  .insertReturning(widget.recipe);
-
-              int currentID = insertedRecipe.id;
-              // log("ID: " + currentID.toString());
-              // log(generatedImageUrls);
-              if (generatedImageUrls != "") {
-                //save image to local -> generatedImageUrls
-                var response = await http.get(Uri.parse(generatedImageUrls));
-                // store pictures in document directory
-                Directory documentdirectory =
-                    await getApplicationDocumentsDirectory();
-                File file = new File(path.join(
-                    documentdirectory.path, path.basename(generatedImageUrls)));
-                await file.writeAsBytes(response.bodyBytes);
-                log("image saving path: " + file.path);
-                await (recipesDao.update(recipesDao.recipes)..where((tbl) => tbl.id.equals(currentID)))
-                  ..write(RecipesCompanion(imageURL: drift.Value(path.basename(generatedImageUrls))));
-                log("image saving name: " + path.basename(generatedImageUrls));
-              }
-            },
+  Widget favoriteButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      child: TextButton.icon(
+        icon: Icon(Icons.favorite_border_outlined),
+        label: Text(
+          "Add to My Favorite",
+          style: TextStyle(
+            fontFamily: "Outfit",
+            fontSize: 14,
           ),
         ),
-      ],
+        style: TextButton.styleFrom(
+          backgroundColor: index_color == 1 ? disableColor : enableColor,
+          foregroundColor: Colors.white,
+          padding: EdgeInsets.symmetric(
+            horizontal: 15.0,
+            vertical: 8.0,
+          ),
+        ),
+        onPressed: () async {
+          setState(() {
+            index_color = 1;
+          });
+
+          final insertedRecipe = await recipesDao
+              .into(recipesDao.recipes)
+              .insertReturning(widget.recipe);
+
+          int currentID = insertedRecipe.id;
+          // log("ID: " + currentID.toString());
+          // log(generatedImageUrls);
+          if (generatedImageUrls != "") {
+            //save image to local -> generatedImageUrls
+            var response = await http.get(Uri.parse(generatedImageUrls));
+            // store pictures in document directory
+            Directory documentdirectory =
+                await getApplicationDocumentsDirectory();
+            File file = new File(path.join(
+                documentdirectory.path, path.basename(generatedImageUrls)));
+            await file.writeAsBytes(response.bodyBytes);
+            log("image saving path: " + file.path);
+            await (recipesDao.update(recipesDao.recipes)..where((tbl) => tbl.id.equals(currentID)))
+              ..write(RecipesCompanion(imageURL: drift.Value(path.basename(generatedImageUrls))));
+            log("image saving name: " + path.basename(generatedImageUrls));
+          }
+        },
+      ),
+    );
+  }
+
+  Widget madeButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      child: TextButton.icon(
+          icon: Icon(Icons.hdr_strong),
+          label: Text(
+            "I made it",
+            style: TextStyle(
+              fontFamily: "Outfit",
+              fontSize: 14,
+            ),
+          ),
+          style: TextButton.styleFrom(
+            backgroundColor: index_color == 1 ? disableColor : enableColor,
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.symmetric(
+              horizontal: 15.0,
+              vertical: 8.0,
+            ),
+          ),
+          onPressed: () async {
+            setState(() {
+              index_color == 1;
+            });
+          }),
     );
   }
 }

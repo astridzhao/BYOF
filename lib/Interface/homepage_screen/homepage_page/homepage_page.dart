@@ -4,7 +4,8 @@ import 'package:astridzhao_s_food_app/Interface/_favorites_screen.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
-
+import 'package:astridzhao_s_food_app/Interface/provider.dart';
+import 'package:provider/provider.dart';
 import '../homepage_page/widgets/recipecontentrow_item_widget.dart';
 import 'widgets/saving_summery_widget.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
@@ -13,7 +14,6 @@ import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:drift/drift.dart' as drift;
-import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:developer';
 
@@ -28,6 +28,13 @@ class HomepagePage extends StatefulWidget {
 
 class HomepagePageState extends State<HomepagePage> {
   final recipe_dao = RecipesDao(DatabaseService().database);
+
+  void someMethod() {
+    final savingsModel = Provider.of<SavingsModel>(context, listen: false);
+    int savingCo2 = savingsModel.savingCo2;
+    int savingDollar = savingsModel.savingDollar;
+    // Use savingCo2 as needed
+  }
 
   Stream<List<String?>> getFilteringValues() {
     final imageURL = recipe_dao.recipes.imageURL;
@@ -197,13 +204,13 @@ class HomepagePageState extends State<HomepagePage> {
           SavingSummeryWidget(
               title: "Reduced",
               imagePath: ImageConstant.co2,
-              counter: 1,
+              counter: 2,
               unit: "KG"),
           SizedBox(width: 28),
           SavingSummeryWidget(
               title: "Saved",
               imagePath: ImageConstant.moneybig,
-              counter: 2,
+              counter: 3,
               unit: "USD"),
         ],
       ),

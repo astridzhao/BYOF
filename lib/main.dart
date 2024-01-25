@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'core/app_export.dart';
+import 'package:astridzhao_s_food_app/Interface/provider.dart';
+import 'package:provider/provider.dart';
 
 var globalMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -13,7 +15,12 @@ void main() {
 
   ///Please update theme as per your need if required.
   ThemeHelper().changeTheme('primary');
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => SavingsModel(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
