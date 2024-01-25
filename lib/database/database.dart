@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
@@ -35,6 +34,13 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => latestSchemaVersion;
 
+  Future<void> deleteEverything() {
+    return transaction(() async {
+      for (final table in allTables) {
+        await delete(table).go();
+      }
+    });
+  }
   // AppDatabase(super.connection);
 
   MigrationStrategy get migration {
@@ -95,7 +101,7 @@ LazyDatabase _openConnection(String dbName) {
     // for your app.
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, dbName));
-    print(file.path);
+    // print(file.path);
 
     // Also work around limitations on old Android versions
     if (Platform.isAndroid) {

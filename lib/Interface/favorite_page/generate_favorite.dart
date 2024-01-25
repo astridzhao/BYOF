@@ -17,12 +17,11 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
-class GenerationScreen extends StatefulWidget {
-  final String resultCompletion;
-  final RecipesCompanion recipe;
+class GenerationScreen_favorite extends StatefulWidget {
+  final Recipe recipe;
 
-  GenerationScreen({Key? key, required this.resultCompletion})
-      : recipe = RecipeFromLLMJson(resultCompletion),
+  GenerationScreen_favorite({Key? key, required this.recipe})
+      :
         // recipe_from_favorite ,
         super(key: key);
 
@@ -30,7 +29,7 @@ class GenerationScreen extends StatefulWidget {
   _GenerationScreenState createState() => _GenerationScreenState();
 }
 
-class _GenerationScreenState extends State<GenerationScreen> {
+class _GenerationScreenState extends State<GenerationScreen_favorite> {
   IconData copyIcon = Icons.content_copy_rounded;
   RecipesDao recipesDao = RecipesDao(DatabaseService().database);
   String generatedImageUrls = "";
@@ -201,7 +200,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
     return Container(
         padding: EdgeInsets.fromLTRB(60, 0, 60, 20),
         alignment: Alignment.topCenter,
-        child: Text(widget.recipe.title.value.toString(),
+        child: Text(widget.recipe.title.toString(),
             textAlign: TextAlign.center,
             maxLines: 2,
             style: TextStyle(
@@ -214,9 +213,9 @@ class _GenerationScreenState extends State<GenerationScreen> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          favoriteButton(context),
+          // favoriteButton(context),
           madeButton(context),
         ],
       ),
@@ -246,7 +245,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     itemCount: 1,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        title: Text(widget.recipe.ingredients.value.join('\n'),
+                        title: Text(widget.recipe.ingredients.join('\n'),
                             style: TextStyle(
                                 fontFamily: "Outfit",
                                 fontSize: 12.fSize,
@@ -280,7 +279,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                 imagePath: ImageConstant.imggenerationpage_notes,
                 margin: EdgeInsets.only(bottom: 5, top: 2),
               ),
-              Text(widget.recipe.notes.value.toString(),
+              Text(widget.recipe.notes.toString(),
                   style: TextStyle(
                       fontFamily: "Outfit",
                       fontSize: 12.fSize,
@@ -327,7 +326,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                 itemCount: 1,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(widget.recipe.instructions.value.join('\n \n'),
+                    title: Text(widget.recipe.instructions.join('\n \n'),
                         style: TextStyle(
                             fontFamily: "Outfit",
                             fontSize: 12.fSize,
@@ -381,7 +380,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       bottom: 11.v,
                     ),
                     child: Text(
-                      widget.recipe.savingSummary_CO2.value.toString(),
+                      widget.recipe.savingSummary_CO2.toString(),
                       style: TextStyle(
                           fontFamily: "Outfit",
                           fontSize: 16,
@@ -423,7 +422,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       bottom: 10.v,
                     ),
                     child: Text(
-                      widget.recipe.savingSummary_money.value.toString(),
+                      widget.recipe.savingSummary_money.toString(),
                       style: TextStyle(
                           fontFamily: "Outfit",
                           fontSize: 16,
@@ -477,7 +476,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           ),
           Spacer(),
           Text(
-            widget.recipe.cookTime.value.toString(),
+            widget.recipe.cookTime.toString(),
             style: TextStyle(fontFamily: "Outfit", fontSize: 12.fSize),
           ),
           Spacer(),
@@ -542,7 +541,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           icon: Icon(copyIcon),
           tooltip: "Copy",
           onPressed: () {
-            FlutterClipboard.copy(widget.resultCompletion);
+            FlutterClipboard.copy(widget.recipe.toString());
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Copied")),
             );
@@ -636,8 +635,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
               index_color == 1;
             });
 
-            incrementSavingNums(widget.recipe.savingSummary_CO2.value,
-                widget.recipe.savingSummary_money.value);
+            incrementSavingNums(widget.recipe.savingSummary_CO2,
+                widget.recipe.savingSummary_money);
           }),
     );
   }

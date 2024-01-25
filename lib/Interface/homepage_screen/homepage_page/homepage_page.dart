@@ -1,10 +1,11 @@
 import 'dart:io';
 
-import 'package:astridzhao_s_food_app/Interface/_favorites_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/_favorites_screen.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
-
+import 'package:astridzhao_s_food_app/Interface/provider.dart';
+import 'package:provider/provider.dart';
 import '../homepage_page/widgets/recipecontentrow_item_widget.dart';
 import 'widgets/saving_summery_widget.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
@@ -13,7 +14,6 @@ import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:drift/drift.dart' as drift;
-import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:developer';
 
@@ -26,8 +26,27 @@ class HomepagePage extends StatefulWidget {
   HomepagePageState createState() => HomepagePageState();
 }
 
+class Savings {
+  final int co2;
+  final int dollar;
+  Savings(this.co2, this.dollar);
+}
+
 class HomepagePageState extends State<HomepagePage> {
+  //call database
   final recipe_dao = RecipesDao(DatabaseService().database);
+  //TODO: Saving data in the database : userID
+  int savingCo2 = 0;
+  int savingDollar = 0;
+
+// retrieve saving model data
+  Savings getSavingNums() {
+    final savingsModel = Provider.of<SavingsModel>(context, listen: false);
+    savingCo2 = savingsModel.savingCo2;
+    savingDollar = savingsModel.savingDollar;
+    return Savings(savingCo2, savingDollar);
+    // Use savingCo2 as needed
+  }
 
   Stream<List<String?>> getFilteringValues() {
     final imageURL = recipe_dao.recipes.imageURL;
@@ -40,7 +59,6 @@ class HomepagePageState extends State<HomepagePage> {
         .watch()
         .map((rows) => rows.map((row) => row.read(imageURL)).toList());
 
-    // print(recipeImageURL);
     return recipeImageURL;
     // return query.map((row) => row.read(imageURL));
   }
@@ -190,6 +208,8 @@ class HomepagePageState extends State<HomepagePage> {
 
   /// Section Widget
   Widget _buildSavingSummary(BuildContext context) {
+    Savings savings = getSavingNums();
+
     return SizedBox(
       height: 170.v,
       child: Row(
@@ -198,13 +218,13 @@ class HomepagePageState extends State<HomepagePage> {
           SavingSummeryWidget(
               title: "Reduced",
               imagePath: ImageConstant.co2,
-              counter: 1,
+              counter: savings.co2,
               unit: "KG"),
           SizedBox(width: 28),
           SavingSummeryWidget(
               title: "Saved",
               imagePath: ImageConstant.moneybig,
-              counter: 2,
+              counter: savings.dollar,
               unit: "USD"),
         ],
       ),
@@ -216,7 +236,7 @@ class HomepagePageState extends State<HomepagePage> {
       height: 76.v,
       padding: EdgeInsets.symmetric(vertical: 5.v),
       child: StreamBuilder<List<String?>>(
-        stream: getFilteringValues(), // This is your stream of image URLs
+        stream: getFilteringValues(), // have image name (second half of path)
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Show loading indicator while waiting for data
@@ -232,11 +252,7 @@ class HomepagePageState extends State<HomepagePage> {
           // Here we have data
           List<String?> urls = snapshot.hasData ? snapshot.data! : [];
           String default_image_url = "assets/images/generate2.png";
-          // // If no URLs are fetched, add a default URL to the list
-          // if (urls.isEmpty) {
-          //   urls.add(
-          //       default_image_url); // Replace with your actual default image URL
-          // }
+
           return ListView.separated(
             padding: EdgeInsets.only(left: 10.h),
             scrollDirection: Axis.horizontal,
@@ -244,9 +260,12 @@ class HomepagePageState extends State<HomepagePage> {
             itemCount: urls.length,
             itemBuilder: (context, index) {
               // Use the URL if it's not null, otherwise use the default image URL
-              String imageUrl = urls[index] ??
-                  default_image_url; // Replace with your actual default image URL
+              String imageUrl = urls[index] ?? default_image_url;
+              File imageFile = File(imageUrl);
               return RecipecontentrowItemWidget(imagefilePath: imageUrl);
+
+              // log(imageFile.path);
+              // return RecipecontentrowItemWidget(imagefilePath: imageUrl);
             },
           );
         },
