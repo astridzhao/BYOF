@@ -15,7 +15,7 @@ class ImageConstant {
   static String imgSlogan31 = '$imagePath/img_slogan3_1.png';
 
   // Create account page images
-  static String imgImage2 = '$imagePath/img_image_2.png';
+  static String create_account_page = '$imagePath/create_account_page.png';
 
   // Common images
   static String imgLogo2RemovebgPreview =
@@ -31,8 +31,6 @@ class ImageConstant {
 
   static String imgClasicAlarmClock = '$imagePath/img_clasic_alarm_clock.png';
 
-  static String mushroom = "$imagePath/mushroom.png";
-
   static String imgLockOnsecondarycontainer =
       '$imagePath/img_lock_onsecondarycontainer.svg';
 
@@ -40,11 +38,9 @@ class ImageConstant {
 
   static String fidgebackground = '$imagePath/fridge_background.png';
 
-  static String co2 = '$imagePath/img_ellipse_744.png';
+  static String co2 = '$imagePath/img_savingCo2.png';
 
-  static String moneybig = '$imagePath/img_ellipse_745.png';
-
-  static String imgAvatar58x58 = '$imagePath/img_avatar_58x58.png';
+  static String moneybig = '$imagePath/img_savingdollar.png';
 
   static String imgGroup114 = '$imagePath/img_group_114.png';
 
@@ -54,23 +50,18 @@ class ImageConstant {
 
   static String imgHamburger1 = '$imagePath/img_hamburger_1.png';
 
-  static String imgDallE202401091504 =
-      '$imagePath/img_dall_e_2024_01_09_15_04.png';
+  static String tomato = '$imagePath/tomato.png';
 
-  static String imgDallE20240109150448x48 =
-      '$imagePath/img_dall_e_2024_01_09_15_04_48x48.png';
+  static String mushroom = "$imagePath/mushroom.png";
 
   static String imgIconButton = '$imagePath/img_icon_button.svg';
-
-  static String imgFrame11942 = '$imagePath/img_frame_11942.svg';
-
-  static String imageNotFound = '$imagePath/image_not_found.png';
 
   static String imgManageAccount = '$imagePath/manage_accounts.svg';
 
   static String imgCollection = '$imagePath/collection.svg';
 
-  static String imggenerationpage_ingredient = '$imagePath/generate2.png';
+  static String random_image_onepot =
+      '$imagePath/random_image_onepot.png';
 
-  static String imggenerationpage_notes = '$imagePath/img_image_19.png';
+  static String imggenerationpage_notes = '$imagePath/chief.png';
 }

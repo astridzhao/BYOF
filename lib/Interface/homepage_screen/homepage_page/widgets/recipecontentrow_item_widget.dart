@@ -70,7 +70,7 @@ class _RecipecontentrowItemWidgetState
               // print('File does not exists');
               return ClipOval(
                 child: Image.asset(
-                  "assets/images/generate2.png",
+                  ImageConstant.random_image_onepot,
                   fit: BoxFit.cover,
                 ),
               );

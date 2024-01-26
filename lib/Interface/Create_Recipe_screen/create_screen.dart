@@ -36,36 +36,34 @@ class CreateScreenState extends State<CreateScreen> {
   List<String> ingredients_protein = [
     "chicken breast",
     "chicken thigh",
-    "chicken wing",
     "beef brisket",
-    "beef tendor",
+    "steak",
     "ground beef",
     "turkey bacon",
     "pork ribs",
-    "pork belly",
+    "pork chops",
     "shrimp",
     "fish fillet",
-    "smocked salmon",
     "egg",
-    "tofu(firmed)",
-    "slices cheese",
-    "string cheese"
+    "tofu",
+    "tempeh",
   ];
   List<String> ingredients_vege = [
     "tomato",
     "onion",
     "brocolli",
+    "califlower",
     "mushroom",
+    "carrot",
     "cabbage",
     "spinach",
     "baby spinach",
+    "brussel sprouts",
     "lettuce",
     "pepper",
     "cucumber",
-    "califlower",
     "zuchinni",
     "eggplant",
-    "carrot"
   ];
   List<String> ingredients_fruit = [
     "apple",
@@ -76,24 +74,20 @@ class CreateScreenState extends State<CreateScreen> {
   List<String> ingredients_carb = [
     "egg noodle",
     "white rice",
-    "rice cake",
+    "wrap",
     "pasta",
     "potato",
-    "corn",
     "sweet potato",
-    "pumpkin",
-    "gnocchi",
+    "squash",
     "bread",
-    "bagel",
-    "baguette",
-    "pie crust",
-    "wrap"
+    "rolled oats"
   ];
   List<String> ingredients_others = [
     "peanut butter",
     "curry paste",
-    "milk",
-    "basil"
+    "chicken broth",
+    "garlic",
+    "ginger",
   ];
 
   List<String> selectedIngredients = [];
@@ -178,22 +172,21 @@ class CreateScreenState extends State<CreateScreen> {
       resizeToAvoidBottomInset: false,
       // appBar: MyAppBar(),
       appBar: AppBar(
-        // leading: Text(
-        //   'BRING YOUR OWN FRIDGE',
-        //   style: TextStyle(
-        //       color: Colors.black54,
-        //       fontSize: 14,
-        //       fontWeight: FontWeight.bold,
-        //       fontFamily: "Outfit"),
-        // ),
+        leadingWidth: 80,
         elevation: 0,
         backgroundColor: appTheme.yellow_secondary,
+        leading: Builder(builder: (BuildContext context) {
+          return CustomImageView(
+            imagePath: ImageConstant.imgLogo2RemovebgPreview,
+            margin: EdgeInsets.only(left: 10),
+          );
+        }),
         title: const Text('BRING YOUR OWN FRIDGE'),
-        toolbarHeight: 80,
+        toolbarHeight: 90,
         // backgroundColor: Color(0xFF5A7756),
         titleTextStyle: TextStyle(
-            color: Colors.black54,
-            fontSize: 14,
+            color: Color.fromARGB(190, 0, 0, 0),
+            fontSize: 15,
             fontWeight: FontWeight.bold,
             fontFamily: "Outfit"),
         actions: <Widget>[
@@ -249,7 +242,7 @@ class CreateScreenState extends State<CreateScreen> {
         SingleChildScrollView(
             child: Container(
                 width: double.maxFinite,
-                margin: EdgeInsets.only(bottom: 6.v),
+                margin: EdgeInsets.only(top: 5, bottom: 6.v),
                 child: Stack(children: [
                   Align(
                       alignment: Alignment.topCenter,
@@ -259,11 +252,17 @@ class CreateScreenState extends State<CreateScreen> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                // Container(
-                                //   alignment: Alignment.topRight,
-                                //   child: (_buildLanguagePicker(context)),
-                                // ),
-
+                                Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.yellow_primary,
+                                    borderRadius: BorderRadius.circular(
+                                      20.h,
+                                    ),
+                                  ),
+                                  child: (_buildLanguagePicker(context)),
+                                ),
+                                SizedBox(height: 20),
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 20, vertical: 20),
@@ -291,7 +290,6 @@ class CreateScreenState extends State<CreateScreen> {
                                     ],
                                   ),
                                 ),
-
                                 _buildIngredientInputSection(context),
                                 SizedBox(height: 40.v),
                               ]))),
@@ -313,11 +311,7 @@ class CreateScreenState extends State<CreateScreen> {
           ),
           SizedBox(height: 3),
           CustomDropDown(
-            // hintText: "Cuisine Style",
             hintText: dropdownItemList1_cuisine.first,
-            // width: MediaQuery.of(context).size.width *
-            //     0.40,
-
             hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
             items: dropdownItemList1_cuisine,
             onChanged: (value) {
@@ -447,24 +441,28 @@ class CreateScreenState extends State<CreateScreen> {
   Widget _buildLanguagePicker(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-          left: 20.0, right: 40.0, top: 10.0, bottom: 10.0),
+          left: 20.0, right: 00.0, top: 0.0, bottom: 00.0),
       child: Row(
         children: [
           const Text(
-            "Language",
-            style: TextStyle(fontSize: 14),
+            "Pick Your Language",
+            style: TextStyle(fontSize: 13, fontFamily: "Outfit"),
           ),
           // const Spacer(),
           SizedBox(width: 20),
           SizedBox(
-            width: 100,
+            width: 150,
             child: LanguagePickerDropdown(
               initialValue: Languages.english,
               itemBuilder: ((language) => DropdownMenuItem(
                       child: Text(
                     language.name,
                     style: const TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                      color: Colors.black,
+                      fontFamily: "Outfit",
+                      fontWeight: FontWeight.w300,
+                      fontSize: 12,
+                    ),
                   ))),
               onValuePicked: (Language language) {
                 setState(() {
@@ -490,9 +488,10 @@ class CreateScreenState extends State<CreateScreen> {
           // keyboardType: TextInputType.text,
           controller: atomInputContainerController,
           decoration: InputDecoration(
-              labelText: 'Add your ingredients (max 5)',
+              labelText: "Add today's ingredients (max to 5)",
               labelStyle: TextStyle(
                 fontFamily: "Outfit",
+                fontSize: 14,
               )),
         ),
         SizedBox(height: 20),
@@ -523,7 +522,7 @@ class CreateScreenState extends State<CreateScreen> {
         SizedBox(height: 5),
         _buildButtonCarb(context),
         SizedBox(height: 10),
-        Text("Choose Others",
+        Text("Choose Additionals",
             textAlign: TextAlign.center,
             softWrap: true,
             style: TextStyle(
@@ -563,7 +562,7 @@ class CreateScreenState extends State<CreateScreen> {
                       addIngredientItem();
                     },
                     child: Icon(Icons.add),
-                    backgroundColor: appTheme.orange_primary,
+                    backgroundColor: appTheme.yellow_primary,
                     // shape: RoundedRectangleBorder(
                     //     borderRadius:
                     //         BorderRadius.all(Radius.circular(10)))
@@ -640,7 +639,7 @@ class CreateScreenState extends State<CreateScreen> {
                       addIngredientItem();
                     },
                     child: Icon(Icons.add),
-                    backgroundColor: appTheme.orange_primary,
+                    backgroundColor: appTheme.yellow_primary,
                     // shape: RoundedRectangleBorder(
                     //     borderRadius:
                     //         BorderRadius.all(Radius.circular(10)))
@@ -706,7 +705,7 @@ class CreateScreenState extends State<CreateScreen> {
                       addIngredientItem();
                     },
                     child: Icon(Icons.add),
-                    backgroundColor: appTheme.orange_primary,
+                    backgroundColor: appTheme.yellow_primary,
                     // shape: RoundedRectangleBorder(
                     //     borderRadius:
                     //         BorderRadius.all(Radius.circular(10)))
@@ -774,7 +773,7 @@ class CreateScreenState extends State<CreateScreen> {
                       addIngredientItem();
                     },
                     child: Icon(Icons.add),
-                    backgroundColor: appTheme.orange_primary,
+                    backgroundColor: appTheme.yellow_primary,
                     // shape: RoundedRectangleBorder(
                     //     borderRadius:
                     //         BorderRadius.all(Radius.circular(10)))
@@ -862,10 +861,11 @@ class CreateScreenState extends State<CreateScreen> {
           " The result JSON objetcs should be in this format: " +
           "{Title: string, Ingredient List: list[String], Step-by-Step Instructions: list[String], Expected Cooking Time: integer, Note: String, Saving Co2: integer, Saving Money: integer}." +
           " 2. the unit of 'Expected Cooking Time' is in minutes; " +
-          " 3. make your recipe be as similar to some authentic known dishes as possible; " +
+          " 3. make your recipe be as similar to $selectedCuisine authentic known dishes as possible; " +
           " 4. 'Saving Co2' should be an estimated integer of Co2 the user saved from this meal by reducing food waste. Total CO2 emissions=∑(Amount of each food type wasted×Emission factor for that food type); " +
           " 5. 'Saving money' should be estimated integer of money the user saved from not throw those ingredients; " +
-          " 6. Do not use any other ingredients that users did not pick, but you can use other pantry or spices.",
+          " 6. Do not use any other ingredients that users did not pick, but you can use other pantry or spices." +
+          " 7. The recipe output should be in $selectedLangauge language.",
       role: OpenAIChatMessageRole.assistant,
     );
 

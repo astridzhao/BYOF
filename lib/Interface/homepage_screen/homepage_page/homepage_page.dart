@@ -251,8 +251,7 @@ class HomepagePageState extends State<HomepagePage> {
 
           // Here we have data
           List<String?> urls = snapshot.hasData ? snapshot.data! : [];
-          String default_image_url = "assets/images/generate2.png";
-
+          String default_image_url = "assets/images/random_image_pizza.png";
           return ListView.separated(
             padding: EdgeInsets.only(left: 10.h),
             scrollDirection: Axis.horizontal,

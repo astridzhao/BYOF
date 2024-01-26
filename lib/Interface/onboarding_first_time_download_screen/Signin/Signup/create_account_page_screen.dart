@@ -48,7 +48,7 @@ class CreateAccountPageScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       CustomImageView(
-                        imagePath: ImageConstant.imgImage2,
+                        imagePath: ImageConstant.create_account_page,
                         height: 370.v,
                         width: 256.h,
                         radius: BorderRadius.circular(

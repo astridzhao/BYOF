@@ -11,7 +11,7 @@ class CreatetwogridsectionItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomImageView(
-      imagePath: ImageConstant.imgFrame11942,
+      imagePath: ImageConstant.mushroom,
       height: 31.v,
       width: 257.h,
     );

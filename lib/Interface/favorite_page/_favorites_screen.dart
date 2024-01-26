@@ -80,283 +80,313 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        // backgroundColor: appTheme.yellow_secondary,
-        title: const Text('My Favorites'),
-        toolbarHeight: 80,
-        titleTextStyle: TextStyle(
-            color: Colors.black54,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            fontFamily: "Outfit"),
-      ),
-      body: FutureBuilder(
-          future: futureRecipes,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              // Handling for data state
-              final recipes = snapshot.data! as List<Recipe>;
+        appBar: AppBar(
+          elevation: 0,
+          title: const Text('My Favorites'),
+          toolbarHeight: 80,
+          titleTextStyle: TextStyle(
+              color: Color.fromARGB(190, 0, 0, 0),
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              fontFamily: "Outfit"),
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: AssetImage(
+                  "assets/images/favoritescreen_background.png"), // Replace with your image path
+              opacity: 0.1,
+            ),
+          ),
+          child: FutureBuilder(
+              future: futureRecipes,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  // Handling for data state
+                  final recipes = snapshot.data! as List<Recipe>;
 
-              return recipes.isEmpty
-                  ? const Center(
-                      child: Text(
-                        "No favorites..",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 28,
-                        ),
-                      ),
-                    )
-                  : GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 5,
-                        crossAxisCount: 1, // Number of items per row
-                        crossAxisSpacing: 10, // Horizontal space between items
-                        mainAxisSpacing: 20, // Vertical space between items
-                      ),
-                      itemBuilder: (context, i) {
-                        // each recipe
-                        final recipe = recipes[i];
-                        //get the image name saved in the folder
-                        generatedImageUrls[i] =
-                            recipe.imageURL != null ? recipe.imageURL : null;
+                  return recipes.isEmpty
+                      ? const Center(
+                          child: Text(
+                            "No favorites..",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 28,
+                            ),
+                          ),
+                        )
+                      : GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: 5,
+                            crossAxisCount: 1, // Number of items per row
+                            crossAxisSpacing:
+                                10, // Horizontal space between items
+                            mainAxisSpacing: 30, // Vertical space between items
+                          ),
+                          itemBuilder: (context, i) {
+                            // each recipe
+                            final recipe = recipes[i];
+                            //get the image name saved in the folder
+                            generatedImageUrls[i] = recipe.imageURL != null
+                                ? recipe.imageURL
+                                : null;
 //Testing:
-                        // log("recipe title: " +
-                        //     recipe.title +
-                        //     " file path name:" +
-                        //     generatedImageUrls[i].toString());
+                            // log("recipe title: " +
+                            //     recipe.title +
+                            //     " file path name:" +
+                            //     generatedImageUrls[i].toString());
 
-                        // Get a list of local image paths
-                        final List<String> localImages = [
-                          'assets/images/generate1.png',
-                          'assets/images/generate2.png',
-                          "assets/images/img_image_23.png"
-                        ];
-                        // Randomly pick an index from your collection of local images
-                        final random = math.Random();
-                        final randomImageIndex =
-                            random.nextInt(localImages.length);
-                        final randomImagePath = localImages[randomImageIndex];
+                            // Get a list of local image paths
+                            final List<String> localImages = [
+                              'assets/images/random_image_breakfast.png',
+                              'assets/images/random_image_soup.png',
+                              "assets/images/random_image_pizza.png",
+                              "assets/images/random_image_onepot.png",
+                              "assets/images/random_image_pancake.png"
+                            ];
+                            // Randomly pick an index from your collection of local images
+                            final random = math.Random();
+                            final randomImageIndex =
+                                random.nextInt(localImages.length);
+                            final randomImagePath =
+                                localImages[randomImageIndex];
 
-                        return ListTile(
-                          // contentPadding: EdgeInsets.symmetric(horizontal: 5),
-                          title: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              //Check if the URL is not empty and the list is not empty
-                              (generatedImageUrls[i] != null &&
-                                      generatedImageUrls.isNotEmpty)
-                                  ? FutureBuilder(
-                                      future: getFile(generatedImageUrls[i]!),
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot<File> snapshot) {
-                                        // Check if the future is complete
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                          //Testing:
-                                          // print(snapshot.data!);
-                                          // Check if the snapshot has data and the file exists
-                                          if (snapshot.hasData &&
-                                              snapshot.data!.existsSync()) {
-                                            return ClipOval(
-                                              child: Image.file(
-                                                snapshot.data!,
-                                                width: 80,
-                                                height: 80,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            );
-                                          } else {
-                                            // If file does not exist or there is no data, show the asset image
-                                            return ClipOval(
-                                              child: Image.asset(
-                                                randomImagePath,
-                                                width: 80,
-                                                height: 80,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            );
-                                          }
-                                        } else {
-                                          // If the future is not yet complete, show a loading indicator or placeholder
-                                          return CircularProgressIndicator();
-                                        }
-                                      },
-                                    )
-                                  : ClipOval(
-                                      child: Image.asset(
-                                        randomImagePath,
-                                        width: 80,
-                                        height: 80,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-
-                              SizedBox(width: 5),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Text(
-                                          recipe.title,
-                                          maxLines: 2,
-                                          // softWrap: true,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontFamily: "Outfit",
-                                            color: appTheme.green_primary,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.normal,
+                            return ListTile(
+                              // contentPadding: EdgeInsets.symmetric(horizontal: 5),
+                              title: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  //Check if the URL is not empty and the list is not empty
+                                  (generatedImageUrls[i] != null &&
+                                          generatedImageUrls.isNotEmpty)
+                                      ? FutureBuilder(
+                                          future:
+                                              getFile(generatedImageUrls[i]!),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<File> snapshot) {
+                                            // Check if the future is complete
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.done) {
+                                              //Testing:
+                                              // print(snapshot.data!);
+                                              // Check if the snapshot has data and the file exists
+                                              if (snapshot.hasData &&
+                                                  snapshot.data!.existsSync()) {
+                                                return ClipOval(
+                                                  child: Image.file(
+                                                    snapshot.data!,
+                                                    width: 80,
+                                                    height: 80,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                );
+                                              } else {
+                                                // If file does not exist or there is no data, show the asset image
+                                                return ClipOval(
+                                                  child: Image.asset(
+                                                    randomImagePath,
+                                                    width: 80,
+                                                    height: 80,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                );
+                                              }
+                                            } else {
+                                              // If the future is not yet complete, show a loading indicator or placeholder
+                                              return CircularProgressIndicator();
+                                            }
+                                          },
+                                        )
+                                      : ClipOval(
+                                          child: Image.asset(
+                                            randomImagePath,
+                                            width: 80,
+                                            height: 80,
+                                            fit: BoxFit.cover,
                                           ),
                                         ),
-                                        SizedBox(height: 5),
-                                        Row(
+
+                                  SizedBox(width: 5),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Column(
                                           children: [
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: appTheme
-                                                    .green_primary, // Set the button color to red
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 15),
-                                              ),
-                                              onPressed: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            (GenerationScreen_favorite(
-                                                                recipe:
-                                                                    recipe))));
-                                              },
-                                              child: Text(
-                                                "View",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontFamily: "Outfit",
-                                                  fontSize: 10,
-                                                ),
+                                            Text(
+                                              recipe.title,
+                                              maxLines: 2,
+                                              // softWrap: true,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontFamily: "Outfit",
+                                                color: appTheme.black900,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
                                               ),
                                             ),
-                                            SizedBox(width: 15),
-                                            // remove button
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: appTheme
-                                                    .orange_primary, // Set the button color to red
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 15),
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  (recipe_dao.delete(
-                                                          recipe_dao.recipes)
-                                                        ..where((tbl) => tbl.id
-                                                            .equals(
-                                                                recipes[i].id)))
-                                                      .go();
-                                                  recipes.removeAt(i);
-                                                });
-                                              },
-                                              child: Text(
-                                                "Remove",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontFamily: "Outfit",
-                                                  fontSize: 10,
+                                            SizedBox(height: 5),
+                                            Row(
+                                              children: [
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor: appTheme
+                                                        .green_primary, // Set the button color to red
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 15),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                (GenerationScreen_favorite(
+                                                                    recipe:
+                                                                        recipe))));
+                                                  },
+                                                  child: Text(
+                                                    "View",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: "Outfit",
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 15),
+                                                SizedBox(width: 15),
+                                                // remove button
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor: appTheme
+                                                        .orange_primary, // Set the button color to red
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 15),
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      (recipe_dao.delete(
+                                                              recipe_dao
+                                                                  .recipes)
+                                                            ..where((tbl) =>
+                                                                tbl.id.equals(
+                                                                    recipes[i]
+                                                                        .id)))
+                                                          .go();
+                                                      recipes.removeAt(i);
+                                                    });
+                                                  },
+                                                  child: Text(
+                                                    "Remove",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: "Outfit",
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15),
 
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 15)),
-                                              child: Text(
-                                                "what it looks like?",
-                                                style: TextStyle(
-                                                    color:
-                                                        appTheme.green_primary,
-                                                    fontFamily: "Outfit",
-                                                    fontSize: 10),
-                                              ),
-                                              // if the user already generated a image once, disable the button
-                                              onPressed: generatedImageUrls[i]!
-                                                      .isEmpty
-                                                  ? () async {
-                                                      showDialog(
-                                                        context: context,
-                                                        barrierDismissible:
-                                                            false, // User must tap button to close dialog
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return AlertDialog(
-                                                            content: Row(
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: 20,
-                                                                  height:
-                                                                      20, // Adjust the height as needed
-                                                                  child:
-                                                                      CircularProgressIndicator(),
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      15)),
+                                                  child: Text(
+                                                    "what it looks like?",
+                                                    style: TextStyle(
+                                                        color: appTheme
+                                                            .green_primary,
+                                                        fontFamily: "Outfit",
+                                                        fontSize: 10),
+                                                  ),
+                                                  // if the user already generated a image once, disable the button
+                                                  onPressed: generatedImageUrls[
+                                                              i]!
+                                                          .isEmpty
+                                                      ? () async {
+                                                          showDialog(
+                                                            context: context,
+                                                            barrierDismissible:
+                                                                false, // User must tap button to close dialog
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return AlertDialog(
+                                                                content: Row(
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      width: 20,
+                                                                      height:
+                                                                          20, // Adjust the height as needed
+                                                                      child:
+                                                                          CircularProgressIndicator(),
+                                                                    ),
+                                                                    SizedBox(
+                                                                        width:
+                                                                            20),
+                                                                    Text(
+                                                                        "Crafting a delightful dish image..."),
+                                                                  ],
                                                                 ),
-                                                                SizedBox(
-                                                                    width: 20),
-                                                                Text(
-                                                                    "Crafting a delightful dish image..."),
-                                                              ],
-                                                            ),
+                                                              );
+                                                            },
                                                           );
-                                                        },
-                                                      );
 
-                                                      await generateImage(
-                                                          i,
-                                                          recipe.id,
-                                                          recipe.title
-                                                              .toString());
+                                                          await generateImage(
+                                                              i,
+                                                              recipe.id,
+                                                              recipe.title
+                                                                  .toString());
 
-                                                      // pop alert waiting box
-                                                      Navigator.of(context)
-                                                          .pop();
+                                                          // pop alert waiting box
+                                                          Navigator.of(context)
+                                                              .pop();
 
-                                                      // show image box
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                                context) =>
-                                                            popupDialogImage(
-                                                                context),
-                                                      );
-                                                    }
-                                                  : null,
+                                                          // show image box
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                popupDialogImage(
+                                                                    context),
+                                                          );
+                                                        }
+                                                      : null,
+                                                )
+                                              ],
                                             )
                                           ],
                                         )
                                       ],
-                                    )
-                                  ],
-                                ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          // subtitle: Text(subtitle),
-                        );
-                      },
-                      itemCount: recipes.length);
-            }
-          }),
-      // floatingActionButton: FloatingActionButton(
-      //   child: const Icon(Icons.add),
-      //   onPressed: () {},
-      // ),
-    );
+                              // subtitle: Text(subtitle),
+                            );
+                          },
+                          itemCount: recipes.length);
+                }
+              }),
+        )
+        // floatingActionButton: FloatingActionButton(
+        //   child: const Icon(Icons.add),
+        //   onPressed: () {},
+        // ),
+        );
   }
 
   Future<File> getFile(String imageName) async {
