@@ -19,32 +19,33 @@ class HomepageContainerScreen extends StatefulWidget {
 
 class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
-  String resultCompletion = """{
-   "Title":"Asian Baked Chicken with Mushroom",
-   "Ingredient List":[
-      "2 chicken breasts",
-      "1 onion, sliced",
-      "1 cup mushrooms, sliced",
-      "2 tablespoons soy sauce",
-      "1 tablespoon hoisin sauce",
-      "1 tablespoon honey",
-      "1 tablespoon sesame oil",
-      "1 teaspoon garlic powder",
-      "1 teaspoon ginger powder",
-      "Salt and pepper, to taste"
-   ],
-   "Step-by-Step Instructions":[
-      "Preheat the oven to 375°F (190°C).",
-      "In a small bowl, mix together the soy sauce, hoisin sauce, honey, sesame oil, garlic powder, ginger powder, salt, and pepper.",
-      "Place the chicken breasts in a baking dish and pour the sauce mixture over them, making sure to coat each breast evenly.",
-      "Add the sliced onions and mushrooms around the chicken in the baking dish.",
-      "Cover the dish with aluminum foil and bake in the preheated oven for 25-30 minutes, or until the chicken is cooked through.",
-      "Remove the foil and continue baking for an additional 5 minutes to allow the chicken to brown slightly.",
-      "Serve the Asian baked chicken with mushroom over rice or alongside steamed vegetables."
-   ],
-   "Expected Cooking Time":40,
-   "Note":"You can adjust the cooking time slightly depending on the thickness of the chicken breasts."
-}""";
+
+//   String resultCompletion = """{
+//    "Title":"Asian Baked Chicken with Mushroom",
+//    "Ingredient List":[
+//       "2 chicken breasts",
+//       "1 onion, sliced",
+//       "1 cup mushrooms, sliced",
+//       "2 tablespoons soy sauce",
+//       "1 tablespoon hoisin sauce",
+//       "1 tablespoon honey",
+//       "1 tablespoon sesame oil",
+//       "1 teaspoon garlic powder",
+//       "1 teaspoon ginger powder",
+//       "Salt and pepper, to taste"
+//    ],
+//    "Step-by-Step Instructions":[
+//       "Preheat the oven to 375°F (190°C).",
+//       "In a small bowl, mix together the soy sauce, hoisin sauce, honey, sesame oil, garlic powder, ginger powder, salt, and pepper.",
+//       "Place the chicken breasts in a baking dish and pour the sauce mixture over them, making sure to coat each breast evenly.",
+//       "Add the sliced onions and mushrooms around the chicken in the baking dish.",
+//       "Cover the dish with aluminum foil and bake in the preheated oven for 25-30 minutes, or until the chicken is cooked through.",
+//       "Remove the foil and continue baking for an additional 5 minutes to allow the chicken to brown slightly.",
+//       "Serve the Asian baked chicken with mushroom over rice or alongside steamed vegetables."
+//    ],
+//    "Expected Cooking Time":40,
+//    "Note":"You can adjust the cooking time slightly depending on the thickness of the chicken breasts."
+// }""";
   // Function to navigate to CreateScreen
   void navigateToCreateScreen(BuildContext context) {
     Navigator.of(context).push(
@@ -54,6 +55,14 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the screen width and height
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // Define responsive sizes based on screen dimensions
+    double navBarHeight = screenHeight * 0.08; // 8% of the screen height
+    double navBarWidth = screenWidth * 0.9;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: appTheme.yellow5001,
@@ -66,6 +75,8 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
                 transitionDuration: Duration(seconds: 0))),
         bottomNavigationBar: Container(
           child: BottomNavBar(
+            fabHeight: navBarHeight,
+            fabWidth: navBarWidth,
             notchedRadius: 20,
             centerNotched: false,
             fabIcon: Icon(Icons.emoji_events),
