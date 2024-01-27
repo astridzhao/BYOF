@@ -2,7 +2,8 @@ import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/homepage_page.dart';
-import 'package:astridzhao_s_food_app/Interface/favorite_page/_favorites_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/favorites_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/favorite_screen_2.dart';
 import 'package:astridzhao_s_food_app/Interface/myfridge_screen/_myfridge_screen.dart';
 import 'package:flutter/material.dart';
 // import 'package:botton_nav_bar/botton_nav_bar.dart';
@@ -79,7 +80,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
               BottomBarItem(
                 bottomItemSelectedColor: appTheme.yellow_secondary,
                 label: 'My Favorite',
-                screen: FavoriteRecipePage(),
+                screen: FavoriteRecipePage2(),
                 selectedIcon: Icons.collections_bookmark_outlined,
               ),
               BottomBarItem(
@@ -110,7 +111,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
       case AppRoutes.createScreen:
         return CreateScreen();
       case AppRoutes.myFavoriteScreen:
-        return FavoriteRecipePage();
+        return FavoriteRecipePage2();
       case AppRoutes.myFridgeScreen:
         return MyfridgePage();
       default:
