@@ -13,7 +13,7 @@ import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_s
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_container_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/myfridge_screen/_myfridge_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/favorite_page/_favorites_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/favorites_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/app_navigation_screen/app_navigation_screen.dart';
 
 class AppRoutes {

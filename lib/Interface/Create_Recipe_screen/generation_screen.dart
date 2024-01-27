@@ -54,43 +54,54 @@ class _GenerationScreenState extends State<GenerationScreen> {
         appBar: customeAppbar(context),
         body: Stack(
           children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              padding: EdgeInsets.only(top: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  title(context),
-                  SizedBox(height: 5),
-                  saving_summery(context),
-                  SizedBox(height: 20),
-                  buttons_group(context),
-                  SizedBox(height: 10),
-                  //divider
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: Divider(
-                      indent: 1,
-                    ),
+            Positioned(
+                child: Column(
+              children: [
+                title(context),
+                SizedBox(height: 5),
+                saving_summery(context),
+                SizedBox(height: 20),
+                buttons_group(context),
+                SizedBox(height: 10),
+                //divider
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: Divider(
+                    indent: 1,
                   ),
-                  SizedBox(height: 18),
-                  group_info(context),
-                  instruction(context),
-                  //divider
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: Divider(
-                      indent: 1,
+                ),
+              ],
+            )),
+            Positioned(
+              top: 200,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                padding: EdgeInsets.only(top: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 25),
+                    group_info(context),
+                    instruction(context),
+                    //divider
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: Divider(
+                        indent: 1,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 13),
-                  _buildTimerControls(context),
-                  SizedBox(height: 30),
-                  bottomSettingBar(context),
-                  SizedBox(height: 40),
-                ],
+                    SizedBox(height: 13),
+                    _buildTimerControls(context),
+                    SizedBox(height: 30),
+                    bottomSettingBar(context),
+                    SizedBox(height: 40),
+                  ],
+                ),
               ),
             ),
           ],
@@ -216,8 +227,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          favoriteButton(context),
           madeButton(context),
+          favoriteButton(context),
         ],
       ),
     );
@@ -624,7 +635,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
             ),
           ),
           style: TextButton.styleFrom(
-            backgroundColor: index_color == 1 ? disableColor : enableColor,
+            backgroundColor: index_color == 2 ? disableColor : enableColor,
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(
               horizontal: 15.0,
@@ -633,7 +644,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           ),
           onPressed: () {
             setState(() {
-              index_color == 1;
+              index_color == 2;
             });
 
             incrementSavingNums(widget.recipe.savingSummary_CO2.value,

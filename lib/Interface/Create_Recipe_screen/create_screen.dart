@@ -99,7 +99,7 @@ class CreateScreenState extends State<CreateScreen> {
     "Asian",
     "Italian",
     "Mexican",
-    "American",
+    "New American",
     "Indian",
     "Chinese",
     "Korean",
@@ -127,7 +127,6 @@ class CreateScreenState extends State<CreateScreen> {
     "Baby Food",
     "Dessert",
     "Smoothie",
-    "Quick Meal",
     "One-pot Meal",
     "Low Calorie Meal"
   ];
@@ -136,7 +135,15 @@ class CreateScreenState extends State<CreateScreen> {
     "No Restriction",
     "Vegetarian",
     "Vegan",
-    "Nuts Allergies"
+    "Paleo",
+    "Dukin",
+    "Atkins",
+    "Nuts Allergies",
+    "Egg Allergies",
+    "Gluten Allergies",
+    "Diary Allergies",
+    "Milk Allergies",
+    "Seafood Allergies",
   ];
 
   List<String> dropdownItemList5_servingsize = [
@@ -156,13 +163,13 @@ class CreateScreenState extends State<CreateScreen> {
   String selectedServingSize = "1";
 
   String get contentUser =>
-      "My ingredients are denoted by backticks: ```$selectedIngredients``` ;" +
+      "My ingredients are denoted by backticks: ```$selectedIngredients```, DO NOT use any other ingredients that I did not pick, but you can use other essential sauce/spices;" +
       "and please following below cooking preferences: "
-          "1. Cuisine style should be $selectedCuisine. "
+          "1. Dish's cuisine style should be $selectedCuisine. "
           "2. Dish type should be $selectedDishType. " +
       "3. Using cooking method $selectedCookingMethod to cook. "
           "4. Be mindful of I have $selectedDietaryRestriction diet restriction. "
-          "5. I have $selectedServingSize people to eat. ";
+          "5. I have $selectedServingSize people to eat. Tell me how many amount of food I need to use in 'Ingredient List'. ";
 
   @override
   Widget build(BuildContext context) {
@@ -861,11 +868,11 @@ class CreateScreenState extends State<CreateScreen> {
           " The result JSON objetcs should be in this format: " +
           "{Title: string, Ingredient List: list[String], Step-by-Step Instructions: list[String], Expected Cooking Time: integer, Note: String, Saving Co2: integer, Saving Money: integer}." +
           " 2. the unit of 'Expected Cooking Time' is in minutes; " +
-          " 3. make your recipe be as similar to $selectedCuisine authentic known dishes as possible; " +
+          " 3. the creative recipe need to be as similar to famous and authentic $selectedCuisine dishes as possible; " +
           " 4. 'Saving Co2' should be an estimated integer of Co2 the user saved from this meal by reducing food waste. Total CO2 emissions=∑(Amount of each food type wasted×Emission factor for that food type); " +
           " 5. 'Saving money' should be estimated integer of money the user saved from not throw those ingredients; " +
-          " 6. Do not use any other ingredients that users did not pick, but you can use other pantry or spices." +
-          " 7. The recipe output should be in $selectedLangauge language.",
+          " 6. Do not use any other food/ingredients that users did not pick, but you can use some essential sauce/spices." +
+          " 7. The recipe output should be in $selectedLangauge language. ",
       role: OpenAIChatMessageRole.assistant,
     );
 
@@ -886,8 +893,8 @@ class CreateScreenState extends State<CreateScreen> {
     setState(() {
       resultCompletion = completion.choices.first.message.content;
 
-      // log(resultCompletion);
-      // log(contentUser);
+      log(resultCompletion);
+      log(contentUser);
       // atomInputContainerController.clear();
       // selectedIngredients.clear();
     });

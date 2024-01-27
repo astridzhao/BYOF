@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:astridzhao_s_food_app/Interface/favorite_page/_favorites_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/favorites_screen.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
@@ -12,6 +12,7 @@ import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_image.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/favorite_screen_2.dart';
 import 'package:flutter/material.dart';
 import 'package:drift/drift.dart' as drift;
 import 'dart:async';
@@ -394,7 +395,7 @@ class HomepagePageState extends State<HomepagePage> {
             ),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => FavoriteRecipePage()));
+                  builder: (context) => FavoriteRecipePage2()));
             },
           ),
         ),
