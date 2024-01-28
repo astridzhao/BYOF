@@ -43,8 +43,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
     print("add co2: " + co2.toString());
     print("add dollar: " + dollar.toString());
     final savingsModel = Provider.of<SavingsModel>(context, listen: false);
-    savingsModel.savingCo2 = co2;
-    savingsModel.savingDollar = dollar;
+    savingsModel.savingCo2 += co2;
+    savingsModel.savingDollar += dollar;
   }
 
   @override
