@@ -62,10 +62,6 @@ class HomepagePageState extends State<HomepagePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the screen width and height
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
     return MaterialApp(
       home: Scaffold(
         backgroundColor: appTheme.yellow5001,
@@ -135,7 +131,7 @@ class HomepagePageState extends State<HomepagePage> {
                     endIndent: 10.h,
                   ),
                   SizedBox(height: 10.v),
-                  _buildCreateplanSection(context),
+                  mealplanDraft(context),
                 ],
               ),
             ),
@@ -151,57 +147,50 @@ class HomepagePageState extends State<HomepagePage> {
 
   /// Section Widget
   PreferredSizeWidget _buildAppBar(BuildContext context) {
+    // Get the screen width and height
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return PreferredSize(
-      preferredSize: Size.fromHeight(kToolbarHeight +
-          20.0), // Include extra space height + standard AppBar height
-      child: Column(
-        children: [
-          SizedBox(
-              height: 16.0), // Space above AppBar, adjust the height as needed
+      preferredSize: Size.fromHeight(screenHeight * 0.1),
+      child: // Space above AppBar, adjust the height as needed
           CustomAppBar(
-            leadingWidth: 73.h,
-            leading: Container(
-              width: 198.80,
-              height: 66,
-              margin: EdgeInsets.only(
-                left: 29.h,
-                top: 6.v,
-                bottom: 6.v,
-              ),
-              padding: EdgeInsets.all(3.h),
-              decoration: AppDecoration.outlineGray.copyWith(
-                borderRadius: BorderRadiusStyle.roundedBorder20,
-              ),
-              child: AppbarImage(
-                imagePath: ImageConstant.imgAvatar,
-              ),
-            ),
-            title: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 18.v),
-              child: Column(
-                children: [
-                  AppbarTitle(
-                    text: "Novice Cook",
-                    textStyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.normal,
-                      color: appTheme.gray60002,
-                    ),
-                  ),
-                  SizedBox(height: 3.v),
-                  AppbarTitle(
-                    text: "Astrid Zhao",
-                    textStyle: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: appTheme.gray60002,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        leading: CircleAvatar(
+          // Adjust the radius as needed
+          backgroundColor: Colors.transparent,
+          child: CustomImageView(
+            imagePath: ImageConstant.imgAvatar,
+            height: 100.adaptSize,
+            width: 100.adaptSize,
+            margin: EdgeInsets.all(0.03 * screenWidth),
+            fit: BoxFit.contain,
           ),
-        ],
+        ),
+        title: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: 0.02 * screenWidth, vertical: 0.1 * screenHeight),
+          child: Column(
+            children: [
+              AppbarTitle(
+                text: "Novice Cook",
+                textStyle: TextStyle(
+                  fontSize: 15.fSize,
+                  fontWeight: FontWeight.normal,
+                  color: appTheme.gray60002,
+                ),
+              ),
+              SizedBox(height: 3.v),
+              AppbarTitle(
+                text: "Astrid Zhao",
+                textStyle: TextStyle(
+                  fontSize: 20.fSize,
+                  fontWeight: FontWeight.w500,
+                  color: appTheme.gray60002,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -268,6 +257,161 @@ class HomepagePageState extends State<HomepagePage> {
             },
           );
         },
+      ),
+    );
+  }
+
+  Widget mealplanDraft(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    return Container(
+      width: screenWidth * 0.8, // Adjust the width as needed
+      height: screenHeight * 0.2, // Adjust the height as needed
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: 0,
+            child: Container(
+              width: screenWidth * 0.8,
+              height: screenHeight * 0.18,
+              decoration: ShapeDecoration(
+                color: Color(0xFFEDBA8E),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(screenWidth * 0.1),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            // Adjust position for rectangle
+            left: screenWidth * 0.1,
+            top: screenHeight * -0.04,
+            child: Container(
+              width: screenWidth * 0.8,
+              height: screenHeight * 0.9,
+              child: Stack(
+                // children images
+                children: [
+                  Positioned(
+                    left: 0,
+                    top: 63,
+                    child: Container(
+                      width: 27,
+                      height: 27,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/img_vegetarian.png'),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 127,
+                    top: 145.90,
+                    child: Transform(
+                      transform: Matrix4.identity()
+                        ..translate(0.0, 0.0)
+                        ..rotateZ(-1.14),
+                      child: Container(
+                        width: 160.54,
+                        height: 148.87,
+                        decoration: ShapeDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment(0.00, -1.00),
+                            end: Alignment(0, 1),
+                            colors: [Color(0xFFE9E9E9), Color(0x00E9E9E9)],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(21),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 95,
+                    top: 56,
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/img_melonpie.png'),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 89,
+                    top: 132,
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/img_hamburger.png'),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 51,
+                    top: 93,
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image:
+                              AssetImage('assets/images/img_instantnoodle.png'),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 16,
+                    top: 125,
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                              'assets/images/img_strawberrycake.png'),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 98,
+                    top: 69,
+                    child: SizedBox(
+                      width: 172,
+                      height: 53,
+                      child: Text(
+                        'Save Time\nSave Money\nSave Enviornment',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontFamily: 'Outfit',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

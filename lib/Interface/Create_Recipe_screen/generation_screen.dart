@@ -121,7 +121,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
     OpenAI.apiKey = azapiKey;
     final image = await OpenAI.instance.image.create(
         n: 1,
-        prompt: "You act as a professional image-generating assistant. By referencing the recipe title $recipe, use your imagination to create a related dish image can put on my restaurant menu. " +
+        prompt: "You act as a professional image-generating assistant. By referencing the recipe title $recipe, to be noticed the title might not in English. Use your imagination to create a related dish image can put on my restaurant menu. " +
             "The image style should be cute and cartoon, and make it looks tasty to attract customers. " +
             "Do not put any text on the image. ");
 
@@ -398,8 +398,23 @@ class _GenerationScreenState extends State<GenerationScreen> {
     );
   }
 
+  double getResponsiveFontSize_savingSummary(double screenWidth) {
+    if (screenWidth < 320) {
+      // Smaller screens
+      return 18.fSize;
+    } else if (screenWidth < 480) {
+      // Medium screens
+      return 16.fSize;
+    } else {
+      // Larger screens
+      return 14.fSize;
+    }
+  }
+
   /// Section Widget
   Widget saving_summery(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double fontsize_unit = getResponsiveFontSize_savingSummary(screenWidth);
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.h),
       padding: EdgeInsets.symmetric(
@@ -455,7 +470,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       "KG CO2",
                       style: TextStyle(
                           fontFamily: "Outfit",
-                          fontSize: 18.fSize,
+                          fontSize: fontsize_unit,
                           color: Colors.white),
                     ),
                   ),
@@ -497,7 +512,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       "DOLLARS",
                       style: TextStyle(
                           fontFamily: "Outfit",
-                          fontSize: 18.fSize,
+                          fontSize: fontsize_unit,
                           color: Colors.white),
                     ),
                   ),
@@ -616,7 +631,22 @@ class _GenerationScreenState extends State<GenerationScreen> {
     );
   }
 
+  double getResponsiveFontSize_buttontext(double screenWidth) {
+    if (screenWidth < 320) {
+      // Smaller screens
+      return 16.fSize;
+    } else if (screenWidth < 480) {
+      // Medium screens
+      return 14.fSize;
+    } else {
+      // Larger screens
+      return 13.fSize;
+    }
+  }
+
   Widget favoriteButton(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double fontsize_text = getResponsiveFontSize_buttontext(screenWidth);
     return Padding(
       padding: EdgeInsets.only(left: 10.h, right: 10.h),
       child: TextButton.icon(
@@ -625,7 +655,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           "Add to My Favorite",
           style: TextStyle(
             fontFamily: "Outfit",
-            fontSize: 16.fSize,
+            fontSize: fontsize_text,
           ),
         ),
         style: TextButton.styleFrom(
@@ -668,6 +698,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
   }
 
   Widget madeButton(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double fontsize_text = getResponsiveFontSize_buttontext(screenWidth);
     return Padding(
       padding: EdgeInsets.only(left: 10.h, right: 10.h),
       child: TextButton.icon(
@@ -676,7 +708,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
             "I made it",
             style: TextStyle(
               fontFamily: "Outfit",
-              fontSize: 16.fSize,
+              fontSize: fontsize_text,
             ),
           ),
           style: TextButton.styleFrom(
