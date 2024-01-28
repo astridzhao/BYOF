@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:astridzhao_s_food_app/Interface/favorite_page/favorites_screen.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
-import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/Interface/provider.dart';
 import 'package:provider/provider.dart';
@@ -14,11 +13,8 @@ import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:astridzhao_s_food_app/Interface/favorite_page/favorite_screen_2.dart';
 import 'package:flutter/material.dart';
-import 'package:drift/drift.dart' as drift;
 import 'dart:async';
-import 'dart:developer';
 
-// ignore_for_file: must_be_immutable
 class HomepagePage extends StatefulWidget {
   HomepagePage({Key? key})
       : super(
@@ -36,7 +32,6 @@ class Savings {
 class HomepagePageState extends State<HomepagePage> {
   //call database
   final recipe_dao = RecipesDao(DatabaseService().database);
-  //TODO: Saving data in the database : userID
   int savingCo2 = 0;
   int savingDollar = 0;
 
@@ -61,19 +56,23 @@ class HomepagePageState extends State<HomepagePage> {
         .map((rows) => rows.map((row) => row.read(imageURL)).toList());
 
     return recipeImageURL;
-    // return query.map((row) => row.read(imageURL));
   }
 
   Map<int, String> allRecipeImageURLs = {};
 
   @override
   Widget build(BuildContext context) {
+    // Get the screen width and height
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return MaterialApp(
       home: Scaffold(
         backgroundColor: appTheme.yellow5001,
         appBar: _buildAppBar(context),
         body: SizedBox(
           width: SizeUtils.width,
+          height: SizeUtils.height,
           child: SingleChildScrollView(
             padding: EdgeInsets.only(top: 20.v),
             child: Container(
@@ -98,11 +97,11 @@ class HomepagePageState extends State<HomepagePage> {
                   ),
                   SizedBox(height: 15.v),
                   _buildSavingSummary(context),
-                  SizedBox(height: 31.v),
+                  SizedBox(height: 20.v),
                   Padding(
                     padding: EdgeInsets.only(
-                      left: 22.h,
-                      right: 29.h,
+                      left: 25.h,
+                      right: 20.h,
                     ),
                     child: _buildDividerSection_favorite_page(
                       context,
@@ -112,16 +111,16 @@ class HomepagePageState extends State<HomepagePage> {
                   ),
                   Divider(
                     color: appTheme.gray800,
-                    indent: 22.h,
-                    endIndent: 17.h,
+                    indent: 20.h,
+                    endIndent: 10.h,
                   ),
                   SizedBox(height: 3.v),
                   _buildFavoriteRecipeRow(context),
-                  SizedBox(height: 14.v),
+                  SizedBox(height: 15.v),
                   Padding(
                     padding: EdgeInsets.only(
-                      left: 22.h,
-                      right: 29.h,
+                      left: 25.h,
+                      right: 20.h,
                     ),
                     child: _buildDividerSection_mealPlan(
                       context,
@@ -132,8 +131,8 @@ class HomepagePageState extends State<HomepagePage> {
                   SizedBox(height: 1.v),
                   Divider(
                     color: appTheme.gray800,
-                    indent: 23.h,
-                    endIndent: 16.h,
+                    indent: 20.h,
+                    endIndent: 10.h,
                   ),
                   SizedBox(height: 10.v),
                   _buildCreateplanSection(context),
@@ -275,16 +274,19 @@ class HomepagePageState extends State<HomepagePage> {
 
   /// Section Widget
   Widget _buildCreateplanSection(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(
-      height: 151.v,
-      width: 314.h,
+      width: screenWidth * 0.86,
+      height: screenHeight * 0.25,
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              width: 314.h,
+              width: screenWidth * 0.85,
+              height: screenHeight * 0.20,
               margin: EdgeInsets.only(bottom: 19.v),
               padding: EdgeInsets.symmetric(
                 horizontal: 21.h,

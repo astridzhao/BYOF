@@ -151,7 +151,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
-          height: MediaQuery.of(context).size.height * 0.09,
+          height: MediaQuery.of(context).size.height * 0.1,
           color: appTheme.green_primary,
           shape: widget.centerNotched
               ? CenterNotchedShape(notchRadius: widget.notchedRadius!)

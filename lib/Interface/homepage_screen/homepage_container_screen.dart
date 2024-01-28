@@ -75,8 +75,6 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
                 transitionDuration: Duration(seconds: 0))),
         bottomNavigationBar: Container(
           child: BottomNavBar(
-            fabHeight: navBarHeight,
-            fabWidth: navBarWidth,
             notchedRadius: 20,
             centerNotched: false,
             fabIcon: Icon(Icons.emoji_events),
