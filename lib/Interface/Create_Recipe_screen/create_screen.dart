@@ -179,21 +179,24 @@ class CreateScreenState extends State<CreateScreen> {
       resizeToAvoidBottomInset: false,
       // appBar: MyAppBar(),
       appBar: AppBar(
-        leadingWidth: 80,
+        leadingWidth: 80.h,
         elevation: 0,
         backgroundColor: appTheme.yellow_secondary,
         leading: Builder(builder: (BuildContext context) {
           return CustomImageView(
             imagePath: ImageConstant.imgLogo2RemovebgPreview,
-            margin: EdgeInsets.only(left: 10),
+            margin: EdgeInsets.only(left: 10.h),
           );
         }),
-        title: const Text('BRING YOUR OWN FRIDGE'),
-        toolbarHeight: 90,
+        title: Text(
+          'BRING YOUR OWN FRIDGE',
+          // style: TextStyle(fontSize: 16.fSize, fontFamily: "Outfit"),
+        ),
+        toolbarHeight: 100.v,
         // backgroundColor: Color(0xFF5A7756),
         titleTextStyle: TextStyle(
             color: Color.fromARGB(190, 0, 0, 0),
-            fontSize: 15,
+            fontSize: 17.fSize,
             fontWeight: FontWeight.bold,
             fontFamily: "Outfit"),
         actions: <Widget>[
@@ -211,7 +214,9 @@ class CreateScreenState extends State<CreateScreen> {
             child: Text(
               "Generate",
               style: TextStyle(
-                  fontFamily: "Outfit", color: appTheme.green_primary),
+                  fontSize: 15.fSize,
+                  fontFamily: "Outfit",
+                  color: appTheme.green_primary),
             ),
             onPressed: () async {
               // Show the dialog
@@ -224,11 +229,11 @@ class CreateScreenState extends State<CreateScreen> {
                     content: Row(
                       children: [
                         SizedBox(
-                          width: 20,
-                          height: 20, // Adjust the height as needed
+                          width: 20.h,
+                          height: 20.v, // Adjust the height as needed
                           child: CircularProgressIndicator(),
                         ),
-                        SizedBox(width: 20),
+                        SizedBox(width: 20.h),
                         Text("Crafting a culinary masterpiece..."),
                       ],
                     ),
@@ -249,10 +254,11 @@ class CreateScreenState extends State<CreateScreen> {
         SingleChildScrollView(
             child: Container(
                 width: double.maxFinite,
-                margin: EdgeInsets.only(top: 5, bottom: 6.v),
+                margin: EdgeInsets.only(top: 5.v, bottom: 6.v),
                 child: Stack(children: [
                   Align(
                       alignment: Alignment.topCenter,
+                      //Language Picker Widget
                       child: Padding(
                           padding: EdgeInsets.only(left: 30.h, right: 30.h),
                           child: Column(
@@ -269,10 +275,12 @@ class CreateScreenState extends State<CreateScreen> {
                                   ),
                                   child: (_buildLanguagePicker(context)),
                                 ),
-                                SizedBox(height: 20),
+                                SizedBox(height: 20.v),
+
+                                // Choose Preference Widget
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 20),
+                                      horizontal: 16.h, vertical: 24.v),
                                   decoration: BoxDecoration(
                                     color: appTheme.gray700,
                                     borderRadius: BorderRadius.circular(
@@ -283,10 +291,15 @@ class CreateScreenState extends State<CreateScreen> {
                                     primary: false,
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
-                                    // padding:  EdgeInsets.all(2),
-                                    crossAxisSpacing: 15,
-                                    mainAxisSpacing: 1,
+                                    crossAxisSpacing:
+                                        15, //space between columns
+                                    mainAxisSpacing: 0, //space between rows
                                     crossAxisCount: 2,
+                                    childAspectRatio: MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                        (MediaQuery.of(context).size.height /
+                                            2.3),
                                     children: <Widget>[
                                       cuisineStyle(context),
                                       cookingMethod(context),
@@ -307,19 +320,20 @@ class CreateScreenState extends State<CreateScreen> {
 
   Widget cuisineStyle(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.10,
+      // height: MediaQuery.of(context).size.height * 0.10,
+      width: MediaQuery.of(context).size.width * 0.3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "Cuisine Style",
             style: TextStyle(
-                color: Colors.white, fontSize: 10, fontFamily: "Outfit"),
+                color: Colors.white, fontSize: 12.fSize, fontFamily: "Outfit"),
           ),
-          SizedBox(height: 3),
+          SizedBox(height: 4.v),
           CustomDropDown(
             hintText: dropdownItemList1_cuisine.first,
-            hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
+            hintStyle: TextStyle(fontSize: 14.fSize, fontFamily: "Outfit"),
             items: dropdownItemList1_cuisine,
             onChanged: (value) {
               setState(() {
@@ -335,19 +349,19 @@ class CreateScreenState extends State<CreateScreen> {
 
   Widget cookingMethod(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.10,
+      // height: MediaQuery.of(context).size.height * 0.10,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "Cooking Method",
             style: TextStyle(
-                color: Colors.white, fontSize: 10, fontFamily: "Outfit"),
+                color: Colors.white, fontSize: 12.fSize, fontFamily: "Outfit"),
           ),
-          SizedBox(height: 3),
+          SizedBox(height: 4.v),
           CustomDropDown(
             hintText: dropdownItemList2_cooking_ethod.first,
-            hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
+            hintStyle: TextStyle(fontSize: 14.fSize, fontFamily: "Outfit"),
             items: dropdownItemList2_cooking_ethod,
             onChanged: (value) {
               setState(() {
@@ -363,19 +377,19 @@ class CreateScreenState extends State<CreateScreen> {
 
   Widget dishType(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.10,
+      // height: MediaQuery.of(context).size.height * 0.10,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "Dish Type",
             style: TextStyle(
-                color: Colors.white, fontSize: 10, fontFamily: "Outfit"),
+                color: Colors.white, fontSize: 12.fSize, fontFamily: "Outfit"),
           ),
-          SizedBox(height: 3),
+          SizedBox(height: 4.v),
           CustomDropDown(
             hintText: dropdownItemList3_dish_type.first,
-            hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
+            hintStyle: TextStyle(fontSize: 14.fSize, fontFamily: "Outfit"),
             items: dropdownItemList3_dish_type,
             onChanged: (value) {
               setState(() {
@@ -391,19 +405,19 @@ class CreateScreenState extends State<CreateScreen> {
 
   Widget dietaryRestriction(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.10,
+      // height: MediaQuery.of(context).size.height * 0.10,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "Dietary Restriction",
             style: TextStyle(
-                color: Colors.white, fontSize: 10, fontFamily: "Outfit"),
+                color: Colors.white, fontSize: 12.fSize, fontFamily: "Outfit"),
           ),
-          SizedBox(height: 3),
+          SizedBox(height: 4.v),
           CustomDropDown(
             hintText: dropdownItemList4_restriction.first,
-            hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
+            hintStyle: TextStyle(fontSize: 14.fSize, fontFamily: "Outfit"),
             items: dropdownItemList4_restriction,
             onChanged: (value) {
               setState(() {
@@ -419,19 +433,19 @@ class CreateScreenState extends State<CreateScreen> {
 
   Widget servingSize(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.10,
+      // height: MediaQuery.of(context).size.height * 0.10,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "Serving Size",
             style: TextStyle(
-                color: Colors.white, fontSize: 10, fontFamily: "Outfit"),
+                color: Colors.white, fontSize: 12.fSize, fontFamily: "Outfit"),
           ),
-          SizedBox(height: 3),
+          SizedBox(height: 4.v),
           CustomDropDown(
             hintText: dropdownItemList5_servingsize.first,
-            hintStyle: TextStyle(fontSize: 12, fontFamily: "Outfit"),
+            hintStyle: TextStyle(fontSize: 14.fSize, fontFamily: "Outfit"),
             items: dropdownItemList5_servingsize,
             onChanged: (value) {
               setState(() {
@@ -447,8 +461,7 @@ class CreateScreenState extends State<CreateScreen> {
 
   Widget _buildLanguagePicker(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-          left: 20.0, right: 00.0, top: 0.0, bottom: 00.0),
+      padding: EdgeInsets.only(left: 20.h, right: 00.0, top: 0.0, bottom: 00.0),
       child: Row(
         children: [
           const Text(
@@ -456,19 +469,19 @@ class CreateScreenState extends State<CreateScreen> {
             style: TextStyle(fontSize: 13, fontFamily: "Outfit"),
           ),
           // const Spacer(),
-          SizedBox(width: 20),
+          SizedBox(width: 20.h),
           SizedBox(
-            width: 150,
+            width: 150.h,
             child: LanguagePickerDropdown(
               initialValue: Languages.english,
               itemBuilder: ((language) => DropdownMenuItem(
                       child: Text(
                     language.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.black,
                       fontFamily: "Outfit",
                       fontWeight: FontWeight.w300,
-                      fontSize: 12,
+                      fontSize: 14.adaptSize,
                     ),
                   ))),
               onValuePicked: (Language language) {
@@ -495,55 +508,78 @@ class CreateScreenState extends State<CreateScreen> {
           // keyboardType: TextInputType.text,
           controller: atomInputContainerController,
           decoration: InputDecoration(
-              labelText: "Add today's ingredients (max to 5)",
-              labelStyle: TextStyle(
-                fontFamily: "Outfit",
-                fontSize: 14,
-              )),
+            labelText: "Add today's ingredients (max to 6)",
+            labelStyle: TextStyle(
+              fontFamily: "Outfit",
+              fontSize: 14.fSize,
+            ),
+            // errorText: "Cannot be Empty"
+          ),
+          style: TextStyle(
+            fontSize: 16.fSize, // Font size for the input text
+            fontFamily: "Outfit",
+            // You can add other styling properties here if needed
+          ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 20.h),
+
+        //Ingredients choosing widgets
         Text("Choose My Protein",
             textAlign: TextAlign.center,
             softWrap: true,
             style: TextStyle(
+              fontSize: 17.fSize,
               fontFamily: "Outfit",
             )),
-        SizedBox(height: 10),
+        SizedBox(height: 10.h),
         _buildButtonProtein(context),
-        SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Text("Choose My Fiber",
             textAlign: TextAlign.center,
             softWrap: true,
             style: TextStyle(
+              fontSize: 17.fSize,
               fontFamily: "Outfit",
             )),
-        SizedBox(height: 10),
+        SizedBox(height: 10.h),
         _buildButtonVegetable(context),
-        SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Text("Choose My Carbs",
             textAlign: TextAlign.center,
             softWrap: true,
             style: TextStyle(
+              fontSize: 17.fSize,
               fontFamily: "Outfit",
             )),
-        SizedBox(height: 5),
+        SizedBox(height: 5.h),
         _buildButtonCarb(context),
-        SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Text("Choose Additionals",
             textAlign: TextAlign.center,
             softWrap: true,
             style: TextStyle(
+              fontSize: 17.fSize,
               fontFamily: "Outfit",
             )),
-        SizedBox(height: 5),
+        SizedBox(height: 5.h),
         _buildButtonOthers(context),
       ],
     );
   }
 
+  void addIngredientItem(List<String> currentIngredientList) async {
+    String? newIngredient = await _showAddIngredientDialog(context);
+    if (newIngredient != null && newIngredient.isNotEmpty) {
+      setState(() {
+        currentIngredientList.add(newIngredient);
+      });
+    }
+  }
+
   Widget _buildButtonProtein(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemCount: ingredients_protein.length + 1,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
@@ -553,11 +589,9 @@ class CreateScreenState extends State<CreateScreen> {
           crossAxisSpacing: 10),
       itemBuilder: (context, index) {
         if (index == ingredients_protein.length) {
-          // This is the "Add" button
-
           return SizedBox(
-              height: 5,
-              width: 5,
+              height: 5.v,
+              width: 5.h,
               child: FittedBox(
                   fit: BoxFit.contain,
                   child: FloatingActionButton(
@@ -565,8 +599,8 @@ class CreateScreenState extends State<CreateScreen> {
                     // You can adjust this as needed
                     tooltip: "Add a new protein",
                     onPressed: () {
-                      currentIngredientList = ingredients_protein;
-                      addIngredientItem();
+                      // currentIngredientList = ingredients_protein;
+                      addIngredientItem(ingredients_protein);
                     },
                     child: Icon(Icons.add),
                     backgroundColor: appTheme.yellow_primary,
@@ -579,8 +613,8 @@ class CreateScreenState extends State<CreateScreen> {
           bool isSelected = selectedIngredients.contains(data);
           return ElevatedButton(
             style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 1),
-                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
+                padding: EdgeInsets.symmetric(horizontal: 1.h),
+                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12.fSize),
                 foregroundColor: Colors.white,
                 backgroundColor:
                     isSelected ? Colors.grey : appTheme.green_primary),
@@ -590,7 +624,7 @@ class CreateScreenState extends State<CreateScreen> {
                   // If the data is already selected, remove it
                   selectedIngredients.remove(data);
                 } else {
-                  if (selectedIngredients.length < 5) {
+                  if (selectedIngredients.length < 6) {
                     // If the data is not selected, add it
                     selectedIngredients.add(data);
                   }
@@ -604,6 +638,7 @@ class CreateScreenState extends State<CreateScreen> {
                 softWrap: true,
                 style: TextStyle(
                   fontFamily: "Outfit",
+                  fontSize: 13.fSize,
                 )),
           );
         }
@@ -611,18 +646,10 @@ class CreateScreenState extends State<CreateScreen> {
     );
   }
 
-  void addIngredientItem() async {
-    String? newIngredient = await _showAddIngredientDialog(context);
-    if (newIngredient != null && newIngredient.isNotEmpty) {
-      setState(() {
-        currentIngredientList.add(newIngredient);
-      });
-    }
-  }
-
   Widget _buildButtonVegetable(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemCount: ingredients_vege.length + 1, // Add 1 for the "Add" button
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
@@ -631,19 +658,17 @@ class CreateScreenState extends State<CreateScreen> {
           crossAxisSpacing: 10),
       itemBuilder: (context, index) {
         if (index == ingredients_vege.length) {
-          // This is the "Add" button
-
           return SizedBox(
-              height: 5,
-              width: 5,
+              height: 5.v,
+              width: 5.h,
               child: FittedBox(
                   fit: BoxFit.contain,
                   child: FloatingActionButton(
                     heroTag: null,
                     tooltip: "Add a new vegetable",
                     onPressed: () {
-                      currentIngredientList = ingredients_vege;
-                      addIngredientItem();
+                      // currentIngredientList = ingredients_vege;
+                      addIngredientItem(ingredients_vege);
                     },
                     child: Icon(Icons.add),
                     backgroundColor: appTheme.yellow_primary,
@@ -656,8 +681,8 @@ class CreateScreenState extends State<CreateScreen> {
           bool isSelected = selectedIngredients.contains(data);
           return ElevatedButton(
             style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 1),
-                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
+                padding: EdgeInsets.symmetric(horizontal: 1.h),
+                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 13.fSize),
                 foregroundColor: Colors.white,
                 backgroundColor:
                     isSelected ? Colors.grey : appTheme.green_primary),
@@ -666,7 +691,7 @@ class CreateScreenState extends State<CreateScreen> {
                 if (selectedIngredients.contains(data)) {
                   selectedIngredients.remove(data);
                 } else {
-                  if (selectedIngredients.length < 5) {
+                  if (selectedIngredients.length < 6) {
                     selectedIngredients.add(data);
                   }
                 }
@@ -679,6 +704,7 @@ class CreateScreenState extends State<CreateScreen> {
                 softWrap: true,
                 style: TextStyle(
                   fontFamily: "Outfit",
+                  fontSize: 13.fSize,
                 )),
           );
         }
@@ -689,6 +715,7 @@ class CreateScreenState extends State<CreateScreen> {
   Widget _buildButtonCarb(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemCount: ingredients_carb.length + 1, // Add 1 for the "Add" button
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
@@ -697,19 +724,17 @@ class CreateScreenState extends State<CreateScreen> {
           crossAxisSpacing: 10.0),
       itemBuilder: (context, index) {
         if (index == ingredients_carb.length) {
-          // This is the "Add" button
-          currentIngredientList = ingredients_carb;
           return SizedBox(
-              height: 5,
-              width: 5,
+              height: 5.v,
+              width: 5.h,
               child: FittedBox(
                   fit: BoxFit.contain,
                   child: FloatingActionButton(
                     heroTag: null,
                     tooltip: "Add a new carb",
                     onPressed: () {
-                      currentIngredientList = ingredients_carb;
-                      addIngredientItem();
+                      // currentIngredientList = ingredients_carb;
+                      addIngredientItem(ingredients_carb);
                     },
                     child: Icon(Icons.add),
                     backgroundColor: appTheme.yellow_primary,
@@ -722,8 +747,8 @@ class CreateScreenState extends State<CreateScreen> {
           bool isSelected = selectedIngredients.contains(data);
           return ElevatedButton(
             style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 1),
-                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
+                padding: EdgeInsets.symmetric(horizontal: 1.h),
+                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 13.fSize),
                 foregroundColor: Colors.white,
                 backgroundColor:
                     isSelected ? Colors.grey : appTheme.green_primary),
@@ -733,7 +758,7 @@ class CreateScreenState extends State<CreateScreen> {
                   // If the data is already selected, remove it
                   selectedIngredients.remove(data);
                 } else {
-                  if (selectedIngredients.length < 5) {
+                  if (selectedIngredients.length < 6) {
                     // If the data is not selected, add it
                     selectedIngredients.add(data);
                   }
@@ -747,6 +772,7 @@ class CreateScreenState extends State<CreateScreen> {
                 softWrap: true,
                 style: TextStyle(
                   fontFamily: "Outfit",
+                  fontSize: 13.fSize,
                 )),
           );
         }
@@ -757,6 +783,7 @@ class CreateScreenState extends State<CreateScreen> {
   Widget _buildButtonOthers(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemCount: ingredients_others.length + 1, // Add 1 for the "Add" button
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
@@ -765,19 +792,17 @@ class CreateScreenState extends State<CreateScreen> {
           crossAxisSpacing: 10.0),
       itemBuilder: (context, index) {
         if (index == ingredients_others.length) {
-          // This is the "Add" button
-          currentIngredientList = ingredients_others;
           return SizedBox(
-              height: 5,
-              width: 5,
+              height: 5.v,
+              width: 5.h,
               child: FittedBox(
                   fit: BoxFit.contain,
                   child: FloatingActionButton(
                     heroTag: null,
                     tooltip: "Add",
                     onPressed: () {
-                      currentIngredientList = ingredients_others;
-                      addIngredientItem();
+                      // currentIngredientList = ingredients_others;
+                      addIngredientItem(ingredients_others);
                     },
                     child: Icon(Icons.add),
                     backgroundColor: appTheme.yellow_primary,
@@ -790,8 +815,8 @@ class CreateScreenState extends State<CreateScreen> {
           bool isSelected = selectedIngredients.contains(data);
           return ElevatedButton(
             style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 1),
-                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12),
+                padding: EdgeInsets.symmetric(horizontal: 1.h),
+                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 13.fSize),
                 foregroundColor: Colors.white,
                 backgroundColor:
                     isSelected ? Colors.grey : appTheme.green_primary),
@@ -801,7 +826,7 @@ class CreateScreenState extends State<CreateScreen> {
                   // If the data is already selected, remove it
                   selectedIngredients.remove(data);
                 } else {
-                  if (selectedIngredients.length < 5) {
+                  if (selectedIngredients.length < 6) {
                     // If the data is not selected, add it
                     selectedIngredients.add(data);
                   }
@@ -813,9 +838,7 @@ class CreateScreenState extends State<CreateScreen> {
             child: Text(data,
                 textAlign: TextAlign.center,
                 softWrap: true,
-                style: TextStyle(
-                  fontFamily: "Outfit",
-                )),
+                style: TextStyle(fontFamily: "Outfit", fontSize: 13.fSize)),
           );
         }
       },
@@ -908,7 +931,10 @@ Future<String?> _showAddIngredientDialog(BuildContext context) async {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Add Ingredient'),
+        title: Text(
+          'Add Ingredient',
+          style: TextStyle(fontSize: 14.fSize, fontFamily: "Outfit"),
+        ),
         content: TextField(
           onChanged: (value) {
             ingredientName = value;
@@ -917,18 +943,24 @@ Future<String?> _showAddIngredientDialog(BuildContext context) async {
         ),
         actions: <Widget>[
           TextButton(
-            child: const Text(
+            child: Text(
               'Cancel',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 13.fSize,
+                  fontFamily: "Outfit"),
             ),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: const Text(
+            child: Text(
               'Add',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 13.fSize,
+                  fontFamily: "Outfit"),
             ),
             onPressed: () {
               Navigator.of(context).pop(ingredientName);

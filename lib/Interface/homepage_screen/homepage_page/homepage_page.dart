@@ -11,7 +11,7 @@ import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_image.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
-import 'package:astridzhao_s_food_app/Interface/favorite_page/favorite_screen_2.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/update_favorite_screen_2.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
