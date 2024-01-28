@@ -50,22 +50,23 @@ class _GenerationScreenState extends State<GenerationScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
+        home: SafeArea(
+      child: Scaffold(
         appBar: customeAppbar(context),
-        body: Stack(
+        body: Column(
           children: [
             Positioned(
                 child: Column(
               children: [
                 title(context),
-                SizedBox(height: 5),
+                SizedBox(height: 5.v),
                 saving_summery(context),
-                SizedBox(height: 20),
+                SizedBox(height: 20.v),
                 buttons_group(context),
-                SizedBox(height: 10),
+                SizedBox(height: 10.v),
                 //divider
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  margin: EdgeInsets.symmetric(horizontal: 20.v),
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: Divider(
                     indent: 1,
@@ -73,33 +74,39 @@ class _GenerationScreenState extends State<GenerationScreen> {
                 ),
               ],
             )),
-            Positioned(
-              top: 200,
-              left: 0,
-              right: 0,
-              bottom: 0,
+
+            // Below is recipe widgets
+            Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
-                padding: EdgeInsets.only(top: 20),
+                padding: EdgeInsets.only(top: 10.v),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 25),
+                    SizedBox(
+                      // height: 25.v,
+                      child: CustomImageView(
+                        height: 100.adaptSize,
+                        width: 100.adaptSize,
+                        imagePath: ImageConstant.imgLogo2RemovebgPreview,
+                        margin: EdgeInsets.only(top: 1.v),
+                      ),
+                    ),
                     group_info(context),
                     instruction(context),
                     //divider
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      margin: EdgeInsets.symmetric(horizontal: 20.v),
                       width: MediaQuery.of(context).size.width * 0.9,
                       child: Divider(
                         indent: 1,
                       ),
                     ),
-                    SizedBox(height: 13),
+                    SizedBox(height: 13.v),
                     _buildTimerControls(context),
-                    SizedBox(height: 30),
+                    SizedBox(height: 30.v),
                     bottomSettingBar(context),
-                    SizedBox(height: 40),
+                    SizedBox(height: 40.v),
                   ],
                 ),
               ),
@@ -107,14 +114,14 @@ class _GenerationScreenState extends State<GenerationScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 
   Future<void> generateImage(String recipe) async {
     OpenAI.apiKey = azapiKey;
     final image = await OpenAI.instance.image.create(
         n: 1,
-        prompt: "You act as a professional image-generating assistant. By referencing the recipe title $recipe, use your imagination to create a related dish image can put on my restaurant menu. " +
+        prompt: "You act as a professional image-generating assistant. By referencing the recipe title $recipe, to be noticed the title might not in English. Use your imagination to create a related dish image can put on my restaurant menu. " +
             "The image style should be cute and cartoon, and make it looks tasty to attract customers. " +
             "Do not put any text on the image. ");
 
@@ -131,6 +138,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
   PreferredSizeWidget customeAppbar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
+      toolbarHeight: MediaQuery.of(context).size.height * 0.1,
       elevation: 0,
       leading: IconButton(
         icon: const Icon(Icons.keyboard_backspace),
@@ -150,7 +158,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
               style: TextStyle(
                   color: Color.fromARGB(255, 174, 73, 6),
                   fontFamily: "Outfit",
-                  fontSize: 13)),
+                  fontSize: 15.fSize)),
           onPressed: () async {
             await generateImage(widget.recipe.title.toString());
             showDialog(
@@ -188,10 +196,11 @@ class _GenerationScreenState extends State<GenerationScreen> {
       ),
       actions: <Widget>[
         new TextButton(
+          //TODO: save image in local album gallery
           onPressed: () {},
           child: Text(
             'Save Image',
-            style: TextStyle(color: Colors.black54),
+            style: TextStyle(color: Colors.black54, fontSize: 14.fSize),
           ),
         ),
         new TextButton(
@@ -200,7 +209,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           },
           child: Text(
             'Close',
-            style: TextStyle(color: Colors.black54),
+            style: TextStyle(color: Colors.black54, fontSize: 14.fSize),
           ),
         ),
       ],
@@ -217,7 +226,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
             maxLines: 2,
             style: TextStyle(
                 fontFamily: "Outfit",
-                fontSize: 14.fSize,
+                fontSize: 16.fSize,
                 fontWeight: FontWeight.w500)));
   }
 
@@ -238,35 +247,64 @@ class _GenerationScreenState extends State<GenerationScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        //Child left: ingredient + cooking time:
+        // Child left: ingredient + cooking time:
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(10, 0, 0, 10),
-                  padding: EdgeInsets.fromLTRB(0, 0, 5, 15),
-                  decoration: AppDecoration.fillYellow.copyWith(
-                    borderRadius: BorderRadiusStyle.roundedBorder10,
+            Container(
+              margin: EdgeInsets.fromLTRB(10.h, 0, 0, 10.v),
+              padding: EdgeInsets.fromLTRB(0, 0, 5.h, 15.v),
+              decoration: AppDecoration.fillYellow.copyWith(
+                borderRadius: BorderRadiusStyle.roundedBorder10,
+              ),
+              width: MediaQuery.of(context).size.width * 0.45,
+              child: Column(
+                children: [
+                  CustomImageView(
+                    height: 40.adaptSize,
+                    width: 40.adaptSize,
+                    imagePath: ImageConstant.tomato,
+                    margin: EdgeInsets.only(bottom: 5.v, top: 2.v),
                   ),
-                  height: MediaQuery.of(context).size.height * 0.25,
-                  width: MediaQuery.of(context).size.width *
-                      0.5, // <-- Fixed width
-                  child: ListView.builder(
-                    itemCount: 1,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(widget.recipe.ingredients.value.join('\n'),
-                            style: TextStyle(
+                  Text(
+                    "Ingredients",
+                    style: TextStyle(
+                      fontFamily: "Outfit",
+                      fontSize: 16.fSize,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  // SizedBox(height: 5.v),
+                  Container(
+                    padding: EdgeInsets.only(top: 5.v),
+                    height: MediaQuery.of(context).size.height * 0.22,
+                    child: Scrollbar(
+                      thumbVisibility: true,
+                      thickness: 3.0,
+                      radius: Radius.circular(5),
+                      child: ListView.builder(
+                        itemExtent:
+                            20.0, // Adjust this value to reduce space between items
+                        itemCount: widget.recipe.ingredients.value.length,
+                        // itemCount: 1,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(
+                              widget.recipe.ingredients.value[index],
+                              // widget.recipe.ingredients.value.join('\n'),
+                              style: TextStyle(
                                 fontFamily: "Outfit",
-                                fontSize: 12.fSize,
-                                fontWeight: FontWeight.normal)),
-                      );
-                    },
+                                fontSize: 14.fSize,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(
               // <-- Fixed width.
@@ -276,75 +314,82 @@ class _GenerationScreenState extends State<GenerationScreen> {
         ),
 
         Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-          padding: EdgeInsets.fromLTRB(10, 10, 5, 15),
-          height: MediaQuery.of(context).size.height * 0.3,
-          width: MediaQuery.of(context).size.width * 0.4,
+          margin: EdgeInsets.fromLTRB(0, 0, 10.h, 0),
+          padding: EdgeInsets.fromLTRB(10.h, 10.v, 5.h, 15.v),
+          height: MediaQuery.of(context).size.height * 0.4,
+          width: MediaQuery.of(context).size.width * 0.35,
           decoration: AppDecoration.fillYellow.copyWith(
             borderRadius: BorderRadiusStyle.roundedBorder10,
           ),
           child: Column(
             children: [
               CustomImageView(
-                height: 40,
-                width: 40,
+                height: 40.adaptSize,
+                width: 40.adaptSize,
                 imagePath: ImageConstant.imggenerationpage_notes,
-                margin: EdgeInsets.only(bottom: 5, top: 2),
+                margin: EdgeInsets.only(bottom: 5.v, top: 2.v),
+              ),
+              SizedBox(
+                height: 10.v,
               ),
               Text(widget.recipe.notes.value.toString(),
                   style: TextStyle(
                       fontFamily: "Outfit",
-                      fontSize: 12.fSize,
+                      fontSize: 14.fSize,
                       fontWeight: FontWeight.normal)),
             ],
           ),
         ),
-
-        //   ],
-        // ),
       ],
     );
   }
 
   Widget instruction(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.adaptSize),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 5.h),
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(10.adaptSize),
         decoration: AppDecoration.fillYellow.copyWith(
           borderRadius: BorderRadiusStyle.roundedBorder10,
         ),
         child: Column(
           children: [
             CustomImageView(
-              height: 80,
-              width: 80,
-              imagePath: ImageConstant.imgLogo2RemovebgPreview,
-              margin: EdgeInsets.only(bottom: 0, top: 2),
+              height: 50.v,
+              width: 40.h,
+              imagePath: ImageConstant.imggenerationpage_instruction,
+              margin: EdgeInsets.only(bottom: 0, top: 2.v),
             ),
-            // SizedBox(height: 5),
+            SizedBox(height: 5.v),
             Text(
               "Instructions",
               style: TextStyle(
                   fontFamily: "Outfit",
-                  fontSize: 14,
+                  fontSize: 16.fSize,
                   fontWeight: FontWeight.w500),
             ),
             Container(
-              padding: EdgeInsets.only(top: 5),
-              height: 300,
-              child: ListView.builder(
-                itemCount: 1,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(widget.recipe.instructions.value.join('\n \n'),
-                        style: TextStyle(
-                            fontFamily: "Outfit",
-                            fontSize: 12.fSize,
-                            fontWeight: FontWeight.normal)),
-                  );
-                },
+              padding: EdgeInsets.only(top: 5.v),
+              height: MediaQuery.of(context).size.height * 0.5,
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: Scrollbar(
+                thumbVisibility: true,
+                thickness: 3.0, // Optional: Adjust thickness of the scrollbar
+                radius: Radius.circular(5),
+                child: ListView.builder(
+                  itemCount: 1,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(
+                          widget.recipe.instructions.value.join('\n \n'),
+                          style: TextStyle(
+                              fontFamily: "Outfit",
+                              fontSize: 14.fSize,
+                              fontWeight: FontWeight.normal)),
+                    );
+                  },
+                ),
               ),
             ),
           ],
@@ -353,8 +398,23 @@ class _GenerationScreenState extends State<GenerationScreen> {
     );
   }
 
+  double getResponsiveFontSize_savingSummary(double screenWidth) {
+    if (screenWidth < 320) {
+      // Smaller screens
+      return 18.fSize;
+    } else if (screenWidth < 480) {
+      // Medium screens
+      return 16.fSize;
+    } else {
+      // Larger screens
+      return 14.fSize;
+    }
+  }
+
   /// Section Widget
   Widget saving_summery(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double fontsize_unit = getResponsiveFontSize_savingSummary(screenWidth);
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.h),
       padding: EdgeInsets.symmetric(
@@ -373,7 +433,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
             "You will save",
             style: TextStyle(
                 fontFamily: "Outfit",
-                fontSize: 14,
+                fontSize: 16.fSize,
                 color: Colors.white,
                 fontWeight: FontWeight.bold),
           ),
@@ -395,7 +455,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       widget.recipe.savingSummary_CO2.value.toString(),
                       style: TextStyle(
                           fontFamily: "Outfit",
-                          fontSize: 16,
+                          fontSize: 18.fSize,
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
                     ),
@@ -410,7 +470,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       "KG CO2",
                       style: TextStyle(
                           fontFamily: "Outfit",
-                          fontSize: 14,
+                          fontSize: fontsize_unit,
                           color: Colors.white),
                     ),
                   ),
@@ -437,7 +497,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       widget.recipe.savingSummary_money.value.toString(),
                       style: TextStyle(
                           fontFamily: "Outfit",
-                          fontSize: 16,
+                          fontSize: 18.fSize,
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
                     ),
@@ -452,7 +512,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       "DOLLARS",
                       style: TextStyle(
                           fontFamily: "Outfit",
-                          fontSize: 14,
+                          fontSize: fontsize_unit,
                           color: Colors.white),
                     ),
                   ),
@@ -471,8 +531,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
         horizontal: 10.h,
         vertical: 2.v,
       ),
-      height: MediaQuery.of(context).size.height * 0.03,
-      width: MediaQuery.of(context).size.width * 0.5,
+      height: MediaQuery.of(context).size.height * 0.05,
+      width: MediaQuery.of(context).size.width * 0.45,
       decoration: AppDecoration.fillYellow.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder10,
       ),
@@ -481,15 +541,15 @@ class _GenerationScreenState extends State<GenerationScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           CustomImageView(
-            height: 20.h,
-            width: 20.v,
+            height: 20.adaptSize,
+            width: 20.adaptSize,
             imagePath: ImageConstant.imgClasicAlarmClock,
             margin: EdgeInsets.only(top: 1.v),
           ),
           Spacer(),
           Text(
             widget.recipe.cookTime.value.toString(),
-            style: TextStyle(fontFamily: "Outfit", fontSize: 12.fSize),
+            style: TextStyle(fontFamily: "Outfit", fontSize: 14.fSize),
           ),
           Spacer(),
           Text(
@@ -547,7 +607,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
   Widget bottomSettingBar(BuildContext context) {
     return OverflowBar(
       alignment: MainAxisAlignment.end,
-      spacing: 10,
+      spacing: 10.adaptSize,
       children: <Widget>[
         IconButton(
           icon: Icon(copyIcon),
@@ -561,7 +621,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
         ),
         IconButton(
           icon: Icon(Icons.share),
-          padding: EdgeInsets.only(right: 30),
+          padding: EdgeInsets.only(right: 30.h),
           tooltip: "Share",
           onPressed: () {
             // TODO: Add share functionality here
@@ -571,24 +631,39 @@ class _GenerationScreenState extends State<GenerationScreen> {
     );
   }
 
+  double getResponsiveFontSize_buttontext(double screenWidth) {
+    if (screenWidth < 320) {
+      // Smaller screens
+      return 16.fSize;
+    } else if (screenWidth < 480) {
+      // Medium screens
+      return 14.fSize;
+    } else {
+      // Larger screens
+      return 13.fSize;
+    }
+  }
+
   Widget favoriteButton(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double fontsize_text = getResponsiveFontSize_buttontext(screenWidth);
     return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
+      padding: EdgeInsets.only(left: 10.h, right: 10.h),
       child: TextButton.icon(
         icon: Icon(Icons.favorite_border_outlined),
         label: Text(
           "Add to My Favorite",
           style: TextStyle(
             fontFamily: "Outfit",
-            fontSize: 14,
+            fontSize: fontsize_text,
           ),
         ),
         style: TextButton.styleFrom(
           backgroundColor: index_color == 1 ? disableColor : enableColor,
           foregroundColor: Colors.white,
           padding: EdgeInsets.symmetric(
-            horizontal: 15.0,
-            vertical: 8.0,
+            horizontal: 15.h,
+            vertical: 8.v,
           ),
         ),
         onPressed: () async {
@@ -623,23 +698,25 @@ class _GenerationScreenState extends State<GenerationScreen> {
   }
 
   Widget madeButton(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double fontsize_text = getResponsiveFontSize_buttontext(screenWidth);
     return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
+      padding: EdgeInsets.only(left: 10.h, right: 10.h),
       child: TextButton.icon(
           icon: Icon(Icons.hdr_strong),
           label: Text(
             "I made it",
             style: TextStyle(
               fontFamily: "Outfit",
-              fontSize: 14,
+              fontSize: fontsize_text,
             ),
           ),
           style: TextButton.styleFrom(
             backgroundColor: index_color == 2 ? disableColor : enableColor,
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(
-              horizontal: 15.0,
-              vertical: 8.0,
+              horizontal: 15.h,
+              vertical: 8.v,
             ),
           ),
           onPressed: () {

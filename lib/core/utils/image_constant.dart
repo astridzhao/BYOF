@@ -60,8 +60,10 @@ class ImageConstant {
 
   static String imgCollection = '$imagePath/collection.svg';
 
-  static String random_image_onepot =
-      '$imagePath/random_image_onepot.png';
+  static String random_image_onepot = '$imagePath/random_image_onepot.png';
+
+  static String imggenerationpage_instruction =
+      '$imagePath/random_image_soup.png';
 
   static String imggenerationpage_notes = '$imagePath/chief.png';
 }
