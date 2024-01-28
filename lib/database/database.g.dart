@@ -61,15 +61,15 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
   static const VerificationMeta _savingSummary_CO2Meta =
       const VerificationMeta('savingSummary_CO2');
   @override
-  late final GeneratedColumn<int> savingSummary_CO2 = GeneratedColumn<int>(
-      'saving_summary_c_o2', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<double> savingSummary_CO2 =
+      GeneratedColumn<double>('saving_summary_c_o2', aliasedName, false,
+          type: DriftSqlType.double, requiredDuringInsert: true);
   static const VerificationMeta _savingSummary_moneyMeta =
       const VerificationMeta('savingSummary_money');
   @override
-  late final GeneratedColumn<int> savingSummary_money = GeneratedColumn<int>(
-      'saving_summary_money', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<double> savingSummary_money =
+      GeneratedColumn<double>('saving_summary_money', aliasedName, false,
+          type: DriftSqlType.double, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -170,9 +170,9 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
       imageURL: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image_u_r_l']),
       savingSummary_CO2: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}saving_summary_c_o2'])!,
+          DriftSqlType.double, data['${effectivePrefix}saving_summary_c_o2'])!,
       savingSummary_money: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}saving_summary_money'])!,
+          DriftSqlType.double, data['${effectivePrefix}saving_summary_money'])!,
     );
   }
 
@@ -196,8 +196,8 @@ class Recipe extends DataClass implements Insertable<Recipe> {
   final String notes;
   final int saveAt;
   final String? imageURL;
-  final int savingSummary_CO2;
-  final int savingSummary_money;
+  final double savingSummary_CO2;
+  final double savingSummary_money;
   const Recipe(
       {required this.id,
       required this.title,
@@ -228,8 +228,8 @@ class Recipe extends DataClass implements Insertable<Recipe> {
     if (!nullToAbsent || imageURL != null) {
       map['image_u_r_l'] = Variable<String>(imageURL);
     }
-    map['saving_summary_c_o2'] = Variable<int>(savingSummary_CO2);
-    map['saving_summary_money'] = Variable<int>(savingSummary_money);
+    map['saving_summary_c_o2'] = Variable<double>(savingSummary_CO2);
+    map['saving_summary_money'] = Variable<double>(savingSummary_money);
     return map;
   }
 
@@ -262,9 +262,9 @@ class Recipe extends DataClass implements Insertable<Recipe> {
       notes: serializer.fromJson<String>(json['notes']),
       saveAt: serializer.fromJson<int>(json['saveAt']),
       imageURL: serializer.fromJson<String?>(json['imageURL']),
-      savingSummary_CO2: serializer.fromJson<int>(json['savingSummary_CO2']),
+      savingSummary_CO2: serializer.fromJson<double>(json['savingSummary_CO2']),
       savingSummary_money:
-          serializer.fromJson<int>(json['savingSummary_money']),
+          serializer.fromJson<double>(json['savingSummary_money']),
     );
   }
   @override
@@ -279,8 +279,8 @@ class Recipe extends DataClass implements Insertable<Recipe> {
       'notes': serializer.toJson<String>(notes),
       'saveAt': serializer.toJson<int>(saveAt),
       'imageURL': serializer.toJson<String?>(imageURL),
-      'savingSummary_CO2': serializer.toJson<int>(savingSummary_CO2),
-      'savingSummary_money': serializer.toJson<int>(savingSummary_money),
+      'savingSummary_CO2': serializer.toJson<double>(savingSummary_CO2),
+      'savingSummary_money': serializer.toJson<double>(savingSummary_money),
     };
   }
 
@@ -293,8 +293,8 @@ class Recipe extends DataClass implements Insertable<Recipe> {
           String? notes,
           int? saveAt,
           Value<String?> imageURL = const Value.absent(),
-          int? savingSummary_CO2,
-          int? savingSummary_money}) =>
+          double? savingSummary_CO2,
+          double? savingSummary_money}) =>
       Recipe(
         id: id ?? this.id,
         title: title ?? this.title,
@@ -361,8 +361,8 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
   final Value<String> notes;
   final Value<int> saveAt;
   final Value<String?> imageURL;
-  final Value<int> savingSummary_CO2;
-  final Value<int> savingSummary_money;
+  final Value<double> savingSummary_CO2;
+  final Value<double> savingSummary_money;
   const RecipesCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -384,8 +384,8 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     required String notes,
     required int saveAt,
     this.imageURL = const Value.ofNullable(""),
-    required int savingSummary_CO2,
-    required int savingSummary_money,
+    required double savingSummary_CO2,
+    required double savingSummary_money,
   })  : title = Value(title),
         ingredients = Value(ingredients),
         instructions = Value(instructions),
@@ -430,8 +430,8 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
       Value<String>? notes,
       Value<int>? saveAt,
       Value<String?>? imageURL,
-      Value<int>? savingSummary_CO2,
-      Value<int>? savingSummary_money}) {
+      Value<double>? savingSummary_CO2,
+      Value<double>? savingSummary_money}) {
     return RecipesCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -476,10 +476,10 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
       map['image_u_r_l'] = Variable<String>(imageURL.value);
     }
     if (savingSummary_CO2.present) {
-      map['saving_summary_c_o2'] = Variable<int>(savingSummary_CO2.value);
+      map['saving_summary_c_o2'] = Variable<double>(savingSummary_CO2.value);
     }
     if (savingSummary_money.present) {
-      map['saving_summary_money'] = Variable<int>(savingSummary_money.value);
+      map['saving_summary_money'] = Variable<double>(savingSummary_money.value);
     }
     return map;
   }

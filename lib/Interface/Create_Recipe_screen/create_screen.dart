@@ -10,6 +10,7 @@ import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:language_picker/language_picker.dart';
 import 'package:language_picker/languages.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 /// Flutter code sample for [AppBar].
 
@@ -64,12 +65,7 @@ class CreateScreenState extends State<CreateScreen> {
     "zuchinni",
     "eggplant",
   ];
-  List<String> ingredients_fruit = [
-    "apple",
-    "banana",
-    "strawberry",
-    "blueberry",
-  ];
+
   List<String> ingredients_carb = [
     "egg noodle",
     "white rice",
@@ -170,7 +166,7 @@ class CreateScreenState extends State<CreateScreen> {
           "4. Be mindful of I have $selectedDietaryRestriction diet restriction. "
           "5. I have $selectedServingSize people to eat. Tell me how many amount of food I need to use in 'Ingredient List'. ";
 
-  double getResponsiveFontSize(double screenWidth) {
+  double getResponsiveFontSize_title(double screenWidth) {
     if (screenWidth < 320) {
       // Smaller screens
       return 17.fSize;
@@ -194,23 +190,29 @@ class CreateScreenState extends State<CreateScreen> {
       childAspectRatio = MediaQuery.of(context).size.width /
           (MediaQuery.of(context).size.height /
               2.3); // or whatever works for the smallest screen
-    } else {
+    } else if (screenWidth <= 480) {
       // Decrease the aspect ratio as the screen gets wider
       childAspectRatio = MediaQuery.of(context).size.width /
           (MediaQuery.of(context).size.height /
               2.5); // You may need to adjust this value
+    } else {
+      childAspectRatio = MediaQuery.of(context).size.width /
+          (MediaQuery.of(context).size.height / 2.7); // You may need to adju
     }
 
     double crossAxisSpacing;
     if (screenWidth <= 320) {
       // for smaller screens like iPhone SE
       crossAxisSpacing = 15; // or whatever works for the smallest screen
+    } else if (screenWidth <= 480) {
+      // Decrease the aspect ratio as the screen gets wider
+      crossAxisSpacing = 10;
+
+      /// You may need to adjust this value
     } else {
       // Decrease the aspect ratio as the screen gets wider
-      crossAxisSpacing = 10; // You may need to adjust this value
+      crossAxisSpacing = 5; // You may need to adjust this value
     }
-
-    // double responsiveFontSize = getResponsiveFontSize(screenWidth);
 
     return MaterialApp(
       home: SafeArea(
@@ -230,6 +232,7 @@ class CreateScreenState extends State<CreateScreen> {
             );
           }),
           toolbarHeight: 100.v,
+          //Testing:for UX
           // title: Text(
           //   'BRING YOUR OWN FRIDGE',
           //   // style: TextStyle(fontSize: 16.fSize, fontFamily: "Outfit"),
@@ -322,7 +325,7 @@ class CreateScreenState extends State<CreateScreen> {
                                   // Choose Preference Widget
                                   Container(
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: 12.h, vertical: 24.v),
+                                        horizontal: 10.h, vertical: 24.v),
                                     decoration: BoxDecoration(
                                       color: appTheme.gray700,
                                       borderRadius: BorderRadius.circular(
@@ -342,7 +345,6 @@ class CreateScreenState extends State<CreateScreen> {
                                               ? 3
                                               : 2,
                                       childAspectRatio: childAspectRatio,
-
                                       children: <Widget>[
                                         cuisineStyle(context),
                                         cookingMethod(context),
@@ -374,16 +376,18 @@ class CreateScreenState extends State<CreateScreen> {
                 color: Colors.white, fontSize: 12.fSize, fontFamily: "Outfit"),
           ),
           SizedBox(height: 4.v),
-          CustomDropDown(
-            hintText: dropdownItemList1_cuisine.first,
-            hintStyle: TextStyle(fontSize: 13.fSize, fontFamily: "Outfit"),
-            items: dropdownItemList1_cuisine,
-            onChanged: (value) {
-              setState(() {
-                selectedCuisine = value;
-              });
-              // _updateSelections();
-            },
+          Flexible(
+            child: CustomDropDown(
+              hintText: dropdownItemList1_cuisine.first,
+              hintStyle: TextStyle(fontSize: 13.fSize, fontFamily: "Outfit"),
+              items: dropdownItemList1_cuisine,
+              onChanged: (value) {
+                setState(() {
+                  selectedCuisine = value;
+                });
+                // _updateSelections();
+              },
+            ),
           ),
         ],
       ),
@@ -402,17 +406,19 @@ class CreateScreenState extends State<CreateScreen> {
                 color: Colors.white, fontSize: 12.fSize, fontFamily: "Outfit"),
           ),
           SizedBox(height: 4.v),
-          CustomDropDown(
-            hintText: dropdownItemList2_cooking_ethod.first,
-            hintStyle: TextStyle(fontSize: 13.fSize, fontFamily: "Outfit"),
-            items: dropdownItemList2_cooking_ethod,
-            onChanged: (value) {
-              setState(() {
-                selectedCookingMethod = value;
-              });
-              // _updateSelections();
-            },
-          ),
+          Flexible(
+            child: CustomDropDown(
+              hintText: dropdownItemList2_cooking_ethod.first,
+              hintStyle: TextStyle(fontSize: 13.fSize, fontFamily: "Outfit"),
+              items: dropdownItemList2_cooking_ethod,
+              onChanged: (value) {
+                setState(() {
+                  selectedCookingMethod = value;
+                });
+                // _updateSelections();
+              },
+            ),
+          )
         ],
       ),
     );
@@ -430,17 +436,19 @@ class CreateScreenState extends State<CreateScreen> {
                 color: Colors.white, fontSize: 12.fSize, fontFamily: "Outfit"),
           ),
           SizedBox(height: 4.v),
-          CustomDropDown(
-            hintText: dropdownItemList3_dish_type.first,
-            hintStyle: TextStyle(fontSize: 13.fSize, fontFamily: "Outfit"),
-            items: dropdownItemList3_dish_type,
-            onChanged: (value) {
-              setState(() {
-                selectedDishType = value;
-              });
-              // _updateSelections();
-            },
-          ),
+          Flexible(
+            child: CustomDropDown(
+              hintText: dropdownItemList3_dish_type.first,
+              hintStyle: TextStyle(fontSize: 13.fSize, fontFamily: "Outfit"),
+              items: dropdownItemList3_dish_type,
+              onChanged: (value) {
+                setState(() {
+                  selectedDishType = value;
+                });
+                // _updateSelections();
+              },
+            ),
+          )
         ],
       ),
     );
@@ -448,7 +456,6 @@ class CreateScreenState extends State<CreateScreen> {
 
   Widget dietaryRestriction(BuildContext context) {
     return SizedBox(
-      // height: MediaQuery.of(context).size.height * 0.10,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -458,17 +465,19 @@ class CreateScreenState extends State<CreateScreen> {
                 color: Colors.white, fontSize: 12.fSize, fontFamily: "Outfit"),
           ),
           SizedBox(height: 4.v),
-          CustomDropDown(
-            hintText: dropdownItemList4_restriction.first,
-            hintStyle: TextStyle(fontSize: 13.fSize, fontFamily: "Outfit"),
-            items: dropdownItemList4_restriction,
-            onChanged: (value) {
-              setState(() {
-                selectedDietaryRestriction = value;
-              });
-              // _updateSelections();
-            },
-          ),
+          Flexible(
+            child: CustomDropDown(
+              hintText: dropdownItemList4_restriction.first,
+              hintStyle: TextStyle(fontSize: 13.fSize, fontFamily: "Outfit"),
+              items: dropdownItemList4_restriction,
+              onChanged: (value) {
+                setState(() {
+                  selectedDietaryRestriction = value;
+                });
+                // _updateSelections();
+              },
+            ),
+          )
         ],
       ),
     );
@@ -486,17 +495,19 @@ class CreateScreenState extends State<CreateScreen> {
                 color: Colors.white, fontSize: 12.fSize, fontFamily: "Outfit"),
           ),
           SizedBox(height: 4.v),
-          CustomDropDown(
-            hintText: dropdownItemList5_servingsize.first,
-            hintStyle: TextStyle(fontSize: 13.fSize, fontFamily: "Outfit"),
-            items: dropdownItemList5_servingsize,
-            onChanged: (value) {
-              setState(() {
-                selectedServingSize = value;
-              });
-              // _updateSelections();
-            },
-          ),
+          Flexible(
+            child: CustomDropDown(
+              hintText: dropdownItemList5_servingsize.first,
+              hintStyle: TextStyle(fontSize: 13.fSize, fontFamily: "Outfit"),
+              items: dropdownItemList5_servingsize,
+              onChanged: (value) {
+                setState(() {
+                  selectedServingSize = value;
+                });
+                // _updateSelections();
+              },
+            ),
+          )
         ],
       ),
     );
@@ -542,7 +553,7 @@ class CreateScreenState extends State<CreateScreen> {
   /// Section Widget
   Widget _buildIngredientInputSection(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double responsiveFontSize_title = getResponsiveFontSize(screenWidth);
+    double responsiveFontSize_title = getResponsiveFontSize_title(screenWidth);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -601,9 +612,10 @@ class CreateScreenState extends State<CreateScreen> {
         SizedBox(height: 10.h),
         Text("Choose Additionals",
             textAlign: TextAlign.center,
+            maxLines: 1,
             softWrap: true,
             style: TextStyle(
-              fontSize: 17.fSize,
+              fontSize: responsiveFontSize_title,
               fontFamily: "Outfit",
             )),
         SizedBox(height: 5.h),
@@ -628,7 +640,7 @@ class CreateScreenState extends State<CreateScreen> {
       itemCount: ingredients_protein.length + 1,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
-          crossAxisCount: 3,
+          crossAxisCount: MediaQuery.of(context).size.width > 600 ? 5 : 3,
           // childAspectRatio: MediaQuery.of(context).size.width *0.2,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10),
@@ -678,7 +690,7 @@ class CreateScreenState extends State<CreateScreen> {
                     selectedIngredients.join("  ");
               });
             },
-            child: Text(data,
+            child: AutoSizeText(data,
                 textAlign: TextAlign.center,
                 softWrap: true,
                 style: TextStyle(
@@ -698,7 +710,7 @@ class CreateScreenState extends State<CreateScreen> {
       itemCount: ingredients_vege.length + 1, // Add 1 for the "Add" button
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
-          crossAxisCount: 3,
+          crossAxisCount: MediaQuery.of(context).size.width > 600 ? 5 : 3,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10),
       itemBuilder: (context, index) {
@@ -744,9 +756,10 @@ class CreateScreenState extends State<CreateScreen> {
                     selectedIngredients.join("  ");
               });
             },
-            child: Text(data,
+            child: AutoSizeText(data,
                 textAlign: TextAlign.center,
                 softWrap: true,
+                maxLines: 1,
                 style: TextStyle(
                   fontFamily: "Outfit",
                   fontSize: 13.fSize,
@@ -764,7 +777,7 @@ class CreateScreenState extends State<CreateScreen> {
       itemCount: ingredients_carb.length + 1, // Add 1 for the "Add" button
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
-          crossAxisCount: 3,
+          crossAxisCount: MediaQuery.of(context).size.width > 600 ? 5 : 3,
           mainAxisSpacing: 10.0,
           crossAxisSpacing: 10.0),
       itemBuilder: (context, index) {
@@ -812,9 +825,10 @@ class CreateScreenState extends State<CreateScreen> {
                     selectedIngredients.join("  ");
               });
             },
-            child: Text(data,
+            child: AutoSizeText(data,
                 textAlign: TextAlign.center,
                 softWrap: true,
+                maxLines: 1,
                 style: TextStyle(
                   fontFamily: "Outfit",
                   fontSize: 13.fSize,
@@ -832,7 +846,7 @@ class CreateScreenState extends State<CreateScreen> {
       itemCount: ingredients_others.length + 1, // Add 1 for the "Add" button
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 40.v,
-          crossAxisCount: 3,
+          crossAxisCount: MediaQuery.of(context).size.width > 600 ? 5 : 3,
           mainAxisSpacing: 10.0,
           crossAxisSpacing: 10.0),
       itemBuilder: (context, index) {
@@ -880,8 +894,10 @@ class CreateScreenState extends State<CreateScreen> {
                     selectedIngredients.join("  ");
               });
             },
-            child: Text(data,
+            child: AutoSizeText(data,
                 textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 softWrap: true,
                 style: TextStyle(fontFamily: "Outfit", fontSize: 13.fSize)),
           );

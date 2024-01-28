@@ -24,16 +24,16 @@ class HomepagePage extends StatefulWidget {
 }
 
 class Savings {
-  final int co2;
-  final int dollar;
+  final double co2;
+  final double dollar;
   Savings(this.co2, this.dollar);
 }
 
 class HomepagePageState extends State<HomepagePage> {
   //call database
   final recipe_dao = RecipesDao(DatabaseService().database);
-  int savingCo2 = 0;
-  int savingDollar = 0;
+  double savingCo2 = 0;
+  double savingDollar = 0;
 
 // retrieve saving model data
   Savings getSavingNums() {
@@ -261,9 +261,25 @@ class HomepagePageState extends State<HomepagePage> {
     );
   }
 
+  double getResponsiveFontSize_mealplan(double screenWidth) {
+    if (screenWidth < 320) {
+      // Smaller screens
+      return 14.fSize;
+    } else if (screenWidth < 480) {
+      // Medium screens
+      return 12.fSize;
+    } else {
+      // Larger screens
+      return 11.fSize;
+    }
+  }
+
   Widget mealplanDraft(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
+    double fontsize_slogan = getResponsiveFontSize_mealplan(screenWidth);
+
     return Container(
       width: screenWidth * 0.8, // Adjust the width as needed
       height: screenHeight * 0.2, // Adjust the height as needed
@@ -389,17 +405,17 @@ class HomepagePageState extends State<HomepagePage> {
                     ),
                   ),
                   Positioned(
-                    left: 98,
-                    top: 69,
+                    left: screenWidth * 0.26,
+                    top: screenHeight * 0.08,
                     child: SizedBox(
-                      width: 172,
-                      height: 53,
+                      width: screenWidth * 0.4,
+                      height: screenHeight * 0.6,
                       child: Text(
                         'Save Time\nSave Money\nSave Enviornment',
                         textAlign: TextAlign.right,
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 14,
+                          fontSize: fontsize_slogan,
                           fontFamily: 'Outfit',
                           fontWeight: FontWeight.w400,
                           height: 0,

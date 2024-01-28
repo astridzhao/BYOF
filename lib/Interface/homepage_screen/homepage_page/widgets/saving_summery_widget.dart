@@ -6,7 +6,7 @@ class SavingSummeryWidget extends StatefulWidget {
   final String imagePath;
   final String title;
   final String unit;
-  final int counter;
+  final double counter;
 
   const SavingSummeryWidget({
     Key? key,

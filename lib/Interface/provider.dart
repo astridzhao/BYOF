@@ -2,30 +2,32 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SavingsModel extends ChangeNotifier {
-  static final String savingCo2Key = "savingCo2";
+  static String savingCo2Key = "savingCo2";
   static String savingDollarKey = "savingDollar";
 
   final SharedPreferences prefs;
-  int _savingCo2;
-  int _savingDollar;
+  double _savingCo2;
+  double _savingDollar;
 
-  SavingsModel({required this.prefs}) : _savingCo2 = prefs.getInt(savingCo2Key) ?? 0, _savingDollar = prefs.getInt(savingDollarKey) ?? 0;
+  SavingsModel({required this.prefs})
+      : _savingCo2 = prefs.getDouble(savingCo2Key) ?? 0,
+        _savingDollar = prefs.getDouble(savingDollarKey) ?? 0;
 
-  int get savingCo2 => _savingCo2;
-  int get savingDollar => _savingDollar;
+  double get savingCo2 => _savingCo2;
+  double get savingDollar => _savingDollar;
 
-  set savingCo2(int value) {
+  set savingCo2(double value) {
     _savingCo2 = value;
     () async {
-      await prefs.setInt(savingCo2Key, _savingCo2);
+      await prefs.setDouble(savingCo2Key, _savingCo2);
     }();
     notifyListeners();
   }
 
-  set savingDollar(int value) {
+  set savingDollar(double value) {
     _savingDollar = value;
     () async {
-      await prefs.setInt(savingDollarKey, _savingDollar);
+      await prefs.setDouble(savingDollarKey, _savingDollar);
     }();
     notifyListeners();
   }

@@ -39,7 +39,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
   int index_color = -1;
 
   // add notifier Model for increasing numbers, used in madeButton
-  void incrementSavingNums(int co2, int dollar) {
+  void incrementSavingNums(double co2, double dollar) {
     print("add co2: " + co2.toString());
     print("add dollar: " + dollar.toString());
     final savingsModel = Provider.of<SavingsModel>(context, listen: false);

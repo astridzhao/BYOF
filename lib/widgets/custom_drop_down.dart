@@ -87,7 +87,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
   Widget build(BuildContext context) {
     return widget.alignment != null
         ? Align(
-            alignment: widget.alignment ?? Alignment.center,
+            alignment: widget.alignment ?? Alignment.centerLeft,
             child: dropDownWidget,
           )
         : dropDownWidget;
