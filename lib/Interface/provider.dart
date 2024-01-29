@@ -10,8 +10,8 @@ class SavingsModel extends ChangeNotifier {
   double _savingDollar;
 
   SavingsModel({required this.prefs})
-      : _savingCo2 = prefs.getDouble(savingCo2Key) ?? 0,
-        _savingDollar = prefs.getDouble(savingDollarKey) ?? 0;
+      : _savingCo2 = prefs.getDouble(savingCo2Key) ?? 0.0,
+        _savingDollar = prefs.getDouble(savingDollarKey) ?? 0.0;
 
   double get savingCo2 => _savingCo2;
   double get savingDollar => _savingDollar;

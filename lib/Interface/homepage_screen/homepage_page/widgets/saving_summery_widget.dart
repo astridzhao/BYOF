@@ -65,6 +65,7 @@ class SavingSummeryWidgetState extends State<SavingSummeryWidget> {
   }
 
   Widget _buildUnitIndicator() {
-    return _buildText("${widget.counter} ${widget.unit}", 14);
+    return _buildText(
+        "${widget.counter.toStringAsFixed(2)} ${widget.unit}", 14);
   }
 }
