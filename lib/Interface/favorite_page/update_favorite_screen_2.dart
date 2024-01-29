@@ -2,6 +2,7 @@
 import 'dart:core';
 import 'dart:io';
 import 'dart:math' as math;
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
@@ -78,12 +79,15 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
             elevation: 0,
             title: Text('My Favorites'),
-            toolbarHeight: 80.v,
+            toolbarHeight: screenHeight * 0.1,
             titleTextStyle: TextStyle(
                 color: Color.fromARGB(190, 0, 0, 0),
                 fontSize: 18.fSize,
@@ -119,16 +123,17 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                           )
                         : GridView.builder(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 10,
+                              horizontal: 10.h,
                             ),
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: 0.8,
+                              childAspectRatio:
+                                  screenWidth / (screenHeight / 1.6),
                               crossAxisCount: 2, // Number of items per row
                               crossAxisSpacing:
-                                  10, // Horizontal space between items
+                                  10.h, // Horizontal space between items
                               mainAxisSpacing:
-                                  20, // Vertical space between items
+                                  20.v, // Vertical space between items
                             ),
                             itemBuilder: (context, i) {
                               // each recipe
@@ -214,7 +219,8 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                 },
                                 background: Container(
                                   color: appTheme.green_primary,
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 10.h),
                                   alignment: AlignmentDirectional.centerStart,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -222,7 +228,7 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                       Icon(Icons.add_a_photo,
                                           color: Colors.white),
                                       SizedBox(
-                                        width: 5,
+                                        width: 5.h,
                                       ),
                                       Text('upload my image',
                                           style:
@@ -232,7 +238,8 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                 ),
                                 secondaryBackground: Container(
                                   color: const Color.fromARGB(255, 165, 44, 36),
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 10.h),
                                   alignment: AlignmentDirectional.centerEnd,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
@@ -294,8 +301,10 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                                                   .circular(10),
                                                           child: Image.file(
                                                             snapshot.data!,
-                                                            width: 150,
-                                                            height: 120,
+                                                            width:
+                                                                150.adaptSize,
+                                                            height:
+                                                                120.adaptSize,
                                                             fit: BoxFit.cover,
                                                           ),
                                                         );
@@ -307,8 +316,10 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                                                   .circular(10),
                                                           child: Image.asset(
                                                             randomImagePath,
-                                                            width: 150,
-                                                            height: 120,
+                                                            width:
+                                                                150.adaptSize,
+                                                            height:
+                                                                120.adaptSize,
                                                             fit: BoxFit.cover,
                                                           ),
                                                         );
@@ -324,19 +335,22 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                                       BorderRadius.circular(10),
                                                   child: Image.asset(
                                                     randomImagePath,
-                                                    width: 150,
-                                                    height: 120,
+                                                    width: 150.adaptSize,
+                                                    height: 120.adaptSize,
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              8, 0, 8, 0),
+                                          padding: EdgeInsets.fromLTRB(
+                                              8.h, 0, 8.h, 0),
                                           child: Column(
                                             children: [
-                                              Text(
+                                              AutoSizeText(
                                                 recipe.title,
+                                                textAlign: TextAlign.center,
+                                                maxLines: 1,
+                                                maxFontSize: 14,
                                                 style: TextStyle(
                                                     color: Colors.black),
                                               ),
@@ -344,12 +358,13 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.all(2.0),
+                                          padding: EdgeInsets.all(2.h),
                                           child: Column(
                                             children: [
-                                              Text(
+                                              AutoSizeText(
                                                 recipe.cookTime.toString() +
                                                     " mins",
+                                                maxFontSize: 12,
                                                 style: TextStyle(
                                                     color: Colors.black),
                                               ),
@@ -358,20 +373,11 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                         ),
                                         Container(
                                           margin: EdgeInsets.symmetric(
-                                              horizontal: 20),
+                                              horizontal: 20.h),
                                           child: ImageGenerationButton(
                                               context, i, recipe),
                                         )
                                       ],
-                                      // backgroundColor:
-                                      //     Color.fromARGB(115, 209, 207, 207),
-                                      // title: Text(
-                                      //   recipe.title,
-                                      //   style: TextStyle(color: Colors.black),
-                                      // ),
-                                      // subtitle: Text(
-                                      //   recipe.cookTime.toString() + " mins",
-                                      //   style: TextStyle(color: Colors.black),
                                     ),
                                   ),
                                 ),
@@ -446,6 +452,57 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
     );
   }
 
+  Widget ImageGenerationButton(BuildContext context, index, Recipe recipe) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 15.h)),
+      child: Text(
+        "what I can expect?",
+        style: TextStyle(
+            color: appTheme.green_primary,
+            fontFamily: "Outfit",
+            fontSize: 10.fSize),
+      ),
+      // if the user already generated a image once, disable the button
+      onPressed: (generatedImageUrls[index] != null &&
+              generatedImageUrls[index]!.isEmpty)
+          ? () async {
+              showDialog(
+                context: context,
+                barrierDismissible:
+                    false, // User must tap button to close dialog
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: Row(
+                      children: [
+                        SizedBox(
+                          width: 20.adaptSize,
+                          height: 20.adaptSize, // Adjust the height as needed
+                          child: CircularProgressIndicator(),
+                        ),
+                        SizedBox(width: 20.h),
+                        Text("Crafting a delightful dish image..."),
+                      ],
+                    ),
+                  );
+                },
+              );
+
+              await generateImage(index, recipe.id, recipe.title.toString());
+
+              // pop alert waiting box
+              Navigator.of(context).pop();
+
+              // show image box
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => popupDialogImage(context),
+              );
+            }
+          : null,
+    );
+  }
+
   Widget popupDialogImage(BuildContext context) {
     return new AlertDialog(
       // title: const Text('Your dish looks like...'),
@@ -475,54 +532,6 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget ImageGenerationButton(BuildContext context, index, Recipe recipe) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 15)),
-      child: Text(
-        "what I can expect?",
-        style: TextStyle(
-            color: appTheme.green_primary, fontFamily: "Outfit", fontSize: 10),
-      ),
-      // if the user already generated a image once, disable the button
-      onPressed: generatedImageUrls[index]!.isEmpty
-          ? () async {
-              showDialog(
-                context: context,
-                barrierDismissible:
-                    false, // User must tap button to close dialog
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          height: 20, // Adjust the height as needed
-                          child: CircularProgressIndicator(),
-                        ),
-                        SizedBox(width: 20),
-                        Text("Crafting a delightful dish image..."),
-                      ],
-                    ),
-                  );
-                },
-              );
-
-              await generateImage(index, recipe.id, recipe.title.toString());
-
-              // pop alert waiting box
-              Navigator.of(context).pop();
-
-              // show image box
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => popupDialogImage(context),
-              );
-            }
-          : null,
     );
   }
 }

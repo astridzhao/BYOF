@@ -383,7 +383,7 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     required int cookTime,
     required String notes,
     required int saveAt,
-    this.imageURL = const Value.ofNullable(""),
+    this.imageURL = const Value.absent(),
     required double savingSummary_CO2,
     required double savingSummary_money,
   })  : title = Value(title),
@@ -403,8 +403,8 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     Expression<String>? notes,
     Expression<int>? saveAt,
     Expression<String>? imageURL,
-    Expression<int>? savingSummary_CO2,
-    Expression<int>? savingSummary_money,
+    Expression<double>? savingSummary_CO2,
+    Expression<double>? savingSummary_money,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,

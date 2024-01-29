@@ -31,8 +31,6 @@ class CreateScreenState extends State<CreateScreen> {
   String resultCompletion = "";
   TextEditingController atomInputContainerController = TextEditingController();
 
-  String selectedLangauge = Languages.english.name;
-
   List<String> ingredients_protein = [
     "chicken breast",
     "chicken thigh",
@@ -156,6 +154,7 @@ class CreateScreenState extends State<CreateScreen> {
   String selectedDishType = "No Preference";
   String selectedDietaryRestriction = "No Restriction";
   String selectedServingSize = "1";
+  String selectedLangauge = Languages.english.name;
 
   String get contentUser =>
       "My ingredients are denoted by backticks: ```$selectedIngredients```, DO NOT use any other ingredients that I did not pick, but you can use other essential sauce/spices;" +
@@ -165,6 +164,33 @@ class CreateScreenState extends State<CreateScreen> {
       "3. Using cooking method $selectedCookingMethod to cook. "
           "4. Be mindful of I have $selectedDietaryRestriction diet restriction. "
           "5. I have $selectedServingSize people to eat. Tell me how many amount of food I need to use in 'Ingredient List'. ";
+
+  String get system_prompt =>
+      """As a professional personal recipe-generating assistant, your task is to create ONE recipe using provided leftover ingredients. The response should be formatted as a JSON object containing 7 child objects, each with specific data types and content requirements:  
+      1. Title (String): The name of the dish. 
+      2. Ingredient List (List[String]): Ingredients used in the recipe.
+      3. Step-by-Step Instructions (List[String]): Detailed cooking steps.
+      4. Expected Cooking Time (Integer): Time required for cooking, in minutes.
+      5. Note (String): Additional tips.
+      6. Saving Co2 (Double): Estimated CO2 savings in kilograms, calculated as the sum of (Amount of each food type wasted × Emission factor for that food type). The number should never be 0. Even if the result is an integer value, it should be represented with a decimal point (e.g., '3' should be '3.0')
+      7. Saving Money (Double): Estimated monetary savings in US dollars, represented as a floating-point number. The number should never be 0. Even if the savings are whole numbers, they should be formatted with a decimal point (e.g., '5' should be '5.0').
+
+      Format of the JSON object:
+      {
+        "Title": "String",
+        "Ingredient List": ["String"],
+        "Step-by-Step Instructions": ["String"],
+        "Expected Cooking Time": Integer,
+        "Note": "String",
+        "Saving Co2": Double,
+        "Saving Money": Double
+      }"
+
+      Additional Rules: 
+    - The recipe must closely resemble dishes from the selected cuisine ($selectedCuisine).
+    - Use only the ingredients provided by the user, with the allowance of essential sauces and spices.
+    - The recipe output should be in the selected language ($selectedLangauge).
+      """;
 
   double getResponsiveFontSize_title(double screenWidth) {
     if (screenWidth < 320) {
@@ -285,6 +311,7 @@ class CreateScreenState extends State<CreateScreen> {
                     );
                   },
                 );
+
                 await sendPrompt();
                 // Close the dialog
                 Navigator.of(context).pop();
@@ -946,19 +973,22 @@ class CreateScreenState extends State<CreateScreen> {
   sendPrompt() async {
     OpenAI.apiKey = azapiKey;
     final systemMessage = OpenAIChatCompletionChoiceMessageModel(
-      content: "I want to provide delicious recipe for users by using their leftover ingredients. You act as a professional personal recipe-generating assistant who need to create ONE recipe using provided ingredients. " +
-          " To ensure a precise and high-quality response, you should following below rules: 1. please return the response in create a JSON object which enumerates a set of 7 child objects, " +
-          " Each objects are respectively named as Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, Note, Saving Co2, and Saving Money." +
-          " The result JSON objetcs should be in this format: " +
-          "{Title: string, Ingredient List: list[String], Step-by-Step Instructions: list[String], Expected Cooking Time: integer, Note: String, Saving Co2: integer, Saving Money: integer}." +
-          " 2. the unit of 'Expected Cooking Time' is in minutes; " +
-          " 3. the creative recipe need to be as similar to famous and authentic $selectedCuisine dishes as possible; " +
-          " 4. 'Saving Co2' should be an estimated integer of Co2 the user saved from this meal by reducing food waste. Total CO2 emissions=∑(Amount of each food type wasted×Emission factor for that food type); " +
-          " 5. 'Saving money' should be estimated integer of money the user saved from not throw those ingredients; " +
-          " 6. Do not use any other food/ingredients that users did not pick, but you can use some essential sauce/spices." +
-          " 7. The recipe output should be in $selectedLangauge language. ",
+      // content: "I want to provide delicious recipe for users by using their leftover ingredients. You act as a professional personal recipe-generating assistant who need to create ONE recipe using provided ingredients. " +
+      //     " To ensure a precise and high-quality response, you should following below rules: 1. please return the response in create a JSON object which enumerates a set of 7 child objects, " +
+      //     " Each objects are respectively named as Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, Note, Saving Co2, and Saving Money." +
+      //     " The result JSON objetcs should be in this format: " +
+      //     "{Title: string, Ingredient List: list[String], Step-by-Step Instructions: list[String], Expected Cooking Time: integer, Note: String, Saving Co2: double, Saving Money: double}." +
+      //     " 2. the unit of 'Expected Cooking Time' is in minutes; " +
+      //     " 3. the creative recipe need to be as similar to famous and authentic $selectedCuisine dishes as possible; " +
+      //     " 4. 'Saving Co2' should be an estimated double number of Co2 the user saved from this meal by reducing food waste. Total CO2 emissions=∑(Amount of each food type wasted×Emission factor for that food type); " +
+      //     " 5. 'Saving money' should be estimated double number of money the user saved from not throw those ingredients; " +
+      //     " 6. Do not use any other food/ingredients that users did not pick, but you can use some essential sauce/spices." +
+      //     " 7. The recipe output should be in $selectedLangauge language. ",
+      content: system_prompt,
+
       role: OpenAIChatMessageRole.assistant,
     );
+    log(system_prompt);
 
     // the user message that will be sent to the request.
     final userMessage = OpenAIChatCompletionChoiceMessageModel(
@@ -978,7 +1008,7 @@ class CreateScreenState extends State<CreateScreen> {
       resultCompletion = completion.choices.first.message.content;
 
       log(resultCompletion);
-      log(contentUser);
+
       // atomInputContainerController.clear();
       // selectedIngredients.clear();
     });

@@ -29,7 +29,7 @@ const kDebugMode = true;
 class AppDatabase extends _$AppDatabase {
   AppDatabase(String dbName) : super(_openConnection(dbName));
 
-  static const latestSchemaVersion = 3;
+  static const latestSchemaVersion = 4;
 
   @override
   int get schemaVersion => latestSchemaVersion;
