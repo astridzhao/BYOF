@@ -29,7 +29,17 @@ class CreateScreenState extends State<CreateScreen> {
   // Create a GlobalKey
   // final GlobalKey<_CustomDropDownState> dropDownKey = GlobalKey<_CustomDropDownState>();
   String resultCompletion = "";
-  TextEditingController atomInputContainerController = TextEditingController();
+  late TextEditingController atomInputContainerController;
+
+  void initState() {
+    super.initState();
+    atomInputContainerController = TextEditingController();
+  }
+
+  void dispose() {
+    atomInputContainerController.dispose();
+    super.dispose();
+  }
 
   List<String> ingredients_protein = [
     "chicken breast",

@@ -37,6 +37,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
     fetchAllFavorite();
   }
 
+
   void fetchAllFavorite() {
     setState(() {
       futureRecipes = recipe_dao.select(recipe_dao.recipes).get();

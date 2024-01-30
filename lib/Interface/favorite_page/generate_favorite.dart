@@ -102,24 +102,6 @@ class _GenerationScreenState extends State<GenerationScreen_favorite> {
     );
   }
 
-  Future<void> generateImage(String recipe) async {
-    OpenAI.apiKey = azapiKey;
-    final image = await OpenAI.instance.image.create(
-        n: 1,
-        prompt: "You act as a professional image-generating assistant. By referencing the recipe title $recipe, use your imagination to create a related dish image can put on my restaurant menu. " +
-            "The image style should be cute and cartoon, and make it looks tasty to attract customers. " +
-            "Do not put any text on the image. ");
-
-    setState(() {
-      for (int index = 0; index < image.data.length; index++) {
-        final currentItem = image.data[index];
-        generatedImageUrls = currentItem.url.toString();
-        // print(currentItem.url);
-      }
-      ;
-    });
-  }
-
   PreferredSizeWidget customeAppbar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
@@ -135,24 +117,6 @@ class _GenerationScreenState extends State<GenerationScreen_favorite> {
           );
         },
       ),
-      actions: [
-        TextButton.icon(
-          icon: Icon(Icons.question_mark_rounded),
-          label: Text("Want to see what it looks like?",
-              style: TextStyle(
-                  color: Color.fromARGB(255, 174, 73, 6),
-                  fontFamily: "Outfit",
-                  fontSize: 13)),
-          onPressed: () async {
-            await generateImage(widget.recipe.title.toString());
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => popupDialogImage(context),
-            );
-            // log("imageURL" + generatedImageUrls);
-          },
-        ),
-      ],
     );
   }
 

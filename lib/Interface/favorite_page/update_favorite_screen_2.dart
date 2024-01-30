@@ -14,7 +14,6 @@ import 'package:astridzhao_s_food_app/Interface/favorite_page/generate_favorite.
 import 'package:dart_openai/dart_openai.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'dart:developer';
 
 class FavoriteRecipePage2 extends StatefulWidget {
@@ -56,20 +55,38 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
       for (int index = 0; index < image.data.length; index++) {
         final currentItem = image.data[index];
         currentUrls_fordisplay = currentItem.url.toString();
+
+        log("image network by openAI" + currentUrls_fordisplay);
+
         // save image to local --> set generateImageURLS[i]
         var response = await http.get(Uri.parse(currentUrls_fordisplay));
-        Directory documentdirectory = await getApplicationDocumentsDirectory();
-        String imageName = path.basename(currentUrls_fordisplay);
-        File file = new File(path.join(documentdirectory.path, imageName));
-        await file.writeAsBytes(response.bodyBytes);
-        // print("local directory: " + documentdirectory.path);
-        // store image into local directory
-        await (recipe_dao.update(recipe_dao.recipes)..where((tbl) => tbl.id.equals(id)))
-          ..write(RecipesCompanion(imageURL: drift.Value(imageName)));
 
-        setState(() {
-          generatedImageUrls[i] = imageName;
-        });
+        if (response.statusCode == 200) {
+          Directory documentdirectory =
+              await getApplicationDocumentsDirectory();
+
+          String imageName = path.basename(currentUrls_fordisplay);
+          
+          File file = new File(path.join(documentdirectory.path, imageName));
+          // await file.writeAsBytes(response.bodyBytes);
+
+          await file.writeAsBytes(response.bodyBytes);
+          print("Image saved in local directory: ${documentdirectory.path}");
+
+          print("save store image into local directory");
+
+          print("local directory: " + documentdirectory.path);
+
+          // store image into local directory
+          await (recipe_dao.update(recipe_dao.recipes)..where((tbl) => tbl.id.equals(id)))
+            ..write(RecipesCompanion(imageURL: drift.Value(imageName)));
+
+          setState(() {
+            generatedImageUrls[i] = imageName;
+          });
+        } else {
+          print("Failed to download the image: ${response.statusCode}");
+        }
       }
     } catch (e) {
       log('Error in generateImage: $e');
@@ -128,7 +145,7 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                               childAspectRatio:
-                                  screenWidth / (screenHeight / 1.6),
+                                  screenWidth / (screenHeight / 1.85),
                               crossAxisCount: 2, // Number of items per row
                               crossAxisSpacing:
                                   10.h, // Horizontal space between items
@@ -159,7 +176,7 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
 
                               return Dismissible(
                                 key: Key('${recipe.id}'),
-
+                                direction: DismissDirection.horizontal,
                                 // direction: DismissDirection.endToStart,
                                 confirmDismiss: (direction) async {
                                   if (direction ==
@@ -214,9 +231,50 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                   // Handle right swipe : upload user image
                                   else if (direction ==
                                       DismissDirection.startToEnd) {
-                                    //TODO: upload user image
+                                    //generate image feature
+
+                                    // send waiting alert
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible:
+                                          false, // User must tap button to close dialog
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 20.adaptSize,
+                                                height: 20
+                                                    .adaptSize, // Adjust the height as needed
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                              SizedBox(width: 20.h),
+                                              Text(
+                                                  "Crafting a delightful dish image..."),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+
+                                    // execute generate image function
+                                    await generateImage(
+                                        i, recipe.id, recipe.title.toString());
+
+                                    // pop off alert waiting box
+                                    Navigator.of(context).pop();
+
+                                    // show image box
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          popupDialogImage(context),
+                                    );
                                   }
                                 },
+
+                                //swipe to right background
                                 background: Container(
                                   color: appTheme.green_primary,
                                   padding:
@@ -230,12 +288,13 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                       SizedBox(
                                         width: 5.h,
                                       ),
-                                      Text('upload my image',
+                                      Text('Create my dish',
                                           style:
                                               TextStyle(color: Colors.white)),
                                     ],
                                   ),
                                 ),
+                                //swipe to left background
                                 secondaryBackground: Container(
                                   color: const Color.fromARGB(255, 165, 44, 36),
                                   padding:
@@ -251,6 +310,8 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                     ],
                                   ),
                                 ),
+
+                                // chick: enter recipe page
                                 child: GestureDetector(
                                   onTap: () {
                                     Navigator.of(context).push(
@@ -260,7 +321,7 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                                     recipe: recipe))));
                                   },
 
-                                  // Use Card or similar for visual structure
+                                  // Use Card to show image
                                   child: Card(
                                     clipBehavior: Clip.antiAlias,
                                     elevation: 4.0,
@@ -290,7 +351,9 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                                             .connectionState ==
                                                         ConnectionState.done) {
                                                       //Testing:
-                                                      // print(snapshot.data!);
+                                                      print(
+                                                          "fetch local image");
+                                                      print(snapshot.data!);
                                                       // Check if the snapshot has data and the file exists
                                                       if (snapshot.hasData &&
                                                           snapshot.data!
@@ -371,12 +434,12 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                             ],
                                           ),
                                         ),
-                                        Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 20.h),
-                                          child: ImageGenerationButton(
-                                              context, i, recipe),
-                                        )
+                                        // Container(
+                                        //   margin: EdgeInsets.symmetric(
+                                        //       horizontal: 20.h),
+                                        //   child: ImageGenerationButton(
+                                        //       context, i, recipe),
+                                        // )
                                       ],
                                     ),
                                   ),

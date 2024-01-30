@@ -123,9 +123,9 @@ class _GenerationScreenState extends State<GenerationScreen> {
     OpenAI.apiKey = azapiKey;
     final image = await OpenAI.instance.image.create(
         n: 1,
-        prompt: "You act as a professional image-generating assistant. By referencing the recipe title $recipe, to be noticed the title might not in English. Use your imagination to create a related dish image can put on my restaurant menu. " +
-            "The image style should be cute and cartoon, and make it looks tasty to attract customers. " +
-            "Do not put any text on the image. ");
+        prompt: "Create an image of a dish related to the recipe titled '$recipe'. Note that the recipe title might be in a language other than English. The image should depict a dish that could be featured on a restaurant menu. " +
+            "Please focus on creating an image that is appealing, with a cute and cartoonish style, making the dish look delicious and enticing to customers. " +
+            "It is important that the image contains no text of any kind, focusing solely on the visual representation of the dish.");
 
     setState(() {
       for (int index = 0; index < image.data.length; index++) {
@@ -185,15 +185,12 @@ class _GenerationScreenState extends State<GenerationScreen> {
                         ),
                       ),
                       Center(
-                        child: Text("Do not exit.",
-                            style: TextStyle(
-                              fontFamily: 'Outfit',
-                              fontWeight: FontWeight.bold,
-                              wordSpacing: 0,
-                              letterSpacing: 0,
-                              fontSize: 10.fSize,
-                              color: appTheme.orange_primary,
-                            )),
+                        child: Text(
+                          "Crafting a delightful dish image...",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: 'Outfit', fontSize: 12.fSize),
+                        ),
                       ),
                     ],
                   ),
@@ -205,20 +202,24 @@ class _GenerationScreenState extends State<GenerationScreen> {
                         height: 20.v, // Adjust the height as needed
                         child: CircularProgressIndicator(),
                       ),
-                      SizedBox(width: 20.h),
-                      Text(
-                        "Crafting a delightful dish image...",
-                        textAlign: TextAlign.center,
-                        style:
-                            TextStyle(fontFamily: 'Outfit', fontSize: 12.fSize),
-                      ),
+                      SizedBox(height: 20.v),
+                      Text("Do not exit.",
+                          style: TextStyle(
+                            fontFamily: 'Outfit',
+                            fontWeight: FontWeight.bold,
+                            wordSpacing: 0,
+                            letterSpacing: 0,
+                            fontSize: 10.fSize,
+                            color: appTheme.orange_primary,
+                          )),
                     ],
                   ),
                 );
               },
             );
-            Navigator.of(context).pop();
+
             await generateImage(widget.recipe.title.toString());
+            Navigator.of(context).pop();
             showDialog(
               context: context,
               builder: (BuildContext context) => popupDialogImage(context),
@@ -751,7 +752,9 @@ class _GenerationScreenState extends State<GenerationScreen> {
             File file = new File(path.join(
                 documentdirectory.path, path.basename(generatedImageUrls)));
             await file.writeAsBytes(response.bodyBytes);
+
             log("image saving path: " + file.path);
+
             await (recipesDao.update(recipesDao.recipes)..where((tbl) => tbl.id.equals(currentID)))
               ..write(RecipesCompanion(imageURL: drift.Value(path.basename(generatedImageUrls))));
             log("image saving name: " + path.basename(generatedImageUrls));
