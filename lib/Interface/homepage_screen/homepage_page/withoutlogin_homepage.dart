@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:astridzhao_s_food_app/Interface/favorite_page/favorites_screen.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
@@ -8,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../homepage_page/widgets/recipecontentrow_item_widget.dart';
 import 'widgets/saving_summery_widget.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_image.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/generate_favorite.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:astridzhao_s_food_app/Interface/favorite_page/update_favorite_screen_2.dart';
@@ -43,6 +41,19 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
     return Savings(savingCo2, savingDollar);
     // Use savingCo2 as needed
   }
+
+  // Future<List<Recipe>>? futureRecipes;
+  // void fetchAllFavorite() {
+  //   setState(() {
+  //     futureRecipes = recipe_dao.select(recipe_dao.recipes).get();
+  //   });
+  // }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   fetchAllFavorite();
+  // }
 
   Stream<List<String?>> getFilteringValues() {
     final imageURL = recipe_dao.recipes.imageURL;
@@ -159,7 +170,7 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
           // Adjust the radius as needed
           backgroundColor: Colors.transparent,
           child: CustomImageView(
-            imagePath: ImageConstant.imgAvatar,
+            imagePath: ImageConstant.imgLogo2RemovebgPreview,
             height: 100.adaptSize,
             width: 100.adaptSize,
             margin: EdgeInsets.all(0.03 * screenWidth),
@@ -167,31 +178,16 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
           ),
         ),
         title: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: 0.02 * screenWidth, vertical: 0.1 * screenHeight),
-          child: Column(
-            children: [
-              AppbarTitle(
-                text: "Novice Cook",
-                textStyle: TextStyle(
-                  fontSize: 15.fSize,
-                  fontWeight: FontWeight.normal,
-                  color: appTheme.gray60002,
-                ),
+            padding: EdgeInsets.symmetric(
+                horizontal: 0.02 * screenWidth, vertical: 0.1 * screenHeight),
+            child: AppbarTitle(
+              text: "Bring Your Own Fridge",
+              textStyle: TextStyle(
+                fontFamily: "Outfit",
+                fontSize: 15.fSize,
+                fontWeight: FontWeight.normal,
               ),
-              SizedBox(height: 3.v),
-              AppbarTitle(
-                text: "Astrid Zhao",
-                textStyle: TextStyle(
-                  fontSize: 20.fSize,
-                  fontWeight: FontWeight.w500,
-                  color: appTheme.gray60002,
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [Icon(Icons.settings)],
+            )),
       ),
     );
   }
@@ -250,7 +246,7 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
             itemBuilder: (context, index) {
               // Use the URL if it's not null, otherwise use the default image URL
               String imageUrl = urls[index] ?? default_image_url;
-              File imageFile = File(imageUrl);
+
               return RecipecontentrowItemWidget(imagefilePath: imageUrl);
 
               // log(imageFile.path);

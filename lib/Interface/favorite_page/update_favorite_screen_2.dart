@@ -44,13 +44,13 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
 
   Future<void> generateImage(int i, int id, String recipe) async {
     try {
-      OpenAI.apiKey = azapiKey;
+      OpenAI.apiKey = azapikey;
+      // OpenAI.organization = riceBucketID;
       final image = await OpenAI.instance.image.create(
-        n: 1,
-        prompt: "You act as a professional image-generating assistant. By referencing the recipe title $recipe, use your imagination to create a related dish image can put on my restaurant menu. " +
-            "The image style should be cute and cartoon, and make it looks tasty to attract customers. " +
-            "Do not put any text on the image. ",
-      );
+          n: 1,
+          prompt: "Create an image of a dish related to the recipe titled '$recipe'. Note that the recipe title might be in a language other than English. The image should depict a dish that could be featured on a restaurant menu. " +
+              "Please focus on creating an image that is appealing, with a cute and cartoonish style, making the dish look delicious and enticing to customers. " +
+              "It is important that the image contains no text of any kind, focusing solely on the visual representation of the dish.");
 
       for (int index = 0; index < image.data.length; index++) {
         final currentItem = image.data[index];
@@ -66,7 +66,7 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
               await getApplicationDocumentsDirectory();
 
           String imageName = path.basename(currentUrls_fordisplay);
-          
+
           File file = new File(path.join(documentdirectory.path, imageName));
           // await file.writeAsBytes(response.bodyBytes);
 

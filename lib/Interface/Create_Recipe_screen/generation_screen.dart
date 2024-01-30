@@ -120,7 +120,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
   }
 
   Future<void> generateImage(String recipe) async {
-    OpenAI.apiKey = azapiKey;
+    // OpenAI.organization = riceBucketID;
+    OpenAI.apiKey = azapikey;
     final image = await OpenAI.instance.image.create(
         n: 1,
         prompt: "Create an image of a dish related to the recipe titled '$recipe'. Note that the recipe title might be in a language other than English. The image should depict a dish that could be featured on a restaurant menu. " +

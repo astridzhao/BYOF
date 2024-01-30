@@ -981,7 +981,8 @@ class CreateScreenState extends State<CreateScreen> {
   }
 
   sendPrompt() async {
-    OpenAI.apiKey = azapiKey;
+    // OpenAI.organization = riceBucketID;
+    OpenAI.apiKey = azapikey;
     final systemMessage = OpenAIChatCompletionChoiceMessageModel(
       // content: "I want to provide delicious recipe for users by using their leftover ingredients. You act as a professional personal recipe-generating assistant who need to create ONE recipe using provided ingredients. " +
       //     " To ensure a precise and high-quality response, you should following below rules: 1. please return the response in create a JSON object which enumerates a set of 7 child objects, " +
@@ -998,7 +999,7 @@ class CreateScreenState extends State<CreateScreen> {
 
       role: OpenAIChatMessageRole.assistant,
     );
-    log(system_prompt);
+    // log(system_prompt);
 
     // the user message that will be sent to the request.
     final userMessage = OpenAIChatCompletionChoiceMessageModel(
