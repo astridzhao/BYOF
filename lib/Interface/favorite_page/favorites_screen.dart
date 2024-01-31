@@ -49,9 +49,10 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
       OpenAI.apiKey = azapikey;
       final image = await OpenAI.instance.image.create(
         n: 1,
-        prompt: "You act as a professional image-generating assistant. By referencing the recipe title $recipe, use your imagination to create a related dish image can put on my restaurant menu. " +
-            "The image style should be cute and cartoon, and make it looks tasty to attract customers. " +
-            "Do not put any text on the image. ",
+        prompt:
+            """As a professional image-generating assistant, use your imagination to create a dish image by referencing $recipe. 
+            The image style should be cute, and make it looks tasty to attract customers. 
+            Do not put any text on the image. """,
       );
 
       for (int index = 0; index < image.data.length; index++) {

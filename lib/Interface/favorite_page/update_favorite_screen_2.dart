@@ -46,12 +46,12 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
     try {
       OpenAI.apiKey = azapikey;
       // OpenAI.organization = riceBucketID;
-      final image = await OpenAI.instance.image.create(
+      var image = await OpenAI.instance.image.create(
           n: 1,
-          prompt: "Create an image of a dish related to the recipe titled '$recipe'. Note that the recipe title might be in a language other than English. The image should depict a dish that could be featured on a restaurant menu. " +
-              "Please focus on creating an image that is appealing, with a cute and cartoonish style, making the dish look delicious and enticing to customers. " +
-              "It is important that the image contains no text of any kind, focusing solely on the visual representation of the dish.");
-
+          prompt:
+              """As a professional image-generating assistant, use your imagination to create a dish image by referencing $recipe. Note that this recipe title might be in a language other than English. 
+            The image style should be cute, and make it looks tasty to attract customers. 
+            Do not put any text on the image. """);
       for (int index = 0; index < image.data.length; index++) {
         final currentItem = image.data[index];
         currentUrls_fordisplay = currentItem.url.toString();
@@ -145,7 +145,7 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                               childAspectRatio:
-                                  screenWidth / (screenHeight / 1.85),
+                                  screenWidth / (screenHeight / 1.75),
                               crossAxisCount: 2, // Number of items per row
                               crossAxisSpacing:
                                   10.h, // Horizontal space between items
@@ -412,7 +412,7 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                               AutoSizeText(
                                                 recipe.title,
                                                 textAlign: TextAlign.center,
-                                                maxLines: 1,
+                                                maxLines: 2,
                                                 maxFontSize: 14,
                                                 style: TextStyle(
                                                     color: Colors.black),
