@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:astridzhao_s_food_app/Interface/favorite_page/favorites_screen.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
@@ -8,32 +6,32 @@ import 'package:provider/provider.dart';
 import '../homepage_page/widgets/recipecontentrow_item_widget.dart';
 import 'widgets/saving_summery_widget.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_image.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/generate_favorite.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:astridzhao_s_food_app/Interface/favorite_page/update_favorite_screen_2.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class HomepagePage extends StatefulWidget {
-  HomepagePage({Key? key})
+class NoAccount_HomepagePage extends StatefulWidget {
+  NoAccount_HomepagePage({Key? key})
       : super(
           key: key,
         );
-  HomepagePageState createState() => HomepagePageState();
+  NoAccount_HomepagePageState createState() => NoAccount_HomepagePageState();
 }
 
 class Savings {
-  final int co2;
-  final int dollar;
+  final double co2;
+  final double dollar;
   Savings(this.co2, this.dollar);
 }
 
-class HomepagePageState extends State<HomepagePage> {
+class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
   //call database
   final recipe_dao = RecipesDao(DatabaseService().database);
-  int savingCo2 = 0;
-  int savingDollar = 0;
+  double savingCo2 = 0;
+  double savingDollar = 0;
 
 // retrieve saving model data
   Savings getSavingNums() {
@@ -43,6 +41,19 @@ class HomepagePageState extends State<HomepagePage> {
     return Savings(savingCo2, savingDollar);
     // Use savingCo2 as needed
   }
+
+  // Future<List<Recipe>>? futureRecipes;
+  // void fetchAllFavorite() {
+  //   setState(() {
+  //     futureRecipes = recipe_dao.select(recipe_dao.recipes).get();
+  //   });
+  // }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   fetchAllFavorite();
+  // }
 
   Stream<List<String?>> getFilteringValues() {
     final imageURL = recipe_dao.recipes.imageURL;
@@ -159,7 +170,7 @@ class HomepagePageState extends State<HomepagePage> {
           // Adjust the radius as needed
           backgroundColor: Colors.transparent,
           child: CustomImageView(
-            imagePath: ImageConstant.imgAvatar,
+            imagePath: ImageConstant.imgLogo2RemovebgPreview,
             height: 100.adaptSize,
             width: 100.adaptSize,
             margin: EdgeInsets.all(0.03 * screenWidth),
@@ -167,30 +178,16 @@ class HomepagePageState extends State<HomepagePage> {
           ),
         ),
         title: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: 0.02 * screenWidth, vertical: 0.1 * screenHeight),
-          child: Column(
-            children: [
-              AppbarTitle(
-                text: "Novice Cook",
-                textStyle: TextStyle(
-                  fontSize: 15.fSize,
-                  fontWeight: FontWeight.normal,
-                  color: appTheme.gray60002,
-                ),
+            padding: EdgeInsets.symmetric(
+                horizontal: 0.02 * screenWidth, vertical: 0.1 * screenHeight),
+            child: AppbarTitle(
+              text: "Bring Your Own Fridge",
+              textStyle: TextStyle(
+                fontFamily: "Outfit",
+                fontSize: 15.fSize,
+                fontWeight: FontWeight.normal,
               ),
-              SizedBox(height: 3.v),
-              AppbarTitle(
-                text: "Astrid Zhao",
-                textStyle: TextStyle(
-                  fontSize: 20.fSize,
-                  fontWeight: FontWeight.w500,
-                  color: appTheme.gray60002,
-                ),
-              ),
-            ],
-          ),
-        ),
+            )),
       ),
     );
   }
@@ -249,7 +246,7 @@ class HomepagePageState extends State<HomepagePage> {
             itemBuilder: (context, index) {
               // Use the URL if it's not null, otherwise use the default image URL
               String imageUrl = urls[index] ?? default_image_url;
-              File imageFile = File(imageUrl);
+
               return RecipecontentrowItemWidget(imagefilePath: imageUrl);
 
               // log(imageFile.path);
@@ -261,9 +258,25 @@ class HomepagePageState extends State<HomepagePage> {
     );
   }
 
+  double getResponsiveFontSize_mealplan(double screenWidth) {
+    if (screenWidth < 320) {
+      // Smaller screens
+      return 14.fSize;
+    } else if (screenWidth < 480) {
+      // Medium screens
+      return 12.fSize;
+    } else {
+      // Larger screens
+      return 11.fSize;
+    }
+  }
+
   Widget mealplanDraft(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
+    double fontsize_slogan = getResponsiveFontSize_mealplan(screenWidth);
+
     return Container(
       width: screenWidth * 0.8, // Adjust the width as needed
       height: screenHeight * 0.2, // Adjust the height as needed
@@ -389,17 +402,17 @@ class HomepagePageState extends State<HomepagePage> {
                     ),
                   ),
                   Positioned(
-                    left: 98,
-                    top: 69,
+                    left: screenWidth * 0.26,
+                    top: screenHeight * 0.08,
                     child: SizedBox(
-                      width: 172,
-                      height: 53,
+                      width: screenWidth * 0.4,
+                      height: screenHeight * 0.6,
                       child: Text(
                         'Save Time\nSave Money\nSave Enviornment',
                         textAlign: TextAlign.right,
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 14,
+                          fontSize: fontsize_slogan,
                           fontFamily: 'Outfit',
                           fontWeight: FontWeight.w400,
                           height: 0,

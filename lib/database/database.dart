@@ -29,7 +29,7 @@ const kDebugMode = true;
 class AppDatabase extends _$AppDatabase {
   AppDatabase(String dbName) : super(_openConnection(dbName));
 
-  static const latestSchemaVersion = 3;
+  static const latestSchemaVersion = 4;
 
   @override
   int get schemaVersion => latestSchemaVersion;
@@ -91,6 +91,17 @@ class AppDatabase extends _$AppDatabase {
       // Migration from 2 to 3: Add savingSummary_CO2+_Money column in recipes.
       await m.addColumn(schema.recipes, schema.recipes.savingSummary_CO2);
       await m.addColumn(schema.recipes, schema.recipes.savingSummary_money);
+    },
+    from3To4: (m, schema) async {
+      //Changing category colum datatype from TextColumn to IntColumn with type cast
+      await m.alterTable(TableMigration(
+          schema.recipes, //the table where the change is to be made
+          columnTransformer: {
+            schema.recipes.savingSummary_CO2:
+                schema.recipes.savingSummary_CO2.cast<double>(),
+            schema.recipes.savingSummary_money:
+                schema.recipes.savingSummary_money.cast<double>(),
+          }));
     },
   );
 }

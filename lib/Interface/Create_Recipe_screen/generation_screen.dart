@@ -10,6 +10,7 @@ import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/Interface/provider.dart';
 import 'package:provider/provider.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:astridzhao_s_food_app/key/api_key.dart';
 import 'package:dart_openai/dart_openai.dart';
@@ -31,6 +32,9 @@ class GenerationScreen extends StatefulWidget {
 }
 
 class _GenerationScreenState extends State<GenerationScreen> {
+  ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController_ingredient = ScrollController();
+
   IconData copyIcon = Icons.content_copy_rounded;
   RecipesDao recipesDao = RecipesDao(DatabaseService().database);
   String generatedImageUrls = "";
@@ -39,7 +43,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
   int index_color = -1;
 
   // add notifier Model for increasing numbers, used in madeButton
-  void incrementSavingNums(int co2, int dollar) {
+  void incrementSavingNums(double co2, double dollar) {
     print("add co2: " + co2.toString());
     print("add dollar: " + dollar.toString());
     final savingsModel = Provider.of<SavingsModel>(context, listen: false);
@@ -55,8 +59,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
         appBar: customeAppbar(context),
         body: Column(
           children: [
-            Positioned(
-                child: Column(
+            Column(
               children: [
                 title(context),
                 SizedBox(height: 5.v),
@@ -73,8 +76,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                   ),
                 ),
               ],
-            )),
-
+            ),
             // Below is recipe widgets
             Expanded(
               child: SingleChildScrollView(
@@ -83,15 +85,15 @@ class _GenerationScreenState extends State<GenerationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      // height: 25.v,
-                      child: CustomImageView(
-                        height: 100.adaptSize,
-                        width: 100.adaptSize,
-                        imagePath: ImageConstant.imgLogo2RemovebgPreview,
-                        margin: EdgeInsets.only(top: 1.v),
-                      ),
-                    ),
+                    // SizedBox(
+                    //   // height: 25.v,
+                    //   child: CustomImageView(
+                    //     height: 100.adaptSize,
+                    //     width: 100.adaptSize,
+                    //     imagePath: ImageConstant.imgLogo2RemovebgPreview,
+                    //     margin: EdgeInsets.only(top: 1.v),
+                    //   ),
+                    // ),
                     group_info(context),
                     instruction(context),
                     //divider
@@ -118,13 +120,14 @@ class _GenerationScreenState extends State<GenerationScreen> {
   }
 
   Future<void> generateImage(String recipe) async {
-    OpenAI.apiKey = azapiKey;
+    // OpenAI.organization = riceBucketID;
+    OpenAI.apiKey = azapikey;
     final image = await OpenAI.instance.image.create(
         n: 1,
-        prompt: "You act as a professional image-generating assistant. By referencing the recipe title $recipe, to be noticed the title might not in English. Use your imagination to create a related dish image can put on my restaurant menu. " +
-            "The image style should be cute and cartoon, and make it looks tasty to attract customers. " +
-            "Do not put any text on the image. ");
-
+        prompt:
+            """As a professional image-generating assistant, use your imagination to create a dish image by referencing $recipe. Note that this recipe title might be in a language other than English. 
+            The image style should be cute, and make it looks tasty to attract customers. 
+            Do not put any text on the image. """);
     setState(() {
       for (int index = 0; index < image.data.length; index++) {
         final currentItem = image.data[index];
@@ -160,7 +163,65 @@ class _GenerationScreenState extends State<GenerationScreen> {
                   fontFamily: "Outfit",
                   fontSize: 15.fSize)),
           onPressed: () async {
+            // alert of generating...
+            showDialog(
+              context: context,
+              barrierDismissible: false, // User must tap button to close dialog
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      // Align(
+                      //   alignment: Alignment.topRight,
+                      //   child: IconButton(
+                      //     icon: Icon(
+                      //       Icons.close,
+                      //       color: Colors.black,
+                      //       size: 25.adaptSize,
+                      //     ),
+                      //     onPressed: () {
+                      //       Navigator.pop(context);
+
+                      //     },
+                      //   ),
+                      // ),
+                      Center(
+                        child: Text(
+                          "Crafting a delightful dish image...",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: 'Outfit', fontSize: 12.fSize),
+                        ),
+                      ),
+                    ],
+                  ),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 20.h,
+                        height: 20.v, // Adjust the height as needed
+                        child: CircularProgressIndicator(),
+                      ),
+                      SizedBox(height: 20.v),
+                      Text("Do not exit.",
+                          style: TextStyle(
+                            fontFamily: 'Outfit',
+                            fontWeight: FontWeight.bold,
+                            wordSpacing: 0,
+                            letterSpacing: 0,
+                            fontSize: 10.fSize,
+                            color: appTheme.orange_primary,
+                          )),
+                    ],
+                  ),
+                );
+              },
+            );
+
             await generateImage(widget.recipe.title.toString());
+            Navigator.of(context).pop();
             showDialog(
               context: context,
               builder: (BuildContext context) => popupDialogImage(context),
@@ -172,17 +233,16 @@ class _GenerationScreenState extends State<GenerationScreen> {
     );
   }
 
-  // // class Tooltipimage extends State<GenerationScreen> {
-  // Widget Tooltipimage(BuildContext context) {
-  //   return Tooltip(
-  //     message: 'Click to generate',
-  //     child: Text("Do you want to see what it looks like?",
-  //         style: TextStyle(
-  //             color: Color.fromARGB(255, 174, 73, 6),
-  //             fontFamily: "Outfit",
-  //             fontSize: 13)),
-  //   );
-  // }
+  Widget Tooltipimage(BuildContext context) {
+    return Tooltip(
+      message: 'Click to generate',
+      child: Text("Want to see what it looks like?",
+          style: TextStyle(
+              color: Color.fromARGB(255, 174, 73, 6),
+              fontFamily: "Outfit",
+              fontSize: 13)),
+    );
+  }
 
   Widget popupDialogImage(BuildContext context) {
     return new AlertDialog(
@@ -221,7 +281,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
     return Container(
         padding: EdgeInsets.fromLTRB(60, 0, 60, 20),
         alignment: Alignment.topCenter,
-        child: Text(widget.recipe.title.value.toString(),
+        child: AutoSizeText(widget.recipe.title.value.toString(),
             textAlign: TextAlign.center,
             maxLines: 2,
             style: TextStyle(
@@ -232,7 +292,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
 
   Widget buttons_group(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10),
+      margin: EdgeInsets.symmetric(horizontal: 10.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -245,7 +305,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
 
   Widget group_info(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         // Child left: ingredient + cooking time:
         Column(
@@ -279,22 +339,21 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     padding: EdgeInsets.only(top: 5.v),
                     height: MediaQuery.of(context).size.height * 0.22,
                     child: Scrollbar(
+                      controller: _scrollController_ingredient,
                       thumbVisibility: true,
                       thickness: 3.0,
                       radius: Radius.circular(5),
                       child: ListView.builder(
-                        itemExtent:
-                            20.0, // Adjust this value to reduce space between items
-                        itemCount: widget.recipe.ingredients.value.length,
+                        controller: _scrollController_ingredient,
+                        itemCount: 1,
                         // itemCount: 1,
                         itemBuilder: (context, index) {
                           return ListTile(
                             title: Text(
-                              widget.recipe.ingredients.value[index],
-                              // widget.recipe.ingredients.value.join('\n'),
+                              widget.recipe.ingredients.value.join("\n \n"),
                               style: TextStyle(
                                 fontFamily: "Outfit",
-                                fontSize: 14.fSize,
+                                fontSize: 12.fSize,
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
@@ -332,11 +391,17 @@ class _GenerationScreenState extends State<GenerationScreen> {
               SizedBox(
                 height: 10.v,
               ),
-              Text(widget.recipe.notes.value.toString(),
-                  style: TextStyle(
-                      fontFamily: "Outfit",
-                      fontSize: 14.fSize,
-                      fontWeight: FontWeight.normal)),
+              Expanded(
+                // Wrap the Text widget in Expanded
+                child: SingleChildScrollView(
+                  // Make it scrollable
+                  child: Text(widget.recipe.notes.value.toString(),
+                      style: TextStyle(
+                          fontFamily: "Outfit",
+                          fontSize: 12.fSize,
+                          fontWeight: FontWeight.normal)),
+                ),
+              ),
             ],
           ),
         ),
@@ -356,8 +421,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
         child: Column(
           children: [
             CustomImageView(
-              height: 50.v,
-              width: 40.h,
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.1,
               imagePath: ImageConstant.imggenerationpage_instruction,
               margin: EdgeInsets.only(bottom: 0, top: 2.v),
             ),
@@ -374,10 +439,12 @@ class _GenerationScreenState extends State<GenerationScreen> {
               height: MediaQuery.of(context).size.height * 0.5,
               width: MediaQuery.of(context).size.width * 0.8,
               child: Scrollbar(
+                controller: _scrollController,
                 thumbVisibility: true,
                 thickness: 3.0, // Optional: Adjust thickness of the scrollbar
                 radius: Radius.circular(5),
                 child: ListView.builder(
+                  controller: _scrollController,
                   itemCount: 1,
                   itemBuilder: (context, index) {
                     return ListTile(
@@ -385,7 +452,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                           widget.recipe.instructions.value.join('\n \n'),
                           style: TextStyle(
                               fontFamily: "Outfit",
-                              fontSize: 14.fSize,
+                              fontSize: 12.fSize,
                               fontWeight: FontWeight.normal)),
                     );
                   },
@@ -404,10 +471,10 @@ class _GenerationScreenState extends State<GenerationScreen> {
       return 18.fSize;
     } else if (screenWidth < 480) {
       // Medium screens
-      return 16.fSize;
+      return 14.fSize;
     } else {
       // Larger screens
-      return 14.fSize;
+      return 13.fSize;
     }
   }
 
@@ -687,7 +754,9 @@ class _GenerationScreenState extends State<GenerationScreen> {
             File file = new File(path.join(
                 documentdirectory.path, path.basename(generatedImageUrls)));
             await file.writeAsBytes(response.bodyBytes);
+
             log("image saving path: " + file.path);
+
             await (recipesDao.update(recipesDao.recipes)..where((tbl) => tbl.id.equals(currentID)))
               ..write(RecipesCompanion(imageURL: drift.Value(path.basename(generatedImageUrls))));
             log("image saving name: " + path.basename(generatedImageUrls));

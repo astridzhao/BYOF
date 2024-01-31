@@ -83,11 +83,15 @@ class _CustomDropDownState extends State<CustomDropDown> {
     selectedValue = widget.initialValue;
   }
 
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.alignment != null
         ? Align(
-            alignment: widget.alignment ?? Alignment.center,
+            alignment: widget.alignment ?? Alignment.centerLeft,
             child: dropDownWidget,
           )
         : dropDownWidget;

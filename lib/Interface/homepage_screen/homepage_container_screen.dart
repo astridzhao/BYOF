@@ -1,10 +1,9 @@
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/homepage_page.dart';
-import 'package:astridzhao_s_food_app/Interface/favorite_page/favorites_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/withoutlogin_homepage.dart';
 import 'package:astridzhao_s_food_app/Interface/favorite_page/update_favorite_screen_2.dart';
 import 'package:astridzhao_s_food_app/Interface/myfridge_screen/_myfridge_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/azure_create_screen.dart';
 import 'package:flutter/material.dart';
 // import 'package:botton_nav_bar/botton_nav_bar.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/bottom_bar.dart';
@@ -83,7 +82,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
               BottomBarItem(
                 bottomItemSelectedColor: appTheme.yellow_secondary,
                 label: 'Home',
-                screen: HomepagePage(),
+                screen: NoAccount_HomepagePage(),
                 selectedIcon: Icons.home,
               ),
               BottomBarItem(
@@ -96,7 +95,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
                 bottomItemSelectedColor: appTheme.yellow_secondary,
                 label: 'Create',
                 selectedIcon: Icons.dinner_dining_rounded,
-                screen: CreateScreen(),
+                screen: Azure_CreateScreen(),
                 // screen: GenerationScreen(resultCompletion: resultCompletion),
               ),
               BottomBarItem(
@@ -116,7 +115,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
   Widget getCurrentPage(String currentRoute) {
     switch (currentRoute) {
       case AppRoutes.homepagePage:
-        return HomepagePage();
+        return NoAccount_HomepagePage();
       case AppRoutes.createScreen:
         return CreateScreen();
       case AppRoutes.myFavoriteScreen:
@@ -124,7 +123,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
       case AppRoutes.myFridgeScreen:
         return MyfridgePage();
       default:
-        return HomepagePage();
+        return NoAccount_HomepagePage();
     }
   }
 }

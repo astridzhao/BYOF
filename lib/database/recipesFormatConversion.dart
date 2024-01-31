@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:drift/drift.dart';
@@ -31,9 +32,9 @@ class Recipes extends Table {
   // column from v2 + update in v3, making imageURL be nullable
   TextColumn get imageURL => text().nullable()();
 
-  // column from v3
-  IntColumn get savingSummary_CO2 => integer()();
-  IntColumn get savingSummary_money => integer()();
+  // column from v3 + v4 change column type
+  RealColumn get savingSummary_CO2 => real()();
+  RealColumn get savingSummary_money => real()();
 }
 
 /// Parses a LLM generated recipe into an insertable Recipe Dataclass.
@@ -47,7 +48,7 @@ RecipesCompanion RecipeFromLLMJson(String llmResult) {
     cookTime: decoded['Expected Cooking Time'] as int,
     notes: decoded['Note'] as String,
     saveAt: DateTime.now().millisecondsSinceEpoch,
-    savingSummary_CO2: decoded['Saving Co2'] as int,
-    savingSummary_money: decoded['Saving Money'] as int,
+    savingSummary_CO2: decoded['Saving Co2'] as double,
+    savingSummary_money: decoded['Saving Money'] as double,
   );
 }

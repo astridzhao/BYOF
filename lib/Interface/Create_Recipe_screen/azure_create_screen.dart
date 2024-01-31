@@ -1,44 +1,72 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 // import 'package:drift/drift.dart' ;
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
-import 'package:astridzhao_s_food_app/key/api_key.dart';
 import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/RecipeSettingBottomSheet.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
-import 'package:dart_openai/dart_openai.dart';
 import 'package:language_picker/language_picker.dart';
 import 'package:language_picker/languages.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Flutter code sample for [AppBar].
 
 // ignore_for_file: must_be_immutable
-class CreateScreen extends StatefulWidget {
+class Azure_CreateScreen extends StatefulWidget {
   // final RecipesCompanion recipe;
 
-  CreateScreen({
+  Azure_CreateScreen({
     Key? key,
   }) : super(key: key);
   @override
-  CreateScreenState createState() => CreateScreenState();
+  update_CreateScreenState createState() => update_CreateScreenState();
 }
 
-class CreateScreenState extends State<CreateScreen> {
+class update_CreateScreenState extends State<Azure_CreateScreen> {
   // Create a GlobalKey
   // final GlobalKey<_CustomDropDownState> dropDownKey = GlobalKey<_CustomDropDownState>();
   String resultCompletion = "";
   late TextEditingController atomInputContainerController;
+  final _controller = TextEditingController();
 
   void initState() {
     super.initState();
     atomInputContainerController = TextEditingController();
+    loadAllIngredients();
   }
 
   void dispose() {
+    _controller.dispose();
     atomInputContainerController.dispose();
     super.dispose();
+  }
+
+  Future<void> saveIngredients(
+      String listName, List<String> ingredients) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(listName, ingredients);
+  }
+
+  Future<List<String>> loadIngredients(
+      String listName, List<String> defaultIngredients) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(listName) ?? defaultIngredients;
+  }
+
+  Future<void> loadAllIngredients() async {
+    ingredients_protein =
+        await loadIngredients('ingredients_protein', ingredients_protein);
+    ingredients_vege =
+        await loadIngredients('ingredients_vege', ingredients_vege);
+    ingredients_carb =
+        await loadIngredients('ingredients_carb', ingredients_carb);
+    ingredients_others =
+        await loadIngredients('ingredients_others', ingredients_others);
+    setState(() {});
   }
 
   List<String> ingredients_protein = [
@@ -56,6 +84,7 @@ class CreateScreenState extends State<CreateScreen> {
     "tofu",
     "tempeh",
   ];
+
   List<String> ingredients_vege = [
     "tomato",
     "onion",
@@ -167,8 +196,13 @@ class CreateScreenState extends State<CreateScreen> {
   String selectedLangauge = Languages.english.name;
 
   String get contentUser =>
-      """My ingredients are denoted by backticks: ```$selectedIngredients```, DO NOT use any other ingredients that I did not pick, but you can use other essential sauce/spices; 
-      and please following below cooking preferences: 1. Dish's cuisine style should be $selectedCuisine. 2. Dish type should be $selectedDishType. 3. Using cooking method $selectedCookingMethod to cook. 4. Be mindful of I have $selectedDietaryRestriction diet restriction. 5. I have $selectedServingSize people to eat. Tell me how many amount of food I need to use in 'Ingredient List'. """;
+      "My ingredients are denoted by backticks: ```$selectedIngredients```, DO NOT use any other ingredients that I did not pick, but you can use other essential sauce/spices;" +
+      "and please following below cooking preferences: "
+          "1. Dish's cuisine style should be $selectedCuisine. "
+          "2. Dish type should be $selectedDishType. " +
+      "3. Using cooking method $selectedCookingMethod to cook. "
+          "4. Be mindful of I have $selectedDietaryRestriction diet restriction. "
+          "5. I have $selectedServingSize people to eat. Tell me how many amount of food I need to use in 'Ingredient List'. ";
 
   String get system_prompt =>
       """As a professional personal recipe-generating assistant, your task is to create ONE recipe using provided leftover ingredients. The response should be formatted as a JSON object containing 7 child objects, each with specific data types and content requirements:  
@@ -656,13 +690,64 @@ class CreateScreenState extends State<CreateScreen> {
     );
   }
 
-  void addIngredientItem(List<String> currentIngredientList) async {
-    String? newIngredient = await _showAddIngredientDialog(context);
-    if (newIngredient != null && newIngredient.isNotEmpty) {
-      setState(() {
-        currentIngredientList.add(newIngredient);
-      });
-    }
+  // void addIngredientItem(List<String> currentIngredientList) async {
+  // String? newIngredient = await _showAddIngredientDialog(context);
+  // if (newIngredient != null && newIngredient.isNotEmpty) {
+  //   setState(() {
+  //     currentIngredientList.add(newIngredient);
+  //   });
+  // }
+  // }
+  void addIngredientItem(String listName, List<String> ingredientList) {
+    // Prompt the user to enter a new ingredient
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Add Ingredient',
+            style: TextStyle(fontSize: 14.fSize, fontFamily: "Outfit"),
+          ),
+          content: TextField(
+            autofocus: true,
+            controller: _controller,
+            decoration: InputDecoration(hintText: "Enter ingredient name"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 13.fSize,
+                    fontFamily: "Outfit"),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                'Add',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 13.fSize,
+                    fontFamily: "Outfit"),
+              ),
+              onPressed: () {
+                // Add the new ingredient to the list
+                setState(() {
+                  ingredientList.add(_controller.text);
+                });
+
+                saveIngredients(listName, ingredientList);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildButtonProtein(BuildContext context) {
@@ -689,7 +774,8 @@ class CreateScreenState extends State<CreateScreen> {
                     tooltip: "Add a new protein",
                     onPressed: () {
                       // currentIngredientList = ingredients_protein;
-                      addIngredientItem(ingredients_protein);
+                      addIngredientItem(
+                          'ingredients_protein', ingredients_protein);
                     },
                     child: Icon(Icons.add),
                     backgroundColor: appTheme.yellow_primary,
@@ -700,36 +786,45 @@ class CreateScreenState extends State<CreateScreen> {
         } else {
           String data = ingredients_protein[index];
           bool isSelected = selectedIngredients.contains(data);
-          return ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 1.h),
-                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 12.fSize),
-                foregroundColor: Colors.white,
-                backgroundColor:
-                    isSelected ? Colors.grey : appTheme.green_primary),
-            onPressed: () {
-              setState(() {
-                if (selectedIngredients.contains(data)) {
-                  // If the data is already selected, remove it
-                  selectedIngredients.remove(data);
-                } else {
-                  if (selectedIngredients.length < 6) {
-                    // If the data is not selected, add it
-                    selectedIngredients.add(data);
-                  }
-                }
-                atomInputContainerController.text =
-                    selectedIngredients.join("  ");
-              });
-            },
-            child: AutoSizeText(data,
-                textAlign: TextAlign.center,
-                softWrap: true,
-                style: TextStyle(
-                  fontFamily: "Outfit",
-                  fontSize: 13.fSize,
-                )),
-          );
+          return GestureDetector(
+              onLongPress: () {
+                setState(() {
+                  ingredients_protein.removeAt(index);
+                });
+                saveIngredients('ingredients_protein',
+                    ingredients_protein); // Save the updated list to shared preferences
+              },
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 1.h),
+                    textStyle:
+                        TextStyle(fontFamily: "Outfit", fontSize: 12.fSize),
+                    foregroundColor: Colors.white,
+                    backgroundColor:
+                        isSelected ? Colors.grey : appTheme.green_primary),
+                onPressed: () {
+                  setState(() {
+                    if (selectedIngredients.contains(data)) {
+                      // If the data is already selected, remove it
+                      selectedIngredients.remove(data);
+                    } else {
+                      if (selectedIngredients.length < 6) {
+                        // If the data is not selected, add it
+                        selectedIngredients.add(data);
+                      }
+                    }
+                    atomInputContainerController.text =
+                        selectedIngredients.join("  ");
+                  });
+                },
+                child: AutoSizeText(data,
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                    style: TextStyle(
+                      fontFamily: "Outfit",
+                      fontSize: 13.fSize,
+                    )),
+              ));
         }
       },
     );
@@ -757,7 +852,7 @@ class CreateScreenState extends State<CreateScreen> {
                     tooltip: "Add a new vegetable",
                     onPressed: () {
                       // currentIngredientList = ingredients_vege;
-                      addIngredientItem(ingredients_vege);
+                      addIngredientItem('ingredients_vege', ingredients_vege);
                     },
                     child: Icon(Icons.add),
                     backgroundColor: appTheme.yellow_primary,
@@ -768,35 +863,44 @@ class CreateScreenState extends State<CreateScreen> {
         } else {
           String data = ingredients_vege[index];
           bool isSelected = selectedIngredients.contains(data);
-          return ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 1.h),
-                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 13.fSize),
-                foregroundColor: Colors.white,
-                backgroundColor:
-                    isSelected ? Colors.grey : appTheme.green_primary),
-            onPressed: () {
-              setState(() {
-                if (selectedIngredients.contains(data)) {
-                  selectedIngredients.remove(data);
-                } else {
-                  if (selectedIngredients.length < 6) {
-                    selectedIngredients.add(data);
-                  }
-                }
-                atomInputContainerController.text =
-                    selectedIngredients.join("  ");
-              });
-            },
-            child: AutoSizeText(data,
-                textAlign: TextAlign.center,
-                softWrap: true,
-                maxLines: 1,
-                style: TextStyle(
-                  fontFamily: "Outfit",
-                  fontSize: 13.fSize,
-                )),
-          );
+          return GestureDetector(
+              onLongPress: () {
+                setState(() {
+                  ingredients_protein.removeAt(index);
+                });
+                saveIngredients('ingredients_protein',
+                    ingredients_protein); // Save the updated list to shared preferences
+              },
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 1.h),
+                    textStyle:
+                        TextStyle(fontFamily: "Outfit", fontSize: 13.fSize),
+                    foregroundColor: Colors.white,
+                    backgroundColor:
+                        isSelected ? Colors.grey : appTheme.green_primary),
+                onPressed: () {
+                  setState(() {
+                    if (selectedIngredients.contains(data)) {
+                      selectedIngredients.remove(data);
+                    } else {
+                      if (selectedIngredients.length < 6) {
+                        selectedIngredients.add(data);
+                      }
+                    }
+                    atomInputContainerController.text =
+                        selectedIngredients.join("  ");
+                  });
+                },
+                child: AutoSizeText(data,
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontFamily: "Outfit",
+                      fontSize: 13.fSize,
+                    )),
+              ));
         }
       },
     );
@@ -824,7 +928,7 @@ class CreateScreenState extends State<CreateScreen> {
                     tooltip: "Add a new carb",
                     onPressed: () {
                       // currentIngredientList = ingredients_carb;
-                      addIngredientItem(ingredients_carb);
+                      addIngredientItem('ingredients_carb', ingredients_carb);
                     },
                     child: Icon(Icons.add),
                     backgroundColor: appTheme.yellow_primary,
@@ -835,37 +939,46 @@ class CreateScreenState extends State<CreateScreen> {
         } else {
           String data = ingredients_carb[index];
           bool isSelected = selectedIngredients.contains(data);
-          return ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 1.h),
-                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 13.fSize),
-                foregroundColor: Colors.white,
-                backgroundColor:
-                    isSelected ? Colors.grey : appTheme.green_primary),
-            onPressed: () {
-              setState(() {
-                if (selectedIngredients.contains(data)) {
-                  // If the data is already selected, remove it
-                  selectedIngredients.remove(data);
-                } else {
-                  if (selectedIngredients.length < 6) {
-                    // If the data is not selected, add it
-                    selectedIngredients.add(data);
-                  }
-                }
-                atomInputContainerController.text =
-                    selectedIngredients.join("  ");
-              });
-            },
-            child: AutoSizeText(data,
-                textAlign: TextAlign.center,
-                softWrap: true,
-                maxLines: 1,
-                style: TextStyle(
-                  fontFamily: "Outfit",
-                  fontSize: 13.fSize,
-                )),
-          );
+          return GestureDetector(
+              onLongPress: () {
+                setState(() {
+                  ingredients_protein.removeAt(index);
+                });
+                saveIngredients('ingredients_protein',
+                    ingredients_protein); // Save the updated list to shared preferences
+              },
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 1.h),
+                    textStyle:
+                        TextStyle(fontFamily: "Outfit", fontSize: 13.fSize),
+                    foregroundColor: Colors.white,
+                    backgroundColor:
+                        isSelected ? Colors.grey : appTheme.green_primary),
+                onPressed: () {
+                  setState(() {
+                    if (selectedIngredients.contains(data)) {
+                      // If the data is already selected, remove it
+                      selectedIngredients.remove(data);
+                    } else {
+                      if (selectedIngredients.length < 6) {
+                        // If the data is not selected, add it
+                        selectedIngredients.add(data);
+                      }
+                    }
+                    atomInputContainerController.text =
+                        selectedIngredients.join("  ");
+                  });
+                },
+                child: AutoSizeText(data,
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontFamily: "Outfit",
+                      fontSize: 13.fSize,
+                    )),
+              ));
         }
       },
     );
@@ -893,7 +1006,8 @@ class CreateScreenState extends State<CreateScreen> {
                     tooltip: "Add",
                     onPressed: () {
                       // currentIngredientList = ingredients_others;
-                      addIngredientItem(ingredients_others);
+                      addIngredientItem(
+                          'ingredients_others', ingredients_others);
                     },
                     child: Icon(Icons.add),
                     backgroundColor: appTheme.yellow_primary,
@@ -904,35 +1018,44 @@ class CreateScreenState extends State<CreateScreen> {
         } else {
           String data = ingredients_others[index];
           bool isSelected = selectedIngredients.contains(data);
-          return ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 1.h),
-                textStyle: TextStyle(fontFamily: "Outfit", fontSize: 13.fSize),
-                foregroundColor: Colors.white,
-                backgroundColor:
-                    isSelected ? Colors.grey : appTheme.green_primary),
-            onPressed: () {
-              setState(() {
-                if (selectedIngredients.contains(data)) {
-                  // If the data is already selected, remove it
-                  selectedIngredients.remove(data);
-                } else {
-                  if (selectedIngredients.length < 6) {
-                    // If the data is not selected, add it
-                    selectedIngredients.add(data);
-                  }
-                }
-                atomInputContainerController.text =
-                    selectedIngredients.join("  ");
-              });
-            },
-            child: AutoSizeText(data,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                softWrap: true,
-                style: TextStyle(fontFamily: "Outfit", fontSize: 13.fSize)),
-          );
+          return GestureDetector(
+              onLongPress: () {
+                setState(() {
+                  ingredients_protein.removeAt(index);
+                });
+                saveIngredients('ingredients_protein',
+                    ingredients_protein); // Save the updated list to shared preferences
+              },
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 1.h),
+                    textStyle:
+                        TextStyle(fontFamily: "Outfit", fontSize: 13.fSize),
+                    foregroundColor: Colors.white,
+                    backgroundColor:
+                        isSelected ? Colors.grey : appTheme.green_primary),
+                onPressed: () {
+                  setState(() {
+                    if (selectedIngredients.contains(data)) {
+                      // If the data is already selected, remove it
+                      selectedIngredients.remove(data);
+                    } else {
+                      if (selectedIngredients.length < 6) {
+                        // If the data is not selected, add it
+                        selectedIngredients.add(data);
+                      }
+                    }
+                    atomInputContainerController.text =
+                        selectedIngredients.join("  ");
+                  });
+                },
+                child: AutoSizeText(data,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: true,
+                    style: TextStyle(fontFamily: "Outfit", fontSize: 13.fSize)),
+              ));
         }
       },
     );
@@ -976,48 +1099,29 @@ class CreateScreenState extends State<CreateScreen> {
   }
 
   sendPrompt() async {
-    // OpenAI.organization = riceBucketID;
-    OpenAI.apiKey = azapikey;
-    final systemMessage = OpenAIChatCompletionChoiceMessageModel(
-      // content: "I want to provide delicious recipe for users by using their leftover ingredients. You act as a professional personal recipe-generating assistant who need to create ONE recipe using provided ingredients. " +
-      //     " To ensure a precise and high-quality response, you should following below rules: 1. please return the response in create a JSON object which enumerates a set of 7 child objects, " +
-      //     " Each objects are respectively named as Title, Ingredient List, Step-by-Step Instructions, Expected Cooking Time, Note, Saving Co2, and Saving Money." +
-      //     " The result JSON objetcs should be in this format: " +
-      //     "{Title: string, Ingredient List: list[String], Step-by-Step Instructions: list[String], Expected Cooking Time: integer, Note: String, Saving Co2: double, Saving Money: double}." +
-      //     " 2. the unit of 'Expected Cooking Time' is in minutes; " +
-      //     " 3. the creative recipe need to be as similar to famous and authentic $selectedCuisine dishes as possible; " +
-      //     " 4. 'Saving Co2' should be an estimated double number of Co2 the user saved from this meal by reducing food waste. Total CO2 emissions=∑(Amount of each food type wasted×Emission factor for that food type); " +
-      //     " 5. 'Saving money' should be estimated double number of money the user saved from not throw those ingredients; " +
-      //     " 6. Do not use any other food/ingredients that users did not pick, but you can use some essential sauce/spices." +
-      //     " 7. The recipe output should be in $selectedLangauge language. ",
-      content: system_prompt,
+    var params = {
+      'langauge': selectedLangauge,
+      'ingredients': selectedIngredients.join(", "),
+      'cuisine': selectedCuisine,
+      'cooking_methods': selectedCookingMethod,
+      'dish_type': selectedDishType,
+      'dietary_restriction': selectedDietaryRestriction,
+      'serving_size': selectedServingSize
+    };
+    log(params.toString());
+    var uri = Uri.https(
+        'http-byof-recipe-gen.azurewebsites.net', '/api/byof_llm_get_recipe');
 
-      role: OpenAIChatMessageRole.assistant,
-    );
-    // log(system_prompt);
+    var response = await http.post(uri, body: jsonEncode(params));
+    log('Response: ${response.body}');
 
-    // the user message that will be sent to the request.
-    final userMessage = OpenAIChatCompletionChoiceMessageModel(
-      content: contentUser,
-      role: OpenAIChatMessageRole.user,
-    );
-
-    // all messages to be sent.
-    final requestMessages = [
-      systemMessage,
-      userMessage,
-    ];
-    final completion = await OpenAI.instance.chat
-        .create(model: 'gpt-3.5-turbo', messages: requestMessages);
-
-    setState(() {
-      resultCompletion = completion.choices.first.message.content;
-
-      log(resultCompletion);
-
-      // atomInputContainerController.clear();
-      // selectedIngredients.clear();
-    });
+    if (response.statusCode == 200) {
+      setState(() {
+        resultCompletion = response.body;
+      });
+    } else {
+      log("Error: ${response.statusCode}");
+    }
   }
 }
 
