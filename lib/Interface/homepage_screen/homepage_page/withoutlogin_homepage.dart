@@ -1,4 +1,4 @@
-import 'package:astridzhao_s_food_app/Interface/favorite_page/favorites_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/backup_screens/favorites_screen.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/Interface/provider.dart';

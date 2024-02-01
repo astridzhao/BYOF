@@ -50,7 +50,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
       final image = await OpenAI.instance.image.create(
         n: 1,
         prompt:
-            """As a professional image-generating assistant, use your imagination to create a dish image by referencing $recipe. 
+            """As a professional image-generating assistant, use your imagination to create a dish image by referencing $recipe. Note that this recipe title might be in a language other than English. 
             The image style should be cute, and make it looks tasty to attract customers. 
             Do not put any text on the image. """,
       );
@@ -60,6 +60,7 @@ class FavoriteRecipePageState extends State<FavoriteRecipePage> {
         currentUrls_fordisplay = currentItem.url.toString();
         // save image to local --> set generateImageURLS[i]
         var response = await http.get(Uri.parse(currentUrls_fordisplay));
+
         Directory documentdirectory = await getApplicationDocumentsDirectory();
         String imageName = path.basename(currentUrls_fordisplay);
         File file = new File(path.join(documentdirectory.path, imageName));

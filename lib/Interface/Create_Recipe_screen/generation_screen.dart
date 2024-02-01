@@ -1,10 +1,11 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:core';
 import 'dart:io';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:clipboard/clipboard.dart';
-import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/create_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/backup_screens/create_screen.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
@@ -119,23 +120,22 @@ class _GenerationScreenState extends State<GenerationScreen> {
     ));
   }
 
-  Future<void> generateImage(String recipe) async {
-    // OpenAI.organization = riceBucketID;
-    OpenAI.apiKey = azapikey;
-    final image = await OpenAI.instance.image.create(
-        n: 1,
-        prompt:
-            """As a professional image-generating assistant, use your imagination to create a dish image by referencing $recipe. Note that this recipe title might be in a language other than English. 
-            The image style should be cute, and make it looks tasty to attract customers. 
-            Do not put any text on the image. """);
+  Future<void> generateImage(String recipeTitle) async {
+    var params = {
+      'title': recipeTitle,
+    };
+    log(params.toString());
+
+    var uri = Uri.https(
+        'http-byof-recipe-gen.azurewebsites.net', '/api/byof_llm_get_image');
+
+    // send request to openAI on Azure
+    var response_fromAzure = await http.post(uri, body: jsonEncode(params));
     setState(() {
-      for (int index = 0; index < image.data.length; index++) {
-        final currentItem = image.data[index];
-        generatedImageUrls = currentItem.url.toString();
-        // print(currentItem.url);
-      }
-      ;
+      generatedImageUrls = response_fromAzure.body;
+      log("image network by openAI: ${response_fromAzure.body}");
     });
+    // download the image from the URL: set to response
   }
 
   PreferredSizeWidget customeAppbar(BuildContext context) {
