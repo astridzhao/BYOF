@@ -1,4 +1,5 @@
 /// Still WIP favorite screen.
+import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 import 'dart:math' as math;
@@ -42,55 +43,43 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
     });
   }
 
-  Future<void> generateImage(int i, int id, String recipe) async {
+  Future<void> generateImage(int i, int id, String recipeTitle) async {
     try {
-      OpenAI.apiKey = azapikey;
-      // OpenAI.organization = riceBucketID;
-      var image = await OpenAI.instance.image.create(
-          n: 1,
-          prompt:
-              """As a professional image-generating assistant, use your imagination to create a dish image by referencing $recipe. Note that this recipe title might be in a language other than English. 
-            The image style should be cute, and make it looks tasty to attract customers. 
-            Do not put any text on the image. """);
-      for (int index = 0; index < image.data.length; index++) {
-        final currentItem = image.data[index];
-        currentUrls_fordisplay = currentItem.url.toString();
+      var params = {
+        'title': recipeTitle,
+      };
+      log(params.toString());
 
-        log("image network by openAI" + currentUrls_fordisplay);
+      var uri = Uri.https(
+          'http-byof-recipe-gen.azurewebsites.net', '/api/byof_llm_get_image');
 
-        // save image to local --> set generateImageURLS[i]
-        var response = await http.get(Uri.parse(currentUrls_fordisplay));
+      // send request to openAI on Azure
+      var response_fromAzure = await http.post(uri, body: jsonEncode(params));
+      currentUrls_fordisplay = response_fromAzure.body;
+      log("image network by openAI: ${response_fromAzure.body}");
+      // download the image from the URL: set to response
 
-        if (response.statusCode == 200) {
-          Directory documentdirectory =
-              await getApplicationDocumentsDirectory();
+      var response = await http.get(Uri.parse(currentUrls_fordisplay));
+      if (response.statusCode == 200) {
+        Directory documentdirectory = await getApplicationDocumentsDirectory();
+        String imageName = path.basename(currentUrls_fordisplay);
+        print("Image save name: $imageName");
+        File file = new File(path.join(documentdirectory.path, imageName));
+        await file.writeAsBytes(response.bodyBytes);
+        print("Image saved in local directory: ${documentdirectory.path}");
 
-          String imageName = path.basename(currentUrls_fordisplay);
+        // store image into local directory
+        await (recipe_dao.update(recipe_dao.recipes)..where((tbl) => tbl.id.equals(id)))
+          ..write(RecipesCompanion(imageURL: drift.Value(imageName)));
 
-          File file = new File(path.join(documentdirectory.path, imageName));
-          // await file.writeAsBytes(response.bodyBytes);
-
-          await file.writeAsBytes(response.bodyBytes);
-          print("Image saved in local directory: ${documentdirectory.path}");
-
-          print("save store image into local directory");
-
-          print("local directory: " + documentdirectory.path);
-
-          // store image into local directory
-          await (recipe_dao.update(recipe_dao.recipes)..where((tbl) => tbl.id.equals(id)))
-            ..write(RecipesCompanion(imageURL: drift.Value(imageName)));
-
-          setState(() {
-            generatedImageUrls[i] = imageName;
-          });
-        } else {
-          print("Failed to download the image: ${response.statusCode}");
-        }
+        setState(() {
+          generatedImageUrls[i] = imageName;
+        });
+      } else {
+        throw Exception('Failed to load image');
       }
     } catch (e) {
-      log('Error in generateImage: $e');
-      // Handle the error or show a message to the user
+      print("Error: $e");
     }
   }
 
@@ -536,15 +525,51 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                     false, // User must tap button to close dialog
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    content: Row(
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        // Align(
+                        //   alignment: Alignment.topRight,
+                        //   child: IconButton(
+                        //     icon: Icon(
+                        //       Icons.close,
+                        //       color: Colors.black,
+                        //       size: 25.adaptSize,
+                        //     ),
+                        //     onPressed: () {
+                        //       Navigator.pop(context);
+
+                        //     },
+                        //   ),
+                        // ),
+                        Center(
+                          child: Text(
+                            "Crafting a delightful dish image...",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontFamily: 'Outfit', fontSize: 12.fSize),
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(
-                          width: 20.adaptSize,
-                          height: 20.adaptSize, // Adjust the height as needed
+                          width: 20.h,
+                          height: 20.v, // Adjust the height as needed
                           child: CircularProgressIndicator(),
                         ),
-                        SizedBox(width: 20.h),
-                        Text("Crafting a delightful dish image..."),
+                        SizedBox(height: 20.v),
+                        Text("Do not exit.",
+                            style: TextStyle(
+                              fontFamily: 'Outfit',
+                              fontWeight: FontWeight.bold,
+                              wordSpacing: 0,
+                              letterSpacing: 0,
+                              fontSize: 10.fSize,
+                              color: appTheme.orange_primary,
+                            )),
                       ],
                     ),
                   );

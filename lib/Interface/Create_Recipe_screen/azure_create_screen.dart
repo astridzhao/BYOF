@@ -1100,7 +1100,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
 
   sendPrompt() async {
     var params = {
-      'langauge': selectedLangauge,
+      'language': selectedLangauge,
       'ingredients': selectedIngredients.join(", "),
       'cuisine': selectedCuisine,
       'cooking_methods': selectedCookingMethod,
