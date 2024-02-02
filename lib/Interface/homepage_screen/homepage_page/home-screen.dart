@@ -1,17 +1,15 @@
-import 'package:astridzhao_s_food_app/Interface/backup_screens/favorites_screen.dart';
+import 'dart:async';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+
+import '../homepage_page/widgets/recipecontentrow_item_widget.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
-import 'package:astridzhao_s_food_app/Interface/provider.dart';
-import 'package:provider/provider.dart';
-import '../homepage_page/widgets/recipecontentrow_item_widget.dart';
+import 'package:astridzhao_s_food_app/Interface/provider_SavingsModel.dart';
 import 'widgets/saving_summery_widget.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/Interface/favorite_page/generate_favorite.dart';
-import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
-import 'package:astridzhao_s_food_app/Interface/favorite_page/update_favorite_screen_2.dart';
-import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/myfavorite-screen.dart';
 
 class NoAccount_HomepagePage extends StatefulWidget {
   NoAccount_HomepagePage({Key? key})
@@ -42,19 +40,6 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
     // Use savingCo2 as needed
   }
 
-  // Future<List<Recipe>>? futureRecipes;
-  // void fetchAllFavorite() {
-  //   setState(() {
-  //     futureRecipes = recipe_dao.select(recipe_dao.recipes).get();
-  //   });
-  // }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   fetchAllFavorite();
-  // }
-
   Stream<List<String?>> getFilteringValues() {
     final imageURL = recipe_dao.recipes.imageURL;
     // print(imageURL);
@@ -76,7 +61,7 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: appTheme.yellow5001,
-        appBar: _buildAppBar(context),
+        appBar: buildAppBar(context),
         body: SizedBox(
           width: SizeUtils.width,
           height: SizeUtils.height,
@@ -103,14 +88,14 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
                     ),
                   ),
                   SizedBox(height: 15.v),
-                  _buildSavingSummary(context),
+                  buildSavingSummary(context),
                   SizedBox(height: 20.v),
                   Padding(
                     padding: EdgeInsets.only(
                       left: 25.h,
                       right: 20.h,
                     ),
-                    child: _buildDividerSection_favorite_page(
+                    child: buildDividerSection_favorite_page(
                       context,
                       text: "My Favorite Recipes",
                       text1: "See all",
@@ -122,14 +107,14 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
                     endIndent: 10.h,
                   ),
                   SizedBox(height: 3.v),
-                  _buildFavoriteRecipeRow(context),
+                  buildFavoriteRecipeRow(context),
                   SizedBox(height: 15.v),
                   Padding(
                     padding: EdgeInsets.only(
                       left: 25.h,
                       right: 20.h,
                     ),
-                    child: _buildDividerSection_mealPlan(
+                    child: buildDividerSection_mealPlan(
                       context,
                       text: "My Meal Plan",
                       text1: "View",
@@ -148,16 +133,12 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
             ),
           ),
         ),
-        // floatingActionButton: Padding(
-        //   padding: EdgeInsets.fromLTRB(50, 0, 10, 0),
-        //   child: _buildCreateRecipeButton(context),
-        // ),
       ),
     );
   }
 
   /// Section Widget
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget buildAppBar(BuildContext context) {
     // Get the screen width and height
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -166,34 +147,32 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
       preferredSize: Size.fromHeight(screenHeight * 0.1),
       child: // Space above AppBar, adjust the height as needed
           CustomAppBar(
-        leading: CircleAvatar(
-          // Adjust the radius as needed
-          backgroundColor: Colors.transparent,
-          child: CustomImageView(
-            imagePath: ImageConstant.imgLogo2RemovebgPreview,
-            height: 100.adaptSize,
-            width: 100.adaptSize,
-            margin: EdgeInsets.all(0.03 * screenWidth),
-            fit: BoxFit.contain,
-          ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        title: Text(
+          'Bring Your Own Fridge',
+          style: TextStyle(
+              color: Color.fromARGB(190, 0, 0, 0),
+              fontSize: 16.fSize,
+              fontWeight: FontWeight.w500,
+              fontFamily: "Outfit"),
         ),
-        title: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: 0.02 * screenWidth, vertical: 0.1 * screenHeight),
-            child: AppbarTitle(
-              text: "Bring Your Own Fridge",
-              textStyle: TextStyle(
-                fontFamily: "Outfit",
-                fontSize: 15.fSize,
-                fontWeight: FontWeight.normal,
-              ),
-            )),
+        toolbarHeight: screenHeight * 0.1,
+        leadingWidth: MediaQuery.of(context).size.width * 0.2,
+        leading: Builder(builder: (BuildContext context) {
+          return CustomImageView(
+            imagePath: ImageConstant.imgLogo2RemovebgPreview,
+            fit: BoxFit.contain,
+            margin: EdgeInsets.only(left: 10.h),
+          );
+        }),
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildSavingSummary(BuildContext context) {
+  Widget buildSavingSummary(BuildContext context) {
     Savings savings = getSavingNums();
 
     return SizedBox(
@@ -217,7 +196,7 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
     );
   }
 
-  Widget _buildFavoriteRecipeRow(BuildContext context) {
+  Widget buildFavoriteRecipeRow(BuildContext context) {
     return Container(
       height: 76.v,
       padding: EdgeInsets.symmetric(vertical: 5.v),
@@ -248,9 +227,6 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
               String imageUrl = urls[index] ?? default_image_url;
 
               return RecipecontentrowItemWidget(imagefilePath: imageUrl);
-
-              // log(imageFile.path);
-              // return RecipecontentrowItemWidget(imagefilePath: imageUrl);
             },
           );
         },
@@ -520,7 +496,7 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
   }
 
   /// Common widget
-  Widget _buildDividerSection_favorite_page(
+  Widget buildDividerSection_favorite_page(
     BuildContext context, {
     required String text,
     required String text1,
@@ -562,7 +538,7 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
     );
   }
 
-  Widget _buildDividerSection_mealPlan(
+  Widget buildDividerSection_mealPlan(
     BuildContext context, {
     required String text,
     required String text1,
@@ -595,8 +571,30 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
               ),
             ),
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => FavoriteRecipePage()));
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(
+                        "Sorry! This feature is not available yet.",
+                        style:
+                            TextStyle(fontFamily: "Outfit", fontSize: 14.fSize),
+                      ),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "OK",
+                              style: TextStyle(
+                                  fontFamily: "Outfit",
+                                  fontSize: 12.fSize,
+                                  color: appTheme.black900),
+                            ))
+                      ],
+                    );
+                  });
             },
           ),
         ),
