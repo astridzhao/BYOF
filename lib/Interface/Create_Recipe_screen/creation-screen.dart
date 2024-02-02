@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/generation-recipe-output.dart';
 import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/RecipeSettingBottomSheet.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:language_picker/language_picker.dart';
 import 'package:language_picker/languages.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -132,27 +133,32 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
     "Japanese",
     "German",
     "French",
-    "Hungarian"
+    "Hungarian",
+    "African"
   ];
 
-  List<String> dropdownItemList2_cooking_ethod = [
+  List<String> dropdownItemList2_cooking_method = [
     "No Preference",
-    "Pan Fry",
-    "Steam",
+    "Stir Fry",
     "Air Fry",
-    "Oven",
-    "Boil",
+    "Oven Bake",
+    "Poaching",
+    "Sautéing",
+    "Steaming",
     "Blend"
   ];
 
   List<String> dropdownItemList3_dish_type = [
     "No Preference",
+    "One-pot Meal",
+    "Microwave Meal",
     "Breakfast",
+    "Brunch",
     "Lunch/Dinner",
-    "Baby Food",
     "Dessert",
     "Smoothie",
-    "One-pot Meal",
+    "Salad",
+    "Baby Food",
     "Low Calorie Meal"
   ];
 
@@ -240,7 +246,6 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
-
     // Adjust aspect ratio based on screen width
     double childAspectRatio;
     if (screenWidth <= 320) {
@@ -273,12 +278,12 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
     return MaterialApp(
       home: SafeArea(
           child: Scaffold(
-        backgroundColor: appTheme.yellow_secondary,
+        backgroundColor: appTheme.yellow5001,
         resizeToAvoidBottomInset: false,
         appBar: CustomAppBar(
           toolbarHeight: MediaQuery.of(context).size.height * 0.1,
           leadingWidth: MediaQuery.of(context).size.width * 0.2,
-          backgroundColor: appTheme.yellow_secondary,
+          backgroundColor: Colors.transparent,
           leading: Builder(builder: (BuildContext context) {
             return CustomImageView(
               imagePath: ImageConstant.imgLogo2RemovebgPreview,
@@ -296,33 +301,47 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                     color: appTheme.green_primary),
               ),
               onPressed: () async {
-                // Show the dialog
-                showDialog(
-                  context: context,
-                  barrierDismissible:
-                      false, // User must tap button to close dialog
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      content: Row(
-                        children: [
-                          SizedBox(
-                            width: 20.h,
-                            height: 20.v, // Adjust the height as needed
-                            child: CircularProgressIndicator(),
-                          ),
-                          SizedBox(width: 20.h),
-                          Text("Crafting a culinary masterpiece..."),
-                        ],
-                      ),
-                    );
-                  },
-                );
-                await sendPrompt();
-                // Close the dialog
-                Navigator.of(context).pop();
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        GenerationScreen(resultCompletion: resultCompletion)));
+                // handle situtaion of empty input
+                if (selectedIngredients.isEmpty ||
+                    atomInputContainerController.text.isEmpty) {
+                  Fluttertoast.showToast(
+                    msg: "Please select at least one ingredient",
+                    fontSize: 14.fSize,
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: appTheme.yellow_secondary,
+                    textColor: Colors.black45,
+                  );
+                } else {
+                  // Show the dialog
+                  showDialog(
+                    context: context,
+                    barrierDismissible:
+                        false, // User must tap button to close dialog
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Row(
+                          children: [
+                            SizedBox(
+                              width: 20.h,
+                              height: 20.v, // Adjust the height as needed
+                              child: CircularProgressIndicator(),
+                            ),
+                            SizedBox(width: 20.h),
+                            Text("Crafting a culinary masterpiece..."),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                  await sendPrompt();
+                  // Close the dialog
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => GenerationScreen(
+                          resultCompletion: resultCompletion)));
+                }
               },
             ),
           ],
@@ -379,11 +398,10 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                                       childAspectRatio: childAspectRatio,
                                       children: <Widget>[
                                         cuisineStyle(context),
-                                        cookingMethod(context),
                                         dishType(context),
+                                        cookingMethod(context),
                                         dietaryRestriction(context),
                                         servingSize(context),
-                                        //add number of dishes as an option
                                       ],
                                     ),
                                   ),
@@ -440,9 +458,9 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
           SizedBox(height: 4.v),
           Flexible(
             child: CustomDropDown(
-              hintText: dropdownItemList2_cooking_ethod.first,
+              hintText: dropdownItemList2_cooking_method.first,
               hintStyle: TextStyle(fontSize: 13.fSize, fontFamily: "Outfit"),
-              items: dropdownItemList2_cooking_ethod,
+              items: dropdownItemList2_cooking_method,
               onChanged: (value) {
                 setState(() {
                   selectedCookingMethod = value;
@@ -593,7 +611,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
         TextFormField(
           readOnly: true,
           maxLines: null,
-          // keyboardType: TextInputType.text,
+          keyboardType: TextInputType.text,
           controller: atomInputContainerController,
           decoration: InputDecoration(
             labelText: "Add today's ingredients (max to 6)",
@@ -880,14 +898,10 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                     heroTag: null,
                     tooltip: "Add a new carb",
                     onPressed: () {
-                      // currentIngredientList = ingredients_carb;
                       addIngredientItem('ingredients_carb', ingredients_carb);
                     },
                     child: Icon(Icons.add),
                     backgroundColor: appTheme.yellow_primary,
-                    // shape: RoundedRectangleBorder(
-                    //     borderRadius:
-                    //         BorderRadius.all(Radius.circular(10)))
                   )));
         } else {
           String data = ingredients_carb[index];
@@ -1024,10 +1038,8 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
     log(params.toString());
     var uri = Uri.https(
         'http-byof-recipe-gen.azurewebsites.net', '/api/byof_llm_get_recipe');
-
     var response = await http.post(uri, body: jsonEncode(params));
     log('Response: ${response.body}');
-
     if (response.statusCode == 200) {
       setState(() {
         resultCompletion = response.body;

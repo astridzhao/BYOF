@@ -131,15 +131,15 @@ class MyfridgePageState extends State<MyfridgePage> {
             child: Column(
               children: [
                 SizedBox(height: 10.v),
-                SectionHeader(title: "Fiber", seeAllText: "See all"),
+                SectionHeader(title: "Fiber"),
                 SizedBox(height: 1.v),
                 _buildFiberList(context),
                 SizedBox(height: 17.v),
-                SectionHeader(title: "Protein", seeAllText: "See all"),
+                SectionHeader(title: "Protein"),
                 SizedBox(height: 1.v),
                 _buildProteinList(context),
                 SizedBox(height: 17.v),
-                SectionHeader(title: "Carbs", seeAllText: "See all"),
+                SectionHeader(title: "Carbs"),
                 SizedBox(height: 1.v),
                 _buildCarbsList(context),
                 SizedBox(height: 17.v),
@@ -320,7 +320,7 @@ class SectionHeader extends StatelessWidget {
   final String title;
   final String seeAllText;
 
-  const SectionHeader({Key? key, required this.title, required this.seeAllText})
+  const SectionHeader({Key? key, required this.title, this.seeAllText = ""})
       : super(key: key);
 
   @override

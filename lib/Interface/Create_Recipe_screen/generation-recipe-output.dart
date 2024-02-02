@@ -2,22 +2,28 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:core';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:astridzhao_s_food_app/widgets/generation_azure/RecipeImageGenerator.dart';
+import 'package:dio/dio.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import 'package:dart_openai/dart_openai.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
+
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:astridzhao_s_food_app/Interface/backup_screens/old-create_screen.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/Interface/provider_SavingsModel.dart';
-import 'package:provider/provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
-import 'package:astridzhao_s_food_app/key/api_key.dart';
-import 'package:dart_openai/dart_openai.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
 
 class GenerationScreen extends StatefulWidget {
   final String resultCompletion;
@@ -43,7 +49,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
   Color disableColor = Colors.grey; //your color
   int index_color = -1;
 
-  // add notifier Model for increasing numbers, used in madeButton
+  // add notifier Model for increasing numbers
   void incrementSavingNums(double co2, double dollar) {
     print("add co2: " + co2.toString());
     print("add dollar: " + dollar.toString());
@@ -120,22 +126,51 @@ class _GenerationScreenState extends State<GenerationScreen> {
     ));
   }
 
+  void saveNetworkImage(String generatedImageUrls) async {
+    String path = generatedImageUrls;
+    await requestGalleryPermission();
+    var response = await Dio()
+        .get(path, options: Options(responseType: ResponseType.bytes));
+
+    final result = await ImageGallerySaver.saveImage(
+      Uint8List.fromList(response.data),
+      quality: 60,
+    );
+
+    print(result);
+
+    Fluttertoast.showToast(
+        msg: "Image is saved",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: appTheme.green_primary,
+        textColor: Colors.white,
+        fontSize: 14.fSize);
+  }
+
+  Future<bool> requestGalleryPermission() async {
+    PermissionStatus status;
+    // Determine whether you're targeting iOS or Android to request appropriate permission
+    if (Platform.isIOS) {
+      status = await Permission.photos.request();
+    } else {
+      // For Android, requesting storage permission
+      status = await Permission.storage.request();
+    }
+    // Check if permission was granted
+    return status.isGranted;
+  }
+
   Future<void> generateImage(String recipeTitle) async {
-    var params = {
-      'title': recipeTitle,
-    };
-    log(params.toString());
-
-    var uri = Uri.https(
-        'http-byof-recipe-gen.azurewebsites.net', '/api/byof_llm_get_image');
-
-    // send request to openAI on Azure
-    var response_fromAzure = await http.post(uri, body: jsonEncode(params));
-    setState(() {
-      generatedImageUrls = response_fromAzure.body;
-      log("image network by openAI: ${response_fromAzure.body}");
-    });
-    // download the image from the URL: set to response
+    RecipeImageGenerator generator = RecipeImageGenerator();
+    try {
+      generatedImageUrls =
+          await generator.generateImage_GenerationScreen(recipeTitle);
+    } catch (e) {
+      // Handle the exception, perhaps by showing an error message to the user.
+      print("Error fetch image: $e");
+    }
   }
 
   PreferredSizeWidget customeAppbar(BuildContext context) {
@@ -155,81 +190,72 @@ class _GenerationScreenState extends State<GenerationScreen> {
         },
       ),
       actions: [
-        TextButton.icon(
-          icon: Icon(Icons.question_mark_rounded),
-          label: Text("Want to see what it looks like?",
-              style: TextStyle(
-                  color: Color.fromARGB(255, 174, 73, 6),
-                  fontFamily: "Outfit",
-                  fontSize: 15.fSize)),
-          onPressed: () async {
-            // alert of generating...
-            showDialog(
-              context: context,
-              barrierDismissible: false, // User must tap button to close dialog
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      // Align(
-                      //   alignment: Alignment.topRight,
-                      //   child: IconButton(
-                      //     icon: Icon(
-                      //       Icons.close,
-                      //       color: Colors.black,
-                      //       size: 25.adaptSize,
-                      //     ),
-                      //     onPressed: () {
-                      //       Navigator.pop(context);
-
-                      //     },
-                      //   ),
-                      // ),
-                      Center(
-                        child: Text(
-                          "Crafting a delightful dish image...",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontFamily: 'Outfit', fontSize: 12.fSize),
+        Tooltip(
+          message: "See what you can expect the dish will looks like.",
+          child: TextButton.icon(
+            icon: Icon(
+              Icons.question_mark_rounded,
+            ),
+            label: Text("Want to see what it looks like?",
+                style: TextStyle(
+                    color: Color.fromARGB(255, 174, 73, 6),
+                    fontFamily: "Outfit",
+                    fontSize: 15.fSize)),
+            onPressed: () async {
+              // alert of generating...
+              showDialog(
+                context: context,
+                barrierDismissible:
+                    false, // User must tap button to close dialog
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Center(
+                          child: Text(
+                            "Crafting a delightful dish image...",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontFamily: 'Outfit', fontSize: 12.fSize),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 20.h,
-                        height: 20.v, // Adjust the height as needed
-                        child: CircularProgressIndicator(),
-                      ),
-                      SizedBox(height: 20.v),
-                      Text("Do not exit.",
-                          style: TextStyle(
-                            fontFamily: 'Outfit',
-                            fontWeight: FontWeight.bold,
-                            wordSpacing: 0,
-                            letterSpacing: 0,
-                            fontSize: 10.fSize,
-                            
-                            color: appTheme.orange_primary,
-                          )),
-                    ],
-                  ),
-                );
-              },
-            );
+                      ],
+                    ),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 20.h,
+                          height: 20.v, // Adjust the height as needed
+                          child: CircularProgressIndicator(),
+                        ),
+                        SizedBox(height: 20.v),
+                        Text("Do not exit.",
+                            style: TextStyle(
+                              fontFamily: 'Outfit',
+                              fontWeight: FontWeight.bold,
+                              wordSpacing: 0,
+                              letterSpacing: 0,
+                              fontSize: 10.fSize,
+                              color: appTheme.orange_primary,
+                            )),
+                      ],
+                    ),
+                  );
+                },
+              );
 
-            await generateImage(widget.recipe.title.toString());
-            Navigator.of(context).pop();
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => popupDialogImage(context),
-            );
-            // log("imageURL" + generatedImageUrls);
-          },
-        ),
+              await generateImage(widget.recipe.title.toString());
+              Navigator.of(context).pop();
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => popupDialogImage(context),
+              );
+             
+            },
+          ),
+        )
       ],
     );
   }
@@ -257,8 +283,9 @@ class _GenerationScreenState extends State<GenerationScreen> {
       ),
       actions: <Widget>[
         new TextButton(
-          //TODO: save image in local album gallery
-          onPressed: () {},
+          onPressed: () {
+            saveNetworkImage(generatedImageUrls);
+          },
           child: Text(
             'Save Image',
             style: TextStyle(color: Colors.black54, fontSize: 14.fSize),
@@ -738,14 +765,10 @@ class _GenerationScreenState extends State<GenerationScreen> {
           setState(() {
             index_color = 1;
           });
-
           final insertedRecipe = await recipesDao
               .into(recipesDao.recipes)
               .insertReturning(widget.recipe);
-
           int currentID = insertedRecipe.id;
-          // log("ID: " + currentID.toString());
-          // log(generatedImageUrls);
           if (generatedImageUrls != "") {
             //save image to local -> generatedImageUrls
             var response = await http.get(Uri.parse(generatedImageUrls));
@@ -755,9 +778,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
             File file = new File(path.join(
                 documentdirectory.path, path.basename(generatedImageUrls)));
             await file.writeAsBytes(response.bodyBytes);
-
-            log("image saving path: " + file.path);
-
             await (recipesDao.update(recipesDao.recipes)..where((tbl) => tbl.id.equals(currentID)))
               ..write(RecipesCompanion(imageURL: drift.Value(path.basename(generatedImageUrls))));
             log("image saving name: " + path.basename(generatedImageUrls));

@@ -134,10 +134,6 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
             ),
           ),
         ),
-        // floatingActionButton: Padding(
-        //   padding: EdgeInsets.fromLTRB(50, 0, 10, 0),
-        //   child: _buildCreateRecipeButton(context),
-        // ),
       ),
     );
   }
@@ -232,9 +228,6 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
               String imageUrl = urls[index] ?? default_image_url;
 
               return RecipecontentrowItemWidget(imagefilePath: imageUrl);
-
-              // log(imageFile.path);
-              // return RecipecontentrowItemWidget(imagefilePath: imageUrl);
             },
           );
         },

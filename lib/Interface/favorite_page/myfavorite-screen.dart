@@ -2,21 +2,26 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:dio/dio.dart';
 import 'dart:math' as math;
-import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
-import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/database/database.dart';
-import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
-import 'package:astridzhao_s_food_app/key/api_key.dart';
-import 'package:astridzhao_s_food_app/Interface/favorite_page/favorite-recipedetail-screen.dart';
-import 'package:dart_openai/dart_openai.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'dart:developer';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
+import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
+import 'package:astridzhao_s_food_app/core/app_export.dart';
+import 'package:astridzhao_s_food_app/database/database.dart';
+import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/favorite-recipedetail-screen.dart';
+import 'package:astridzhao_s_food_app/widgets/generation_azure/RecipeImageGenerator.dart';
 
 class FavoriteRecipePage2 extends StatefulWidget {
   const FavoriteRecipePage2({Key? key}) : super(key: key);
@@ -45,42 +50,21 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
   }
 
   Future<void> generateImage(int i, int id, String recipeTitle) async {
+    RecipeImageGenerator generator = RecipeImageGenerator();
     try {
-      var params = {
-        'title': recipeTitle,
-      };
-      log(params.toString());
-
-      var uri = Uri.https(
-          'http-byof-recipe-gen.azurewebsites.net', '/api/byof_llm_get_image');
-
-      // send request to openAI on Azure
-      var response_fromAzure = await http.post(uri, body: jsonEncode(params));
-      currentUrls_fordisplay = response_fromAzure.body;
-      log("image network by openAI: ${response_fromAzure.body}");
-      // download the image from the URL: set to response
-
-      var response = await http.get(Uri.parse(currentUrls_fordisplay));
-      if (response.statusCode == 200) {
-        Directory documentdirectory = await getApplicationDocumentsDirectory();
-        String imageName = path.basename(currentUrls_fordisplay);
-        print("Image save name: $imageName");
-        File file = new File(path.join(documentdirectory.path, imageName));
-        await file.writeAsBytes(response.bodyBytes);
-        print("Image saved in local directory: ${documentdirectory.path}");
-
-        // store image into local directory
-        await (recipe_dao.update(recipe_dao.recipes)..where((tbl) => tbl.id.equals(id)))
-          ..write(RecipesCompanion(imageURL: drift.Value(imageName)));
-
-        setState(() {
-          generatedImageUrls[i] = imageName;
-        });
-      } else {
-        throw Exception('Failed to load image');
-      }
+      List<String> result =
+          await generator.generateImage_favoriteScreen(i, id, recipeTitle);
+      String imageName = result[0];
+      currentUrls_fordisplay = result[1];
+      // store image into db for future fetch
+      await (recipe_dao.update(recipe_dao.recipes)..where((tbl) => tbl.id.equals(id)))
+        ..write(RecipesCompanion(imageURL: drift.Value(imageName)));
+      setState(() {
+        generatedImageUrls[i] = imageName;
+      });
     } catch (e) {
-      print("Error: $e");
+      // Handle the exception, perhaps by showing an error message to the user.
+      print("Error fetch image: $e");
     }
   }
 
@@ -105,11 +89,12 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
             toolbarHeight: screenHeight * 0.1,
             leadingWidth: MediaQuery.of(context).size.width * 0.2,
             leading: Builder(builder: (BuildContext context) {
-              return CustomImageView(
-                imagePath: ImageConstant.imgLogo2RemovebgPreview,
-                fit: BoxFit.contain,
-                margin: EdgeInsets.only(left: 10.h),
-              );
+              return IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => (HomepageContainerScreen())));
+                  },
+                  icon: Icon(Icons.arrow_back_ios_new));
             }),
           ),
           body: Container(
@@ -233,7 +218,6 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                   else if (direction ==
                                       DismissDirection.startToEnd) {
                                     //generate image feature
-
                                     // send waiting alert
                                     showDialog(
                                       context: context,
@@ -241,18 +225,42 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                           false, // User must tap button to close dialog
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          content: Row(
+                                          title: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            children: <Widget>[
+                                              Center(
+                                                child: Text(
+                                                  "Crafting a delightful dish image...",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontFamily: 'Outfit',
+                                                      fontSize: 12.fSize),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
                                               SizedBox(
-                                                width: 20.adaptSize,
+                                                width: 20.h,
                                                 height: 20
-                                                    .adaptSize, // Adjust the height as needed
+                                                    .v, // Adjust the height as needed
                                                 child:
                                                     CircularProgressIndicator(),
                                               ),
-                                              SizedBox(width: 20.h),
-                                              Text(
-                                                  "Crafting a delightful dish image..."),
+                                              SizedBox(height: 20.v),
+                                              Text("Do not exit.",
+                                                  style: TextStyle(
+                                                    fontFamily: 'Outfit',
+                                                    fontWeight: FontWeight.bold,
+                                                    wordSpacing: 0,
+                                                    letterSpacing: 0,
+                                                    fontSize: 10.fSize,
+                                                    color:
+                                                        appTheme.orange_primary,
+                                                  )),
                                             ],
                                           ),
                                         );
@@ -351,10 +359,6 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                                     if (snapshot
                                                             .connectionState ==
                                                         ConnectionState.done) {
-                                                      //Testing:
-                                                      print(
-                                                          "fetch local image");
-                                                      print(snapshot.data!);
                                                       // Check if the snapshot has data and the file exists
                                                       if (snapshot.hasData &&
                                                           snapshot.data!
@@ -435,12 +439,6 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                             ],
                                           ),
                                         ),
-                                        // Container(
-                                        //   margin: EdgeInsets.symmetric(
-                                        //       horizontal: 20.h),
-                                        //   child: ImageGenerationButton(
-                                        //       context, i, recipe),
-                                        // )
                                       ],
                                     ),
                                   ),
@@ -456,6 +454,8 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
 
   Future<File> getFile(String imageName) async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
+    log("where saved image " + documentDirectory.path);
+    log("saved image name " + imageName);
     return File(path.join(documentDirectory.path, imageName));
   }
 
@@ -516,79 +516,6 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
     );
   }
 
-  Widget ImageGenerationButton(BuildContext context, index, Recipe recipe) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 15.h)),
-      child: Text(
-        "what I can expect?",
-        style: TextStyle(
-            color: appTheme.green_primary,
-            fontFamily: "Outfit",
-            fontSize: 10.fSize),
-      ),
-      // if the user already generated a image once, disable the button
-      onPressed: (generatedImageUrls[index] != null &&
-              generatedImageUrls[index]!.isEmpty)
-          ? () async {
-              showDialog(
-                context: context,
-                barrierDismissible:
-                    false, // User must tap button to close dialog
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Center(
-                          child: Text(
-                            "Crafting a delightful dish image...",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: 'Outfit', fontSize: 12.fSize),
-                          ),
-                        ),
-                      ],
-                    ),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 20.h,
-                          height: 20.v, // Adjust the height as needed
-                          child: CircularProgressIndicator(),
-                        ),
-                        SizedBox(height: 20.v),
-                        Text("Do not exit.",
-                            style: TextStyle(
-                              fontFamily: 'Outfit',
-                              fontWeight: FontWeight.bold,
-                              wordSpacing: 0,
-                              letterSpacing: 0,
-                              fontSize: 10.fSize,
-                              color: appTheme.orange_primary,
-                            )),
-                      ],
-                    ),
-                  );
-                },
-              );
-
-              await generateImage(index, recipe.id, recipe.title.toString());
-
-              // pop alert waiting box
-              Navigator.of(context).pop();
-
-              // show image box
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => popupDialogImage(context),
-              );
-            }
-          : null,
-    );
-  }
-
   Widget popupDialogImage(BuildContext context) {
     return new AlertDialog(
       // title: const Text('Your dish looks like...'),
@@ -601,8 +528,9 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
       ),
       actions: <Widget>[
         new TextButton(
-          //TODO: save to user's gallery
-          onPressed: () {},
+          onPressed: () {
+            saveNetworkImage(currentUrls_fordisplay);
+          },
           child: Text(
             'Save Image',
             style: TextStyle(color: Colors.black54),
@@ -619,5 +547,41 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
         ),
       ],
     );
+  }
+
+  void saveNetworkImage(String generatedImageUrls) async {
+    String path = generatedImageUrls;
+    await requestGalleryPermission();
+    var response = await Dio()
+        .get(path, options: Options(responseType: ResponseType.bytes));
+
+    final result = await ImageGallerySaver.saveImage(
+      Uint8List.fromList(response.data),
+      quality: 60,
+    );
+
+    print(result);
+
+    Fluttertoast.showToast(
+        msg: "Image is saved",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: appTheme.green_primary,
+        textColor: Colors.white,
+        fontSize: 14.fSize);
+  }
+
+  Future<bool> requestGalleryPermission() async {
+    PermissionStatus status;
+    // Determine whether you're targeting iOS or Android to request appropriate permission
+    if (Platform.isIOS) {
+      status = await Permission.photos.request();
+    } else {
+      // For Android, requesting storage permission
+      status = await Permission.storage.request();
+    }
+    // Check if permission was granted
+    return status.isGranted;
   }
 }
