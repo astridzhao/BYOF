@@ -111,8 +111,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
                         indent: 1,
                       ),
                     ),
-                    SizedBox(height: 13.v),
-                    _buildTimerControls(context),
+                    // SizedBox(height: 13.v),
+                    // _buildTimerControls(context),
                     SizedBox(height: 30.v),
                     bottomSettingBar(context),
                     SizedBox(height: 40.v),
@@ -252,7 +252,6 @@ class _GenerationScreenState extends State<GenerationScreen> {
                 context: context,
                 builder: (BuildContext context) => popupDialogImage(context),
               );
-             
             },
           ),
         )
@@ -715,13 +714,36 @@ class _GenerationScreenState extends State<GenerationScreen> {
           },
         ),
         IconButton(
-          icon: Icon(Icons.share),
-          padding: EdgeInsets.only(right: 30.h),
-          tooltip: "Share",
-          onPressed: () {
-            // TODO: Add share functionality here
-          },
-        ),
+            icon: Icon(Icons.share),
+            padding: EdgeInsets.only(right: 30.h),
+            tooltip: "Share",
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text(
+                        "Sorry! This feature is not available yet.",
+                        style:
+                            TextStyle(fontFamily: "Outfit", fontSize: 14.fSize),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            "Close",
+                            style: TextStyle(
+                                fontFamily: "Outfit",
+                                fontSize: 12.fSize,
+                                color: appTheme.black900),
+                          ),
+                        ),
+                      ],
+                    );
+                  });
+            }),
       ],
     );
   }

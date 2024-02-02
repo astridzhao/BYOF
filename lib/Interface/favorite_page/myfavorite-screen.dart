@@ -1,5 +1,3 @@
-/// Still WIP favorite screen.
-import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 import 'dart:typed_data';
@@ -7,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
@@ -66,6 +63,42 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
       // Handle the exception, perhaps by showing an error message to the user.
       print("Error fetch image: $e");
     }
+  }
+
+  void saveNetworkImage(String generatedImageUrls) async {
+    String path = generatedImageUrls;
+    await requestGalleryPermission();
+    var response = await Dio()
+        .get(path, options: Options(responseType: ResponseType.bytes));
+
+    final result = await ImageGallerySaver.saveImage(
+      Uint8List.fromList(response.data),
+      quality: 60,
+    );
+
+    print(result);
+
+    Fluttertoast.showToast(
+        msg: "Image is saved",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: appTheme.green_primary,
+        textColor: Colors.white,
+        fontSize: 14.fSize);
+  }
+
+  Future<bool> requestGalleryPermission() async {
+    PermissionStatus status;
+    // Determine whether you're targeting iOS or Android to request appropriate permission
+    if (Platform.isIOS) {
+      status = await Permission.photos.request();
+    } else {
+      // For Android, requesting storage permission
+      status = await Permission.storage.request();
+    }
+    // Check if permission was granted
+    return status.isGranted;
   }
 
   @override
@@ -547,41 +580,5 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
         ),
       ],
     );
-  }
-
-  void saveNetworkImage(String generatedImageUrls) async {
-    String path = generatedImageUrls;
-    await requestGalleryPermission();
-    var response = await Dio()
-        .get(path, options: Options(responseType: ResponseType.bytes));
-
-    final result = await ImageGallerySaver.saveImage(
-      Uint8List.fromList(response.data),
-      quality: 60,
-    );
-
-    print(result);
-
-    Fluttertoast.showToast(
-        msg: "Image is saved",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: appTheme.green_primary,
-        textColor: Colors.white,
-        fontSize: 14.fSize);
-  }
-
-  Future<bool> requestGalleryPermission() async {
-    PermissionStatus status;
-    // Determine whether you're targeting iOS or Android to request appropriate permission
-    if (Platform.isIOS) {
-      status = await Permission.photos.request();
-    } else {
-      // For Android, requesting storage permission
-      status = await Permission.storage.request();
-    }
-    // Check if permission was granted
-    return status.isGranted;
   }
 }
