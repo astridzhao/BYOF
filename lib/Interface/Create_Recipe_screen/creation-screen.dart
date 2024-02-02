@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-// import 'package:drift/drift.dart' ;
+import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/generation_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/Create_Recipe_screen/RecipeSettingBottomSheet.dart';
+import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/generation-recipe-output.dart';
+import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/RecipeSettingBottomSheet.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
 import 'package:language_picker/language_picker.dart';
 import 'package:language_picker/languages.dart';
@@ -13,12 +13,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Flutter code sample for [AppBar].
-
-// ignore_for_file: must_be_immutable
 class Azure_CreateScreen extends StatefulWidget {
-  // final RecipesCompanion recipe;
-
   Azure_CreateScreen({
     Key? key,
   }) : super(key: key);
@@ -27,8 +22,6 @@ class Azure_CreateScreen extends StatefulWidget {
 }
 
 class update_CreateScreenState extends State<Azure_CreateScreen> {
-  // Create a GlobalKey
-  // final GlobalKey<_CustomDropDownState> dropDownKey = GlobalKey<_CustomDropDownState>();
   String resultCompletion = "";
   late TextEditingController atomInputContainerController;
   final _controller = TextEditingController();
@@ -272,8 +265,6 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
     } else if (screenWidth <= 480) {
       // Decrease the aspect ratio as the screen gets wider
       crossAxisSpacing = 10;
-
-      /// You may need to adjust this value
     } else {
       // Decrease the aspect ratio as the screen gets wider
       crossAxisSpacing = 5; // You may need to adjust this value
@@ -284,10 +275,9 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
           child: Scaffold(
         backgroundColor: appTheme.yellow_secondary,
         resizeToAvoidBottomInset: false,
-        // appBar: MyAppBar(),
-        appBar: AppBar(
+        appBar: CustomAppBar(
+          toolbarHeight: MediaQuery.of(context).size.height * 0.1,
           leadingWidth: MediaQuery.of(context).size.width * 0.2,
-          elevation: 0,
           backgroundColor: appTheme.yellow_secondary,
           leading: Builder(builder: (BuildContext context) {
             return CustomImageView(
@@ -296,30 +286,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
               margin: EdgeInsets.only(left: 10.h),
             );
           }),
-          toolbarHeight: 100.v,
-          //Testing:for UX
-          // title: Text(
-          //   'BRING YOUR OWN FRIDGE',
-          //   // style: TextStyle(fontSize: 16.fSize, fontFamily: "Outfit"),
-          // ),
-
-          // // backgroundColor: Color(0xFF5A7756),
-          // titleTextStyle: TextStyle(
-          //     color: Color.fromARGB(190, 0, 0, 0),
-          //     fontSize: 17.adaptSize,
-          //     fontWeight: FontWeight.bold,
-          //     fontFamily: "Outfit"),
           actions: <Widget>[
-            //Testing:for UX
-            // IconButton(
-            //   icon: const Icon(Icons.more_horiz),
-            //   color: Colors.blueGrey,
-            //   splashColor: appTheme.orange_primary,
-            //   tooltip: 'More Recipe Settings',
-            //   onPressed: () {
-            //     _buildRecipeSetting(context);
-            //   },
-            // ),
             TextButton(
               child: Text(
                 "Generate",
@@ -350,7 +317,6 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                     );
                   },
                 );
-
                 await sendPrompt();
                 // Close the dialog
                 Navigator.of(context).pop();
@@ -635,12 +601,10 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
               fontFamily: "Outfit",
               fontSize: 14.fSize,
             ),
-            // errorText: "Cannot be Empty"
           ),
           style: TextStyle(
             fontSize: 16.fSize, // Font size for the input text
             fontFamily: "Outfit",
-            // You can add other styling properties here if needed
           ),
         ),
         SizedBox(height: 20.h),
@@ -690,14 +654,6 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
     );
   }
 
-  // void addIngredientItem(List<String> currentIngredientList) async {
-  // String? newIngredient = await _showAddIngredientDialog(context);
-  // if (newIngredient != null && newIngredient.isNotEmpty) {
-  //   setState(() {
-  //     currentIngredientList.add(newIngredient);
-  //   });
-  // }
-  // }
   void addIngredientItem(String listName, List<String> ingredientList) {
     // Prompt the user to enter a new ingredient
     showDialog(
@@ -779,9 +735,6 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                     },
                     child: Icon(Icons.add),
                     backgroundColor: appTheme.yellow_primary,
-                    // shape: RoundedRectangleBorder(
-                    //     borderRadius:
-                    //         BorderRadius.all(Radius.circular(10)))
                   )));
         } else {
           String data = ingredients_protein[index];
@@ -1011,9 +964,6 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                     },
                     child: Icon(Icons.add),
                     backgroundColor: appTheme.yellow_primary,
-                    // shape: RoundedRectangleBorder(
-                    //     borderRadius:
-                    //         BorderRadius.all(Radius.circular(10)))
                   )));
         } else {
           String data = ingredients_others[index];
@@ -1061,43 +1011,6 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
     );
   }
 
-  void _buildRecipeSetting(BuildContext context) async {
-    final result = await showModalBottomSheet<Map<String, String>>(
-      context: context,
-      builder: (BuildContext bc) {
-        return RecipeSettingBottomSheet(
-          initialSelections: {
-            'cuisine': selectedCuisine,
-            'cookingMethod': selectedCookingMethod,
-            'dishType': selectedDishType,
-            'dietaryRestriction': selectedDietaryRestriction,
-            'servingsize': selectedServingSize,
-          },
-          onSelectionChanged: (selections) {
-            setState(() {
-              selectedCuisine = selections['cuisine'] ?? '';
-              selectedCookingMethod = selections['cookingMethod'] ?? '';
-              selectedDishType = selections['dishType'] ?? '';
-              selectedDietaryRestriction =
-                  selections['dietaryRestriction'] ?? '';
-              selectedServingSize = selections['servingsize'] ?? '';
-            });
-          },
-        );
-      },
-    );
-
-    if (result != null) {
-      setState(() {
-        selectedCuisine = result['cuisine'] ?? '';
-        selectedCookingMethod = result['cookingMethod'] ?? '';
-        selectedDishType = result['dishType'] ?? '';
-        selectedDietaryRestriction = result['dietaryRestriction'] ?? '';
-        selectedServingSize = result['dietaryRestriction'] ?? '';
-      });
-    }
-  }
-
   sendPrompt() async {
     var params = {
       'language': selectedLangauge,
@@ -1123,53 +1036,4 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
       log("Error: ${response.statusCode}");
     }
   }
-}
-
-Future<String?> _showAddIngredientDialog(BuildContext context) async {
-  String? ingredientName;
-
-  return showDialog<String>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(
-          'Add Ingredient',
-          style: TextStyle(fontSize: 14.fSize, fontFamily: "Outfit"),
-        ),
-        content: TextField(
-          autofocus: true,
-          onChanged: (value) {
-            ingredientName = value;
-          },
-          decoration: InputDecoration(hintText: "Enter ingredient name"),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              'Cancel',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 13.fSize,
-                  fontFamily: "Outfit"),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: Text(
-              'Add',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 13.fSize,
-                  fontFamily: "Outfit"),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop(ingredientName);
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

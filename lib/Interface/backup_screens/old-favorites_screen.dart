@@ -10,7 +10,7 @@ import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/key/api_key.dart';
-import 'package:astridzhao_s_food_app/Interface/favorite_page/generate_favorite.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/favorite-recipedetail-screen.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';

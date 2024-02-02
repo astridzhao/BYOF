@@ -6,11 +6,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   CustomAppBar({
     Key? key,
     this.height,
+    this.toolbarHeight,
     this.leadingWidth,
     this.leading,
     this.title,
+    this.elevation,
     this.centerTitle,
     this.actions,
+    this.backgroundColor,
   }) : super(
           key: key,
         );
@@ -18,6 +21,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double? height;
 
   final double? leadingWidth;
+
+  final double? toolbarHeight;
+
+  final double? elevation;
 
   final Widget? leading;
 
@@ -27,16 +34,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   final List<Widget>? actions;
 
+  final Color? backgroundColor;
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return AppBar(
       elevation: 0,
-      toolbarHeight: screenHeight * 0.1,
+      toolbarHeight: screenHeight * 0.2,
       automaticallyImplyLeading: false,
-      backgroundColor: Colors.transparent,
-      leadingWidth: screenWidth * 0.23,
+      backgroundColor: backgroundColor,
+      leadingWidth: screenWidth * 0.2,
       leading: leading,
       title: title,
       titleSpacing: 0,
@@ -48,6 +57,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size(
         SizeUtils.width,
-        height ?? 56.v,
+        height ?? SizeUtils.height * 0.1,
       );
 }

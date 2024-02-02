@@ -1,25 +1,23 @@
-import 'dart:io';
+import 'dart:async';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
-import 'package:astridzhao_s_food_app/Interface/backup_screens/favorites_screen.dart';
+import '../homepage_page/widgets/recipecontentrow_item_widget.dart';
+import 'package:astridzhao_s_food_app/Interface/backup_screens/old-favorites_screen.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
-import 'package:astridzhao_s_food_app/Interface/provider.dart';
-import 'package:provider/provider.dart';
-import '../homepage_screen/homepage_page/widgets/recipecontentrow_item_widget.dart';
-import '../homepage_screen/homepage_page/widgets/saving_summery_widget.dart';
+import 'package:astridzhao_s_food_app/Interface/provider_SavingsModel.dart';
+import 'widgets/saving_summery_widget.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
-import 'package:astridzhao_s_food_app/Interface/favorite_page/update_favorite_screen_2.dart';
-import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/myfavorite-screen.dart';
 
-class HomepagePage extends StatefulWidget {
-  HomepagePage({Key? key})
+class NoAccount_HomepagePage extends StatefulWidget {
+  NoAccount_HomepagePage({Key? key})
       : super(
           key: key,
         );
-  HomepagePageState createState() => HomepagePageState();
+  NoAccount_HomepagePageState createState() => NoAccount_HomepagePageState();
 }
 
 class Savings {
@@ -28,7 +26,7 @@ class Savings {
   Savings(this.co2, this.dollar);
 }
 
-class HomepagePageState extends State<HomepagePage> {
+class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
   //call database
   final recipe_dao = RecipesDao(DatabaseService().database);
   double savingCo2 = 0;
@@ -154,42 +152,26 @@ class HomepagePageState extends State<HomepagePage> {
       preferredSize: Size.fromHeight(screenHeight * 0.1),
       child: // Space above AppBar, adjust the height as needed
           CustomAppBar(
-        leading: CircleAvatar(
-          // Adjust the radius as needed
-          backgroundColor: Colors.transparent,
-          child: CustomImageView(
-            imagePath: ImageConstant.imgAvatar,
-            height: 100.adaptSize,
-            width: 100.adaptSize,
-            margin: EdgeInsets.all(0.03 * screenWidth),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        title: Text(
+          'Bring Your Own Fridge',
+          style: TextStyle(
+              color: Color.fromARGB(190, 0, 0, 0),
+              fontSize: 16.fSize,
+              fontWeight: FontWeight.w400,
+              fontFamily: "Outfit"),
+        ),
+        toolbarHeight: screenHeight * 0.1,
+        leadingWidth: MediaQuery.of(context).size.width * 0.2,
+        leading: Builder(builder: (BuildContext context) {
+          return CustomImageView(
+            imagePath: ImageConstant.imgLogo2RemovebgPreview,
             fit: BoxFit.contain,
-          ),
-        ),
-        title: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: 0.02 * screenWidth, vertical: 0.1 * screenHeight),
-          child: Column(
-            children: [
-              AppbarTitle(
-                text: "Novice Cook",
-                textStyle: TextStyle(
-                  fontSize: 15.fSize,
-                  fontWeight: FontWeight.normal,
-                  color: appTheme.gray60002,
-                ),
-              ),
-              SizedBox(height: 3.v),
-              AppbarTitle(
-                text: "Astrid Zhao",
-                textStyle: TextStyle(
-                  fontSize: 20.fSize,
-                  fontWeight: FontWeight.w500,
-                  color: appTheme.gray60002,
-                ),
-              ),
-            ],
-          ),
-        ),
+            margin: EdgeInsets.only(left: 10.h),
+          );
+        }),
       ),
     );
   }
@@ -248,7 +230,7 @@ class HomepagePageState extends State<HomepagePage> {
             itemBuilder: (context, index) {
               // Use the URL if it's not null, otherwise use the default image URL
               String imageUrl = urls[index] ?? default_image_url;
-              File imageFile = File(imageUrl);
+
               return RecipecontentrowItemWidget(imagefilePath: imageUrl);
 
               // log(imageFile.path);

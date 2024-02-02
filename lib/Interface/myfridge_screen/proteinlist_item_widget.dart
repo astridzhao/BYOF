@@ -1,14 +1,21 @@
+import 'dart:developer';
+
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ProteinlistItemWidget extends StatefulWidget {
   final ingredient;
+  final int quantity;
   final VoidCallback onDelete;
+  final Function(String, int) onQuantityChanged;
 
   const ProteinlistItemWidget({
     Key? key,
+    this.quantity = 0,
     required this.ingredient,
     required this.onDelete,
+    required this.onQuantityChanged,
   }) : super(key: key);
 
   @override
@@ -17,12 +24,27 @@ class ProteinlistItemWidget extends StatefulWidget {
 
 class _ProteinlistItemWidgetState extends State<ProteinlistItemWidget> {
   // Any state variables you need go here
-  TextEditingController foodcontroller = TextEditingController();
-  TextEditingController countcontroller = TextEditingController();
+  late TextEditingController foodcontroller;
+  late TextEditingController countcontroller;
+
+  @override
+  void initState() {
+    super.initState();
+    foodcontroller = TextEditingController();
+    countcontroller = TextEditingController(text: widget.quantity.toString());
+  }
+
+  @override
+  void dispose() {
+    countcontroller.dispose();
+    foodcontroller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50.h,
+      height: MediaQuery.of(context).size.height * 0.07,
       padding: EdgeInsets.all(1.h),
       decoration: AppDecoration.fillDeepOrange.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder10,
@@ -31,37 +53,38 @@ class _ProteinlistItemWidgetState extends State<ProteinlistItemWidget> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(width: 20),
+          SizedBox(width: 20.h),
           Expanded(
             child: Text(
               widget.ingredient,
               style: TextStyle(fontSize: 14.fSize, fontFamily: "Outfit"),
             ),
           ),
-          // Expanded(
-          //   child: Text(
-          //     "Quatity",
-          //     style: TextStyle(fontSize: 10.fSize ,fontFamily: "Outfit"),
-          //   ),
-          // ),
           Text(
             "Quatity",
             style: TextStyle(fontSize: 10.fSize, fontFamily: "Outfit"),
           ),
-          SizedBox(width: 10),
+          SizedBox(width: 10.h),
           Expanded(
-            child: TextField(
-              controller: countcontroller,
-              decoration: InputDecoration(
-                isDense: true, // Important to reduce space
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 2.v, horizontal: 1.h),
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.numbers),
-              ),
-              style: TextStyle(fontSize: 14.fSize),
-            ),
-          ),
+              child: TextField(
+                  controller: countcontroller,
+                  decoration: InputDecoration(
+                    isDense: true, // Important to reduce space
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 5.v, horizontal: 1.h),
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.numbers),
+                  ),
+                  style: TextStyle(fontSize: 14.fSize),
+                  keyboardType: TextInputType.number, // Ensure numeric keyboard
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly, // Allow only digits
+                  ],
+                  onChanged: (value) {
+                    int newQuantity = int.tryParse(value) ?? 0;
+                    widget.onQuantityChanged(
+                        widget.ingredient, newQuantity); // Invoke the callback
+                  })),
           Expanded(
               child: IconButton(
             icon: Icon(Icons.delete_sharp),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 import 'dart:math' as math;
+import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -11,7 +12,7 @@ import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/key/api_key.dart';
-import 'package:astridzhao_s_food_app/Interface/favorite_page/generate_favorite.dart';
+import 'package:astridzhao_s_food_app/Interface/favorite_page/favorite-recipedetail-screen.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
@@ -90,15 +91,26 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
 
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(
+          appBar: CustomAppBar(
             elevation: 0,
-            title: Text('My Favorites'),
+            centerTitle: true,
+            title: Text(
+              'My Favorites',
+              style: TextStyle(
+                  color: Color.fromARGB(190, 0, 0, 0),
+                  fontSize: 18.fSize,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "Outfit"),
+            ),
             toolbarHeight: screenHeight * 0.1,
-            titleTextStyle: TextStyle(
-                color: Color.fromARGB(190, 0, 0, 0),
-                fontSize: 18.fSize,
-                fontWeight: FontWeight.bold,
-                fontFamily: "Outfit"),
+            leadingWidth: MediaQuery.of(context).size.width * 0.2,
+            leading: Builder(builder: (BuildContext context) {
+              return CustomImageView(
+                imagePath: ImageConstant.imgLogo2RemovebgPreview,
+                fit: BoxFit.contain,
+                margin: EdgeInsets.only(left: 10.h),
+              );
+            }),
           ),
           body: Container(
             decoration: BoxDecoration(
@@ -528,20 +540,6 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        // Align(
-                        //   alignment: Alignment.topRight,
-                        //   child: IconButton(
-                        //     icon: Icon(
-                        //       Icons.close,
-                        //       color: Colors.black,
-                        //       size: 25.adaptSize,
-                        //     ),
-                        //     onPressed: () {
-                        //       Navigator.pop(context);
-
-                        //     },
-                        //   ),
-                        // ),
                         Center(
                           child: Text(
                             "Crafting a delightful dish image...",
