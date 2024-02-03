@@ -707,7 +707,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           icon: Icon(copyIcon),
           tooltip: "Copy",
           onPressed: () {
-            FlutterClipboard.copy(widget.resultCompletion);
+            FlutterClipboard.copy(recipeCompanionToCopyableMarkdown(widget.recipe));
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Copied")),
             );
