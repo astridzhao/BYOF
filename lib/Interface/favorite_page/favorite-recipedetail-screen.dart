@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:core';
 import 'dart:io';
+import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
@@ -85,8 +86,8 @@ class _GenerationScreenState extends State<GenerationScreen_favorite> {
                       indent: 1,
                     ),
                   ),
-                  SizedBox(height: 13),
-                  _buildTimerControls(context),
+                  // SizedBox(height: 13),
+                  // _buildTimerControls(context),
                   SizedBox(height: 30),
                   bottomSettingBar(context),
                   SizedBox(height: 40),
@@ -563,10 +564,10 @@ class _GenerationScreenState extends State<GenerationScreen_favorite> {
           icon: Icon(copyIcon),
           tooltip: "Copy",
           onPressed: () {
-            FlutterClipboard.copy(widget.recipe.toString());
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Copied")),
-            );
+            FlutterClipboard.copy(recipeToCopyableMarkdown(widget.recipe));
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(content: Text("Copied")),
+            // );
           },
         ),
         IconButton(

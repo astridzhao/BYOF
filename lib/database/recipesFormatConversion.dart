@@ -52,3 +52,23 @@ RecipesCompanion RecipeFromLLMJson(String llmResult) {
     savingSummary_money: decoded['Saving Money'] as double,
   );
 }
+
+String recipeToCopyableMarkdown(Recipe recipe) {
+  final title = "# ${recipe.title}";
+  final cookTime = "**Estimated cook time:** ${recipe.cookTime} min.";
+  final ingredients = "## Ingredients\n${recipe.ingredients.map((s) => "- ${s}").join("\n")}";
+  final instructions = "## Ingredients\n${recipe.instructions.join("\n")}";
+  final notes = "## Notes\n${recipe.notes}";
+
+  return [title, cookTime, ingredients, instructions, notes].join("\n\n");
+}
+
+String recipeCompanionToCopyableMarkdown(RecipesCompanion recipe) {
+  final title = "# ${recipe.title.value}";
+  final cookTime = "**Estimated cook time:** ${recipe.cookTime.value} min.";
+  final ingredients = "## Ingredients\n${recipe.ingredients.value.map((s) => "- ${s}").join("\n")}";
+  final instructions = "## Ingredients\n${recipe.instructions.value.join("\n")}";
+  final notes = "## Notes\n${recipe.notes.value}";
+
+  return [title, cookTime, ingredients, instructions, notes].join("\n\n");
+}

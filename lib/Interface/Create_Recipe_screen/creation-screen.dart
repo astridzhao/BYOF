@@ -308,9 +308,9 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                     msg: "Please select at least one ingredient",
                     fontSize: 14.fSize,
                     toastLength: Toast.LENGTH_LONG,
-                    gravity: ToastGravity.CENTER,
+                    gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 1,
-                    backgroundColor: appTheme.yellow_secondary,
+                    backgroundColor: appTheme.orange_primary,
                     textColor: Colors.black45,
                   );
                 } else {
