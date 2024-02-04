@@ -571,13 +571,36 @@ class _GenerationScreenState extends State<GenerationScreen_favorite> {
           },
         ),
         IconButton(
-          icon: Icon(Icons.share),
-          padding: EdgeInsets.only(right: 30),
-          tooltip: "Share",
-          onPressed: () {
-            // TODO: Add share functionality here
-          },
-        ),
+            icon: Icon(Icons.share),
+            padding: EdgeInsets.only(right: 30),
+            tooltip: "Share",
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text(
+                        "Sorry! This feature is not available yet.",
+                        style:
+                            TextStyle(fontFamily: "Outfit", fontSize: 14.fSize),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            "Close",
+                            style: TextStyle(
+                                fontFamily: "Outfit",
+                                fontSize: 12.fSize,
+                                color: appTheme.black900),
+                          ),
+                        ),
+                      ],
+                    );
+                  });
+            }),
       ],
     );
   }
