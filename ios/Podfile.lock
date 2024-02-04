@@ -25,14 +25,14 @@ PODS:
   - sqflite (0.0.3):
     - Flutter
     - FMDB (>= 2.7.5)
-  - sqlite3 (3.45.0):
-    - sqlite3/common (= 3.45.0)
-  - sqlite3/common (3.45.0)
-  - sqlite3/fts5 (3.45.0):
+  - sqlite3 (3.45.1):
+    - sqlite3/common (= 3.45.1)
+  - sqlite3/common (3.45.1)
+  - sqlite3/fts5 (3.45.1):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.45.0):
+  - sqlite3/perf-threadsafe (3.45.1):
     - sqlite3/common
-  - sqlite3/rtree (3.45.0):
+  - sqlite3/rtree (3.45.1):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
@@ -97,10 +97,10 @@ SPEC CHECKSUMS:
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
-  sqlite3: f307b6291c4db7b5086c38d6237446b98a738581
+  sqlite3: 73b7fc691fdc43277614250e04d183740cb15078
   sqlite3_flutter_libs: aeb4d37509853dfa79d9b59386a2dac5dd079428
   Toast: ec33c32b8688982cecc6348adeae667c1b9938da
 
-PODFILE CHECKSUM: 7be2f5f74864d463a8ad433546ed1de7e0f29aef
+PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
 COCOAPODS: 1.15.0
