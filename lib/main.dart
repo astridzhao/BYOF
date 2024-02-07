@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 var globalMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
+  await Future.delayed(Duration(seconds: 3));
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setPreferredOrientations([
