@@ -16,7 +16,7 @@ class Splash extends State<LoadingScreen> {
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (_) => HomepageContainerScreen()));
     });
