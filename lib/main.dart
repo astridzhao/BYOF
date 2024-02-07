@@ -46,9 +46,9 @@ class _MyAppState extends State<MyApp> {
           theme: theme,
           title: 'astridzhao_s_food_app',
           debugShowCheckedModeBanner: false,
-          // initialRoute: AppRoutes.homepageContainerScreen,
+          initialRoute: AppRoutes.homepageContainerScreen,
           routes: AppRoutes.routes,
-          home: LoadingScreen(),
+          home: HomepageContainerScreen(),
         );
       },
     );
