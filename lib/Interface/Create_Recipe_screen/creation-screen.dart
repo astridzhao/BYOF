@@ -837,7 +837,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
           return GestureDetector(
               onLongPress: () {
                 setState(() {
-                  ingredients_protein.removeAt(index);
+                  ingredients_vege.removeAt(index);
                 });
                 saveIngredients('ingredients_protein',
                     ingredients_protein); // Save the updated list to shared preferences
@@ -909,7 +909,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
           return GestureDetector(
               onLongPress: () {
                 setState(() {
-                  ingredients_protein.removeAt(index);
+                  ingredients_carb.removeAt(index);
                 });
                 saveIngredients('ingredients_protein',
                     ingredients_protein); // Save the updated list to shared preferences
@@ -985,7 +985,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
           return GestureDetector(
               onLongPress: () {
                 setState(() {
-                  ingredients_protein.removeAt(index);
+                  ingredients_others.removeAt(index);
                 });
                 saveIngredients('ingredients_protein',
                     ingredients_protein); // Save the updated list to shared preferences
