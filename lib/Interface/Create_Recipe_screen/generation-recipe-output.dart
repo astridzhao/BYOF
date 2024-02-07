@@ -142,7 +142,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
     Fluttertoast.showToast(
         msg: "Image is saved",
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
+        gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
         backgroundColor: appTheme.green_primary,
         textColor: Colors.white,

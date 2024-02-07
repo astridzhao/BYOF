@@ -308,10 +308,10 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                     msg: "Please select at least one ingredient",
                     fontSize: 14.fSize,
                     toastLength: Toast.LENGTH_LONG,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 2,
                     backgroundColor: appTheme.orange_primary,
-                    textColor: Colors.black45,
+                    textColor: const Color.fromARGB(211, 0, 0, 0),
                   );
                 } else {
                   // Show the dialog
@@ -712,9 +712,12 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                 // Add the new ingredient to the list
                 setState(() {
                   ingredientList.add(_controller.text);
+                  _controller.clear();
                 });
 
                 saveIngredients(listName, ingredientList);
+                // Clear the text in the controller when dialog is dismissed
+                _controller.clear();
                 Navigator.of(context).pop();
               },
             ),

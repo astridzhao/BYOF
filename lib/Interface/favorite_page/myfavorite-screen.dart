@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:astridzhao_s_food_app/widgets/slideDirection.dart';
 import 'package:dio/dio.dart';
 import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
@@ -81,7 +82,7 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
     Fluttertoast.showToast(
         msg: "Image is saved",
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
+        gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
         backgroundColor: appTheme.green_primary,
         textColor: Colors.white,
@@ -124,8 +125,8 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
             leading: Builder(builder: (BuildContext context) {
               return IconButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => (HomepageContainerScreen())));
+                    Navigator.of(context)
+                        .push(CustomPageRoute(page: HomepageContainerScreen()));
                   },
                   icon: Icon(Icons.arrow_back_ios_new));
             }),
