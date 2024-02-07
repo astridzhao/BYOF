@@ -21,6 +21,8 @@ class ImageConstant {
   static String imgLogo2RemovebgPreview =
       '$imagePath/img_logo2_removebg_preview.png';
 
+  static String welcomePage = '$imagePath/welcome_splash.png';
+
   static String imgGoogle1 = '$imagePath/img_google_1.png';
 
   static String imgApplelogo1 = '$imagePath/img_applelogo_1.png';
