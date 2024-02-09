@@ -1,35 +1,78 @@
 part of 'authentication_bloc.dart';
 
-//responsible for the authentication process's different states
-//direct to homepage/onboarding screen
-
 abstract class AuthenticationState {
-  const AuthenticationState();
-
-  List<Object> get props => [];
+  @override
+  List<Object?> get props => [];
 }
 
 class AuthenticationInitialState extends AuthenticationState {}
 
-// authentication process is in progress
-// show loading screen
-class AuthenticationLoadingState extends AuthenticationState {
+// Loading States
+class SignUpLoadingState extends AuthenticationState {
   final bool isLoading;
-  AuthenticationLoadingState({required this.isLoading});
+  SignUpLoadingState({required this.isLoading});
 }
 
-//authentication process has been completed
+class SignInLoadingState extends AuthenticationState {
+  final bool isLoading;
+  SignInLoadingState({required this.isLoading});
+}
+
+class SignOutLoadingState extends AuthenticationState {
+  final bool isLoading;
+  SignOutLoadingState({required this.isLoading});
+}
+
+// Success States
 class AuthenticationSuccessState extends AuthenticationState {
-  // Replace 'path_to_user_model.dart' with the actual path to the UserModel class.
   final UserModel user;
-  const AuthenticationSuccessState(this.user);
+  AuthenticationSuccessState(this.user);
+
   @override
-  List<Object> get props => [user];
+  List<Object?> get props => [user];
 }
 
-class AuthenticationFailureState extends AuthenticationState {
-  final String errorMessage;
-  const AuthenticationFailureState(this.errorMessage);
+class SignUpSuccessState extends AuthenticationState {
+  final UserModel user;
+  SignUpSuccessState(this.user);
+
   @override
-  List<Object> get props => [errorMessage];
+  List<Object?> get props => [user];
+}
+
+class SignInSuccessState extends AuthenticationState {
+  final UserModel user;
+  SignInSuccessState(this.user);
+
+  @override
+  List<Object?> get props => [user];
+}
+
+class SignOutSuccessState extends AuthenticationState {}
+
+// Failure States
+
+
+class SignUpFailureState extends AuthenticationState {
+  final String errorMessage;
+  SignUpFailureState(this.errorMessage);
+
+  @override
+  List<Object?> get props => [errorMessage];
+}
+
+class SignInFailureState extends AuthenticationState {
+  final String errorMessage;
+  SignInFailureState(this.errorMessage);
+
+  @override
+  List<Object?> get props => [errorMessage];
+}
+
+class SignOutFailureState extends AuthenticationState {
+  final String errorMessage;
+  SignOutFailureState(this.errorMessage);
+
+  @override
+  List<Object?> get props => [errorMessage];
 }

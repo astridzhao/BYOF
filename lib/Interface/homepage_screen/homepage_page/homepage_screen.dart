@@ -652,9 +652,9 @@ class HomePagetate extends State<HomePage> {
         actions: [
           BlocConsumer<AuthenticationBloc, AuthenticationState>(
             listener: (context, state) {
-              if (state is AuthenticationLoadingState) {
+              if (state is SignOutLoadingState) {
                 const CircularProgressIndicator();
-              } else if (state is AuthenticationFailureState) {
+              } else if (state is SignOutFailureState) {
                 showDialog(
                     context: context,
                     builder: (context) {

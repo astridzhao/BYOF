@@ -1,10 +1,13 @@
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
+import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/forget_password_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_options_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_up_screen.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_signin_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignInTwoScreen extends StatefulWidget {
   SignInTwoScreen({Key? key})
@@ -151,31 +154,104 @@ class SignInTwoScreenState extends State<SignInTwoScreen> {
                   builder: (context) => ForgetPasswordScreen())),
             ),
             SizedBox(height: screenHeight * 0.02),
-            SizedBox(
-              height: screenHeight * 0.05, //height of button
-              width: screenWidth * 0.5, //width of button
-              child: ElevatedButton(
-                  child: const Text(
-                    "Sign in",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15.0,
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w500,
+            // SizedBox(
+            //   height: screenHeight * 0.05, //height of button
+            //   width: screenWidth * 0.5, //width of button
+            //   child: ElevatedButton(
+            //       child: const Text(
+            //         "Sign in",
+            //         style: TextStyle(
+            //           color: Colors.white,
+            //           fontSize: 15.0,
+            //           fontFamily: 'Outfit',
+            //           fontWeight: FontWeight.w500,
+            //         ),
+            //       ),
+            //       style: ElevatedButton.styleFrom(
+            //         elevation: 3,
+            //         backgroundColor: appTheme.green_primary,
+            //         foregroundColor: Colors.white,
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(8),
+            //         ),
+            //       ),
+            //       onPressed: () async {
+            //         FocusScope.of(context).unfocus();
+            //         BlocProvider.of<AuthenticationBloc>(context).add(SignInUser(
+            //           emailController.text.trim(),
+            //           passwordController.text.trim(),
+            //         ));
+
+            //       }),
+            // ),
+            BlocConsumer<AuthenticationBloc, AuthenticationState>(
+              listener: (context, state) {
+                if (state is SignInSuccessState) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    HomepageContainerScreen.id,
+                    (route) => false,
+                  );
+                } else if (state is SignInFailureState) {
+                  print("error: " + state.errorMessage);
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Authentication Error'),
+                          // Display the error message from the state
+                          content: Text(state.errorMessage),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pop(); // Dismiss the dialog
+                              },
+                              child: const Text(
+                                  'OK'), // 'const' is fine here since the text doesn't change
+                            ),
+                          ],
+                        );
+                      });
+                }
+              },
+              builder: (context, state) {
+                if (state is SignInLoadingState && state.isLoading) {
+                  // Optionally show a loading indicator while the sign-in is in progress
+                  return CircularProgressIndicator();
+                }
+
+                return SizedBox(
+                  height: screenHeight * 0.05,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 3,
+                      backgroundColor: appTheme.green_primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: () {
+                      BlocProvider.of<AuthenticationBloc>(context).add(
+                        SignInUser(
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Sign in',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Outfit',
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 3,
-                    backgroundColor: appTheme.green_primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onPressed: () async {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => HomepageContainerScreen()));
-                  }),
+                );
+              },
             ),
           ],
         ),

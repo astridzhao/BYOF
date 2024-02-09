@@ -40,31 +40,12 @@ class SignUpScreenState extends State<SignUpScreen> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: _buildAppBar(context),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildEmailCreationSection(context),
           ],
         ),
-      ),
-    );
-  }
-
-  /// Section Widget
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.keyboard_backspace),
-        color: Colors.black54,
-        iconSize: 20.0,
-        splashColor: appTheme.orange_primary,
-        onPressed: () {
-          Navigator.of(context)
-              .pop(MaterialPageRoute(builder: (context) => SignInTwoScreen()));
-        },
       ),
     );
   }
@@ -148,19 +129,28 @@ class SignUpScreenState extends State<SignUpScreen> {
             SizedBox(height: screenHeight * 0.03),
             BlocConsumer<AuthenticationBloc, AuthenticationState>(
               listener: (context, state) {
-                if (state is AuthenticationSuccessState) {
+                if (state is SignUpSuccessState) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     HomepageContainerScreen.id,
                     (route) => false,
                   );
-                } else if (state is AuthenticationFailureState) {
+                } else if (state is SignUpFailureState) {
                   showDialog(
                       context: context,
                       builder: (context) {
-                        return const AlertDialog(
-                          content:
-                              Text('Please enter a valid email and password.'),
+                        return AlertDialog(
+                          content: Text(state.errorMessage,
+                              style: theme.textTheme.bodyMedium),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pop(); // Dismiss the dialog
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ], // 'const' is fine here since the text doesn't change
                         );
                       });
                 }
@@ -179,9 +169,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                       );
                     },
                     child: Text(
-                      state is AuthenticationLoadingState
-                          ? '.......'
-                          : 'Sign up',
+                      'Sign up',
                       style: TextStyle(
                         fontSize: 16,
                         fontFamily: 'Outfit',

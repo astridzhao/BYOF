@@ -1,4 +1,5 @@
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
+import 'package:astridzhao_s_food_app/Interface/loading_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/authentication_page.dart';
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:flutter/material.dart';
@@ -54,8 +55,6 @@ class MyApp extends StatelessWidget {
             theme: theme,
             title: 'astridzhao_s_food_app',
             debugShowCheckedModeBanner: false,
-            // initialRoute: AppRoutes.appNavigationScreen,
-            routes: AppRoutes.routes,
             onGenerateRoute: (settings) {
               if (settings.name == HomepageContainerScreen.id) {
                 return MaterialPageRoute(

@@ -24,7 +24,40 @@ class AuthService {
         );
       }
     } on FirebaseAuthException catch (e) {
-      print(e.toString());
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for this email.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<UserModel?> signInUser(
+    String email,
+    String password,
+  ) async {
+    try {
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password.trim(),
+      );
+      final User? firebaseUser = userCredential.user;
+      if (firebaseUser != null) {
+        return UserModel(
+          id: firebaseUser.uid,
+          email: firebaseUser.email ?? '',
+          displayName: firebaseUser.displayName ?? '',
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
     }
   }
 
