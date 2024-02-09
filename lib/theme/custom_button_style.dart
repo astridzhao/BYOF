@@ -16,8 +16,25 @@ class CustomButtonStyles {
           borderRadius: BorderRadius.circular(8.h),
         ),
       );
+  static ButtonStyle get fillGreen => ElevatedButton.styleFrom(
+        backgroundColor: appTheme.gray700,
+        foregroundColor: Colors.white,
+        elevation: 3,
+        textStyle: TextStyle(
+          fontFamily: 'Outfit',
+          fontSize: 15.fSize,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.h),
+        ),
+      );
   static ButtonStyle get fillYellow => ElevatedButton.styleFrom(
-        backgroundColor: appTheme.yellow900,
+        backgroundColor: appTheme.yellow_primary,
+        foregroundColor: Colors.black87,
+        textStyle: TextStyle(
+          fontFamily: 'Outfit',
+          fontSize: 15.fSize,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.h),
         ),

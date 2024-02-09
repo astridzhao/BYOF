@@ -1,8 +1,8 @@
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/feature_pages/featuretwo_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/onboarding_first_time_download_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/feature_pages/featuretwo_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/onboarding_first_time_download_screen.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_subtitle.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/create_account_page_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
 import 'package:flutter/material.dart';
 
 class FeatureoneScreen extends StatelessWidget {
@@ -15,6 +15,7 @@ class FeatureoneScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: _buildAppBar(context),
         body: Container(
           padding: EdgeInsets.symmetric(
@@ -25,7 +26,7 @@ class FeatureoneScreen extends StatelessWidget {
           width: double.maxFinite,
           child: Column(
             children: [
-              SizedBox(height: 40.v),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               CustomImageView(
                 imagePath: ImageConstant.imgSlogan11,
                 height: 240.v,
@@ -34,12 +35,12 @@ class FeatureoneScreen extends StatelessWidget {
                   20.h,
                 ),
               ),
-              SizedBox(height: 41.v),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Container(
                 child: Wrap(
                   children: [
                     Align(
-                      alignment: Alignment.topRight,
+                      alignment: Alignment.topCenter,
                       child: Padding(
                         padding: EdgeInsets.only(
                           left: 30.h,
@@ -49,7 +50,7 @@ class FeatureoneScreen extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
-                              width: 260.h,
+                              width: MediaQuery.of(context).size.width * 0.7,
                               decoration: AppDecoration.outlineBlack900,
                               child: Text(
                                 "PERSONALIZED \nRECIPES".toUpperCase(),
@@ -64,9 +65,12 @@ class FeatureoneScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 52.v),
                             SizedBox(
-                              width: 320,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              height: MediaQuery.of(context).size.height * 0.1,
                               child: Text(
                                 'Always do not know what to eat? \nStart with grab ingredients in your fridge \nand create a new dish with BYOF! ',
                                 textAlign: TextAlign.center,
@@ -78,7 +82,9 @@ class FeatureoneScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 60.v),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.08),
                             _buildNextColumn(context),
                           ],
                         ),
@@ -114,8 +120,8 @@ class FeatureoneScreen extends StatelessWidget {
         AppbarSubtitle(
           text: "Skip",
           margin: EdgeInsets.fromLTRB(21.h, 20.v, 21.h, 5.v),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => CreateAccountPageScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => SignInTwoScreen())),
         ),
       ],
     );
@@ -138,6 +144,8 @@ class FeatureoneScreen extends StatelessWidget {
               softWrap: true,
               style: TextStyle(
                 fontFamily: "Outfit",
+                fontSize: 16.fSize,
+                color: Colors.white,
               )),
         ),
       ],

@@ -1,12 +1,12 @@
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_options_screen.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/feature_pages/featureone_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/feature_pages/featurethree_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/feature_pages/featuretwo_screen.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_subtitle.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/create_account_page_screen.dart';
 import 'package:flutter/material.dart';
 
-class FeaturetwoScreen extends StatelessWidget {
-  const FeaturetwoScreen({Key? key})
+class FeaturethreeScreen extends StatelessWidget {
+  const FeaturethreeScreen({Key? key})
       : super(
           key: key,
         );
@@ -15,6 +15,7 @@ class FeaturetwoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: _buildAppBar(context),
         body: Container(
           padding: EdgeInsets.symmetric(
@@ -25,16 +26,16 @@ class FeaturetwoScreen extends StatelessWidget {
           width: double.maxFinite,
           child: Column(
             children: [
-              SizedBox(height: 40.v),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               CustomImageView(
-                imagePath: ImageConstant.imgSlogan21,
+                imagePath: ImageConstant.imgSlogan31,
                 height: 240.v,
                 width: 300.h,
                 radius: BorderRadius.circular(
                   20.h,
                 ),
               ),
-              SizedBox(height: 41.v),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Container(
                 child: Wrap(
                   children: [
@@ -46,13 +47,14 @@ class FeaturetwoScreen extends StatelessWidget {
                           right: 30.h,
                         ),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
-                              width: 260.h,
+                              width: MediaQuery.of(context).size.width * 0.7,
                               decoration: AppDecoration.outlineBlack900,
                               child: Text(
-                                "POWERED BY \n AI".toUpperCase(),
+                                "TRACK YOUR \n SAVING".toUpperCase(),
                                 maxLines: null,
                                 textAlign: TextAlign.center,
                                 overflow: TextOverflow.ellipsis,
@@ -64,11 +66,14 @@ class FeaturetwoScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 52.v),
                             SizedBox(
-                              width: 320,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              height: MediaQuery.of(context).size.height * 0.1,
                               child: Text(
-                                "Are you struggle to find a perfect recipe? \nGet ready to explore new AI technology \nto make a recipe with all your preferences! ",
+                                "Did you waste lots of money on food? \n Did you want to save our environment? \n BYOF will help you easily track your saving everyday!",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.black,
@@ -78,7 +83,9 @@ class FeaturetwoScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 60.v),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.08),
                             _buildNextColumn(context),
                           ],
                         ),
@@ -107,15 +114,15 @@ class FeaturetwoScreen extends StatelessWidget {
         splashColor: appTheme.orange_primary,
         onPressed: () {
           Navigator.of(context)
-              .pop(MaterialPageRoute(builder: (context) => FeatureoneScreen()));
+              .pop(MaterialPageRoute(builder: (context) => FeaturetwoScreen()));
         },
       ),
       actions: [
         AppbarSubtitle(
           text: "Skip",
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => SignInOneScreen())),
           margin: EdgeInsets.fromLTRB(21.h, 20.v, 21.h, 5.v),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => CreateAccountPageScreen())),
         ),
       ],
     );
@@ -131,13 +138,15 @@ class FeaturetwoScreen extends StatelessWidget {
               ElevatedButton.styleFrom(backgroundColor: appTheme.green_primary),
           onPressed: () {
             Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => FeaturethreeScreen()));
+                MaterialPageRoute(builder: (context) => SignInOneScreen()));
           },
           child: Text("Next",
               textAlign: TextAlign.center,
               softWrap: true,
               style: TextStyle(
                 fontFamily: "Outfit",
+                fontSize: 16.fSize,
+                color: Colors.white,
               )),
         ),
       ],

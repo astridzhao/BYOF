@@ -1,6 +1,6 @@
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/sign_in_two_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/sign_up_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_up_screen.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
@@ -66,7 +66,7 @@ class SignInOneScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CustomElevatedButton(
-            height: 49.v,
+            height: MediaQuery.of(context).size.height * 0.06,
             text: "Continue with Google",
             margin: EdgeInsets.only(
               left: 20.h,
@@ -84,7 +84,7 @@ class SignInOneScreen extends StatelessWidget {
           ),
           SizedBox(height: 16.v),
           CustomElevatedButton(
-            height: 49.v,
+            height: MediaQuery.of(context).size.height * 0.06,
             text: "Continue with Apple",
             margin: EdgeInsets.only(
               left: 20.h,
@@ -100,7 +100,7 @@ class SignInOneScreen extends StatelessWidget {
             ),
             buttonStyle: CustomButtonStyles.fillYellow,
           ),
-          SizedBox(height: 16.v),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -135,50 +135,45 @@ class SignInOneScreen extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 13.v),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           SizedBox(
-            height: 50, //height of button
-            width: 270, //width of button
-            child: ElevatedButton(
-              child: Text("Sign in with email"),
-              style: ElevatedButton.styleFrom(
-                elevation: 3,
-                backgroundColor: appTheme.green_primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
+            height:
+                MediaQuery.of(context).size.height * 0.06, //height of button
+            width: MediaQuery.of(context).size.width * 0.7, //width of button
+            child: CustomElevatedButton(
+              text: "Sign in with email",
+              buttonStyle: CustomButtonStyles.fillGreen,
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: ((context) => SignInTwoScreen())));
               },
             ),
           ),
-          SizedBox(height: 8.v),
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: "Create a new account ? ",
-                  style: theme.textTheme.bodyMedium,
-                ),
-                TextSpan(
-                  text: "Sign up.",
-                  recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: ((context) => SignUpScreen())));
-                      },
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Create a new account? ",
+                style: theme.textTheme.bodyMedium,
+              ),
+              TextButton(
+                child: Text(
+                  "Sign up.",
                   style: CustomTextStyles.bodyMediumff5a7756.copyWith(
                     decoration: TextDecoration.underline,
+                    color: Colors.black54,
                   ),
                 ),
-              ],
-            ),
-            textAlign: TextAlign.left,
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: ((context) => SignUpScreen())));
+                },
+              ),
+            ],
           ),
-          SizedBox(height: 4.v),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         ],
       ),
     );

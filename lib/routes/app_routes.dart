@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/loading_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/onboarding_first_time_download_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/feature_pages/featureone_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/feature_pages/featuretwo_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/feature_pages/featurethree_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/create_account_page_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/sign_in_one_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/sign_up_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/sign_in_two_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/forget_password_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/function_choose_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/onboarding_first_time_download_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/feature_pages/featureone_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/feature_pages/featuretwo_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/feature_pages/featurethree_screen.dart';
+// import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/create_account_page_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_options_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_up_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/forget_password_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/function_choose_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
 import 'package:astridzhao_s_food_app/Interface/backup_screens/old-create_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/myfridge_screen/_myfridge_screen.dart';
@@ -63,7 +63,7 @@ class AppRoutes {
     featureoneScreen: (context) => FeatureoneScreen(),
     featuretwoScreen: (context) => FeaturetwoScreen(),
     featurethreeScreen: (context) => FeaturethreeScreen(),
-    createAccountPageScreen: (context) => CreateAccountPageScreen(),
+    // createAccountPageScreen: (context) => CreateAccountPageScreen(),
     signInOneScreen: (context) => SignInOneScreen(),
     signUpScreen: (context) => SignUpScreen(),
     signInTwoScreen: (context) => SignInTwoScreen(),

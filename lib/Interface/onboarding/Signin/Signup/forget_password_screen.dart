@@ -1,3 +1,4 @@
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_leading_image.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
@@ -109,11 +110,18 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
   /// Section Widget
   PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return CustomAppBar(
-      leadingWidth: 374.h,
-      leading: AppbarLeadingImage(
-        imagePath: ImageConstant.imgIcon,
-        margin: EdgeInsets.fromLTRB(36.h, 21.v, 318.h, 21.v),
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leading: IconButton(
+        icon: const Icon(Icons.keyboard_backspace),
+        color: Colors.black54,
+        iconSize: 20.0,
+        splashColor: appTheme.orange_primary,
+        onPressed: () {
+          Navigator.of(context)
+              .pop(MaterialPageRoute(builder: (context) => SignInTwoScreen()));
+        },
       ),
     );
   }

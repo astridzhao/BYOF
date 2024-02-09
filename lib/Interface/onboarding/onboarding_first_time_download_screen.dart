@@ -1,5 +1,5 @@
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/feature_pages/featureone_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/feature_pages/featureone_screen.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingFirstTimeDownloadScreen extends StatelessWidget {
@@ -18,11 +18,10 @@ class OnboardingFirstTimeDownloadScreen extends StatelessWidget {
           child: Column(
             children: [
               Spacer(),
-              SizedBox(height: 8.v),
               CustomImageView(
                 imagePath: ImageConstant.imgLogo2RemovebgPreview,
-                height: 312.adaptSize,
-                width: 312.adaptSize,
+                height: MediaQuery.of(context).size.height * 0.4,
+                width: MediaQuery.of(context).size.height * 0.4,
               ),
               _buildOnboardingFirstColumn(context),
             ],
@@ -43,10 +42,10 @@ class OnboardingFirstTimeDownloadScreen extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            width: 268.h,
-            height: 115.h,
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.2,
             child: Text(
-              'With BYOF, \nEveryone \nCan be a chef!',
+              'With BYOF, \nSaving \n Becomes Easy!',
               textAlign: TextAlign.center,
               maxLines: 3,
               style: TextStyle(
@@ -72,7 +71,7 @@ class OnboardingFirstTimeDownloadScreen extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 48.v),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: appTheme.orange_primary,
@@ -88,6 +87,7 @@ class OnboardingFirstTimeDownloadScreen extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: "Outfit",
                   fontSize: 16.fSize,
+                  color: Colors.white,
                 )),
           ),
           SizedBox(height: 43.v),
