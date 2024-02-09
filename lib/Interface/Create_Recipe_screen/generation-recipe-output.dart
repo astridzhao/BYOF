@@ -60,8 +60,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: SafeArea(
+    return SafeArea(
       child: Scaffold(
         appBar: customeAppbar(context),
         body: Column(
@@ -123,7 +122,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           ],
         ),
       ),
-    ));
+    );
   }
 
   void saveNetworkImage(String generatedImageUrls) async {

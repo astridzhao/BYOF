@@ -13,42 +13,40 @@ class SignInOneScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Container(
-          decoration: AppDecoration.gradientGrayToGray,
-          width: double.maxFinite,
-          child: Column(
-            children: [
-              SizedBox(height: 120.v),
-              Expanded(
-                child: Column(
-                  children: [
-                    CustomImageView(
-                      imagePath: ImageConstant.imgLogo2RemovebgPreview,
-                      height: 270.v,
-                      width: 288.h,
-                      alignment: Alignment.center,
-                    ),
-                    Container(
-                      decoration: AppDecoration.outlineBlack900,
-                      child: Text(
-                        "BRING YOUR OWN FRIDGE",
-                        style: TextStyle(
-                          color: appTheme.black900,
-                          fontSize: 20.fSize,
-                          fontFamily: 'Outfit',
-                          fontWeight: FontWeight.w700,
-                        ),
+    return Scaffold(
+      body: Container(
+        decoration: AppDecoration.gradientGrayToGray,
+        width: double.maxFinite,
+        child: Column(
+          children: [
+            SizedBox(height: 120.v),
+            Expanded(
+              child: Column(
+                children: [
+                  CustomImageView(
+                    imagePath: ImageConstant.imgLogo2RemovebgPreview,
+                    height: 270.v,
+                    width: 288.h,
+                    alignment: Alignment.center,
+                  ),
+                  Container(
+                    decoration: AppDecoration.outlineBlack900,
+                    child: Text(
+                      "BRING YOUR OWN FRIDGE",
+                      style: TextStyle(
+                        color: appTheme.black900,
+                        fontSize: 20.fSize,
+                        fontFamily: 'Outfit',
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              // SizedBox(height: 40.v),
-              _buildSignInButtonRow(context),
-            ],
-          ),
+            ),
+            // SizedBox(height: 40.v),
+            _buildSignInButtonRow(context),
+          ],
         ),
       ),
     );

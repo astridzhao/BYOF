@@ -25,8 +25,7 @@ class SignInTwoScreenState extends State<SignInTwoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: _buildAppBar(context),
         body: Container(
@@ -48,7 +47,7 @@ class SignInTwoScreenState extends State<SignInTwoScreen> {
             ),
           ),
         ),
-      ),
+      
     );
   }
 
@@ -154,44 +153,19 @@ class SignInTwoScreenState extends State<SignInTwoScreen> {
                   builder: (context) => ForgetPasswordScreen())),
             ),
             SizedBox(height: screenHeight * 0.02),
-            // SizedBox(
-            //   height: screenHeight * 0.05, //height of button
-            //   width: screenWidth * 0.5, //width of button
-            //   child: ElevatedButton(
-            //       child: const Text(
-            //         "Sign in",
-            //         style: TextStyle(
-            //           color: Colors.white,
-            //           fontSize: 15.0,
-            //           fontFamily: 'Outfit',
-            //           fontWeight: FontWeight.w500,
-            //         ),
-            //       ),
-            //       style: ElevatedButton.styleFrom(
-            //         elevation: 3,
-            //         backgroundColor: appTheme.green_primary,
-            //         foregroundColor: Colors.white,
-            //         shape: RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.circular(8),
-            //         ),
-            //       ),
-            //       onPressed: () async {
-            //         FocusScope.of(context).unfocus();
-            //         BlocProvider.of<AuthenticationBloc>(context).add(SignInUser(
-            //           emailController.text.trim(),
-            //           passwordController.text.trim(),
-            //         ));
-
-            //       }),
-            // ),
             BlocConsumer<AuthenticationBloc, AuthenticationState>(
               listener: (context, state) {
                 if (state is SignInSuccessState) {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    HomepageContainerScreen.id,
-                    (route) => false,
-                  );
+                  print("sign in success");
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              HomepageContainerScreen()),
+                      // (route) => false,
+                      // ModalRoute.withName('/'),
+                      (Route<dynamic> route) =>
+                          route is HomepageContainerScreen);
                 } else if (state is SignInFailureState) {
                   print("error: " + state.errorMessage);
                   showDialog(

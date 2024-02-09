@@ -13,8 +13,7 @@ class FeaturetwoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: _buildAppBar(context),
         body: Container(
@@ -95,7 +94,7 @@ class FeaturetwoScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      
     );
   }
 

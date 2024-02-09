@@ -48,10 +48,11 @@ class SignInSuccessState extends AuthenticationState {
   List<Object?> get props => [user];
 }
 
-class SignOutSuccessState extends AuthenticationState {}
+class SignOutSuccessState extends AuthenticationState {
+  SignOutSuccessState();
+}
 
 // Failure States
-
 
 class SignUpFailureState extends AuthenticationState {
   final String errorMessage;

@@ -275,143 +275,140 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
       crossAxisSpacing = 5; // You may need to adjust this value
     }
 
-    return MaterialApp(
-      home: SafeArea(
-          child: Scaffold(
-        backgroundColor: appTheme.yellow5001,
-        resizeToAvoidBottomInset: false,
-        appBar: CustomAppBar(
-          toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-          leadingWidth: MediaQuery.of(context).size.width * 0.2,
-          backgroundColor: Colors.transparent,
-          leading: Builder(builder: (BuildContext context) {
-            return CustomImageView(
-              imagePath: ImageConstant.imgLogo2RemovebgPreview,
-              fit: BoxFit.contain,
-              margin: EdgeInsets.only(left: 10.h),
-            );
-          }),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                "Generate",
-                style: TextStyle(
-                    fontSize: 15.fSize,
-                    fontFamily: "Outfit",
-                    color: appTheme.green_primary),
-              ),
-              onPressed: () async {
-                // handle situtaion of empty input
-                if (selectedIngredients.isEmpty ||
-                    atomInputContainerController.text.isEmpty) {
-                  Fluttertoast.showToast(
-                    msg: "Please select at least one ingredient",
-                    fontSize: 14.fSize,
-                    toastLength: Toast.LENGTH_LONG,
-                    gravity: ToastGravity.CENTER,
-                    timeInSecForIosWeb: 2,
-                    backgroundColor: appTheme.orange_primary,
-                    textColor: const Color.fromARGB(211, 0, 0, 0),
-                  );
-                } else {
-                  // Show the dialog
-                  showDialog(
-                    context: context,
-                    barrierDismissible:
-                        false, // User must tap button to close dialog
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        content: Row(
-                          children: [
-                            SizedBox(
-                              width: 20.h,
-                              height: 20.v, // Adjust the height as needed
-                              child: CircularProgressIndicator(),
-                            ),
-                            SizedBox(width: 20.h),
-                            Text("Crafting a culinary masterpiece..."),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                  await sendPrompt();
-                  // Close the dialog
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => GenerationScreen(
-                          resultCompletion: resultCompletion)));
-                }
-              },
+    return SafeArea(
+        child: Scaffold(
+      backgroundColor: appTheme.yellow5001,
+      resizeToAvoidBottomInset: false,
+      appBar: CustomAppBar(
+        toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+        leadingWidth: MediaQuery.of(context).size.width * 0.2,
+        backgroundColor: Colors.transparent,
+        leading: Builder(builder: (BuildContext context) {
+          return CustomImageView(
+            imagePath: ImageConstant.imgLogo2RemovebgPreview,
+            fit: BoxFit.contain,
+            margin: EdgeInsets.only(left: 10.h),
+          );
+        }),
+        actions: <Widget>[
+          TextButton(
+            child: Text(
+              "Generate",
+              style: TextStyle(
+                  fontSize: 15.fSize,
+                  fontFamily: "Outfit",
+                  color: appTheme.green_primary),
             ),
-          ],
-        ),
-        body: Stack(children: [
-          SingleChildScrollView(
-              child: Container(
-                  width: double.maxFinite,
-                  margin: EdgeInsets.only(top: 5.v, bottom: 6.v),
-                  child: Stack(children: [
-                    Align(
-                        alignment: Alignment.topCenter,
-                        //Language Picker Widget
-                        child: Padding(
-                            padding: EdgeInsets.only(left: 30.h, right: 30.h),
-                            child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: appTheme.yellow_primary,
-                                      borderRadius: BorderRadius.circular(
-                                        20.h,
-                                      ),
+            onPressed: () async {
+              // handle situtaion of empty input
+              if (selectedIngredients.isEmpty ||
+                  atomInputContainerController.text.isEmpty) {
+                Fluttertoast.showToast(
+                  msg: "Please select at least one ingredient",
+                  fontSize: 14.fSize,
+                  toastLength: Toast.LENGTH_LONG,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 2,
+                  backgroundColor: appTheme.orange_primary,
+                  textColor: const Color.fromARGB(211, 0, 0, 0),
+                );
+              } else {
+                // Show the dialog
+                showDialog(
+                  context: context,
+                  barrierDismissible:
+                      false, // User must tap button to close dialog
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: Row(
+                        children: [
+                          SizedBox(
+                            width: 20.h,
+                            height: 20.v, // Adjust the height as needed
+                            child: CircularProgressIndicator(),
+                          ),
+                          SizedBox(width: 20.h),
+                          Text("Crafting a culinary masterpiece..."),
+                        ],
+                      ),
+                    );
+                  },
+                );
+                await sendPrompt();
+                // Close the dialog
+                Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        GenerationScreen(resultCompletion: resultCompletion)));
+              }
+            },
+          ),
+        ],
+      ),
+      body: Stack(children: [
+        SingleChildScrollView(
+            child: Container(
+                width: double.maxFinite,
+                margin: EdgeInsets.only(top: 5.v, bottom: 6.v),
+                child: Stack(children: [
+                  Align(
+                      alignment: Alignment.topCenter,
+                      //Language Picker Widget
+                      child: Padding(
+                          padding: EdgeInsets.only(left: 30.h, right: 30.h),
+                          child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.yellow_primary,
+                                    borderRadius: BorderRadius.circular(
+                                      20.h,
                                     ),
-                                    child: (_buildLanguagePicker(context)),
                                   ),
-                                  SizedBox(height: 20.v),
+                                  child: (_buildLanguagePicker(context)),
+                                ),
+                                SizedBox(height: 20.v),
 
-                                  // Choose Preference Widget
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 10.h, vertical: 24.v),
-                                    decoration: BoxDecoration(
-                                      color: appTheme.gray700,
-                                      borderRadius: BorderRadius.circular(
-                                        20.h,
-                                      ),
-                                    ),
-                                    child: GridView.count(
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      crossAxisSpacing:
-                                          crossAxisSpacing, //space between columns
-                                      mainAxisSpacing: 0, //space between rows
-                                      crossAxisCount:
-                                          MediaQuery.of(context).size.width >
-                                                  600
-                                              ? 3
-                                              : 2,
-                                      childAspectRatio: childAspectRatio,
-                                      children: <Widget>[
-                                        cuisineStyle(context),
-                                        dishType(context),
-                                        cookingMethod(context),
-                                        dietaryRestriction(context),
-                                        servingSize(context),
-                                      ],
+                                // Choose Preference Widget
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10.h, vertical: 24.v),
+                                  decoration: BoxDecoration(
+                                    color: appTheme.gray700,
+                                    borderRadius: BorderRadius.circular(
+                                      20.h,
                                     ),
                                   ),
-                                  _buildIngredientInputSection(context),
-                                  SizedBox(height: 40.v),
-                                ]))),
-                  ]))),
-        ]),
-      )),
-    );
+                                  child: GridView.count(
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    crossAxisSpacing:
+                                        crossAxisSpacing, //space between columns
+                                    mainAxisSpacing: 0, //space between rows
+                                    crossAxisCount:
+                                        MediaQuery.of(context).size.width > 600
+                                            ? 3
+                                            : 2,
+                                    childAspectRatio: childAspectRatio,
+                                    children: <Widget>[
+                                      cuisineStyle(context),
+                                      dishType(context),
+                                      cookingMethod(context),
+                                      dietaryRestriction(context),
+                                      servingSize(context),
+                                    ],
+                                  ),
+                                ),
+                                _buildIngredientInputSection(context),
+                                SizedBox(height: 40.v),
+                              ]))),
+                ]))),
+      ]),
+    ));
   }
 
   Widget cuisineStyle(BuildContext context) {

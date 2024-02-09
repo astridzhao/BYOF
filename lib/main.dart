@@ -55,14 +55,25 @@ class MyApp extends StatelessWidget {
             theme: theme,
             title: 'astridzhao_s_food_app',
             debugShowCheckedModeBanner: false,
+            home: const AuthenticationFlowScreen(),
+            routes: {
+              AuthenticationFlowScreen.id: (context) =>
+                  const AuthenticationFlowScreen(),
+              // Define other static routes here
+            },
             onGenerateRoute: (settings) {
+              print("called onGenerateRoute");
               if (settings.name == HomepageContainerScreen.id) {
                 return MaterialPageRoute(
                     builder: (context) => HomepageContainerScreen());
               }
-              // Other dynamic routes...
             },
-            home: const AuthenticationFlowScreen(),
+            onUnknownRoute: (settings) {
+              print("called onUnknownRoute");
+              return MaterialPageRoute(
+                  builder: (context) => HomepageContainerScreen());
+              // builder: (context) => UndefinedRouteScreen(name: settings.name));
+            },
           );
         },
       ),

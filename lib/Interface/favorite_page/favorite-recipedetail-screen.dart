@@ -50,52 +50,50 @@ class _GenerationScreenState extends State<GenerationScreen_favorite> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: customeAppbar(context),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              padding: EdgeInsets.only(top: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  title(context),
-                  SizedBox(height: 5),
-                  saving_summery(context),
-                  SizedBox(height: 20),
-                  buttons_group(context),
-                  SizedBox(height: 10),
-                  //divider
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: Divider(
-                      indent: 1,
-                    ),
+    return Scaffold(
+      appBar: customeAppbar(context),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            padding: EdgeInsets.only(top: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                title(context),
+                SizedBox(height: 5),
+                saving_summery(context),
+                SizedBox(height: 20),
+                buttons_group(context),
+                SizedBox(height: 10),
+                //divider
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: Divider(
+                    indent: 1,
                   ),
-                  SizedBox(height: 18),
-                  group_info(context),
-                  instruction(context),
-                  //divider
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: Divider(
-                      indent: 1,
-                    ),
+                ),
+                SizedBox(height: 18),
+                group_info(context),
+                instruction(context),
+                //divider
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: Divider(
+                    indent: 1,
                   ),
-                  // SizedBox(height: 13),
-                  // _buildTimerControls(context),
-                  SizedBox(height: 30),
-                  bottomSettingBar(context),
-                  SizedBox(height: 40),
-                ],
-              ),
+                ),
+                // SizedBox(height: 13),
+                // _buildTimerControls(context),
+                SizedBox(height: 30),
+                bottomSettingBar(context),
+                SizedBox(height: 40),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

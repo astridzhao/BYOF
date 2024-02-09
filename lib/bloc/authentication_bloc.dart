@@ -68,11 +68,16 @@ class AuthenticationBloc
 
     on<SignOut>((event, emit) async {
       emit(SignOutLoadingState(isLoading: true));
+
       try {
         authService.signOutUser();
+        print("user sign out [bloc]");
+
+        emit(SignOutSuccessState());
       } catch (e) {
         print('error');
         print(e.toString());
+        emit(SignOutFailureState(e.toString()));
       }
       emit(SignOutLoadingState(isLoading: false));
     });

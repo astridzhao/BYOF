@@ -58,78 +58,76 @@ class NoAccount_HomepagePageState extends State<NoAccount_HomepagePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: appTheme.yellow5001,
-        appBar: buildAppBar(context),
-        body: SizedBox(
-          width: SizeUtils.width,
-          height: SizeUtils.height,
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(top: 20.v),
-            child: Container(
-              margin: EdgeInsets.only(bottom: 5.v),
-              padding: EdgeInsets.symmetric(horizontal: 10.h),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 23.h),
-                      child: Text(
-                        "So far, you have",
-                        style: TextStyle(
-                          color: appTheme.black900,
-                          fontSize: 12.fSize,
-                          fontFamily: 'Outfit',
-                          fontWeight: FontWeight.w400,
-                        ),
+    return Scaffold(
+      backgroundColor: appTheme.yellow5001,
+      appBar: buildAppBar(context),
+      body: SizedBox(
+        width: SizeUtils.width,
+        height: SizeUtils.height,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(top: 20.v),
+          child: Container(
+            margin: EdgeInsets.only(bottom: 5.v),
+            padding: EdgeInsets.symmetric(horizontal: 10.h),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 23.h),
+                    child: Text(
+                      "So far, you have",
+                      style: TextStyle(
+                        color: appTheme.black900,
+                        fontSize: 12.fSize,
+                        fontFamily: 'Outfit',
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
-                  SizedBox(height: 15.v),
-                  buildSavingSummary(context),
-                  SizedBox(height: 20.v),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 25.h,
-                      right: 20.h,
-                    ),
-                    child: buildDividerSection_favorite_page(
-                      context,
-                      text: "My Favorite Recipes",
-                      text1: "See all",
-                    ),
+                ),
+                SizedBox(height: 15.v),
+                buildSavingSummary(context),
+                SizedBox(height: 20.v),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 25.h,
+                    right: 20.h,
                   ),
-                  Divider(
-                    color: appTheme.gray800,
-                    indent: 20.h,
-                    endIndent: 10.h,
+                  child: buildDividerSection_favorite_page(
+                    context,
+                    text: "My Favorite Recipes",
+                    text1: "See all",
                   ),
-                  SizedBox(height: 3.v),
-                  buildFavoriteRecipeRow(context),
-                  SizedBox(height: 15.v),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 25.h,
-                      right: 20.h,
-                    ),
-                    child: buildDividerSection_mealPlan(
-                      context,
-                      text: "My Meal Plan",
-                      text1: "View",
-                    ),
+                ),
+                Divider(
+                  color: appTheme.gray800,
+                  indent: 20.h,
+                  endIndent: 10.h,
+                ),
+                SizedBox(height: 3.v),
+                buildFavoriteRecipeRow(context),
+                SizedBox(height: 15.v),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 25.h,
+                    right: 20.h,
                   ),
-                  SizedBox(height: 1.v),
-                  Divider(
-                    color: appTheme.gray800,
-                    indent: 20.h,
-                    endIndent: 10.h,
+                  child: buildDividerSection_mealPlan(
+                    context,
+                    text: "My Meal Plan",
+                    text1: "View",
                   ),
-                  SizedBox(height: 10.v),
-                  mealplanDraft(context),
-                ],
-              ),
+                ),
+                SizedBox(height: 1.v),
+                Divider(
+                  color: appTheme.gray800,
+                  indent: 20.h,
+                  endIndent: 10.h,
+                ),
+                SizedBox(height: 10.v),
+                mealplanDraft(context),
+              ],
             ),
           ),
         ),

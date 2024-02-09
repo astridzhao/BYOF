@@ -114,8 +114,7 @@ class MyfridgePageState extends State<MyfridgePage> {
   }
 
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return  Scaffold(
         body: DecoratedBox(
           // BoxDecoration takes the image
           decoration: BoxDecoration(
@@ -147,7 +146,7 @@ class MyfridgePageState extends State<MyfridgePage> {
             ),
           ),
         ),
-      ),
+      
     );
   }
 

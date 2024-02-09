@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/widgets/recipecontentrow_item_widget.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/widgets/saving_summery_widget.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -59,78 +61,76 @@ class HomePagetate extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: appTheme.yellow5001,
-        appBar: _buildAppBar(context),
-        body: SizedBox(
-          width: SizeUtils.width,
-          height: SizeUtils.height,
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(top: 20.v),
-            child: Container(
-              margin: EdgeInsets.only(bottom: 5.v),
-              padding: EdgeInsets.symmetric(horizontal: 10.h),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 23.h),
-                      child: Text(
-                        "So far, you have",
-                        style: TextStyle(
-                          color: appTheme.black900,
-                          fontSize: 12.fSize,
-                          fontFamily: 'Outfit',
-                          fontWeight: FontWeight.w400,
-                        ),
+    return Scaffold(
+      backgroundColor: appTheme.yellow5001,
+      appBar: _buildAppBar(context),
+      body: SizedBox(
+        width: SizeUtils.width,
+        height: SizeUtils.height,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(top: 20.v),
+          child: Container(
+            margin: EdgeInsets.only(bottom: 5.v),
+            padding: EdgeInsets.symmetric(horizontal: 10.h),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 23.h),
+                    child: Text(
+                      "So far, you have",
+                      style: TextStyle(
+                        color: appTheme.black900,
+                        fontSize: 12.fSize,
+                        fontFamily: 'Outfit',
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
-                  SizedBox(height: 15.v),
-                  buildSavingSummary(context),
-                  SizedBox(height: 20.v),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 25.h,
-                      right: 20.h,
-                    ),
-                    child: buildDividerSection_favorite_page(
-                      context,
-                      text: "My Favorite Recipes",
-                      text1: "See all",
-                    ),
+                ),
+                SizedBox(height: 15.v),
+                buildSavingSummary(context),
+                SizedBox(height: 20.v),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 25.h,
+                    right: 20.h,
                   ),
-                  Divider(
-                    color: appTheme.gray800,
-                    indent: 20.h,
-                    endIndent: 10.h,
+                  child: buildDividerSection_favorite_page(
+                    context,
+                    text: "My Favorite Recipes",
+                    text1: "See all",
                   ),
-                  SizedBox(height: 3.v),
-                  buildFavoriteRecipeRow(context),
-                  SizedBox(height: 15.v),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 25.h,
-                      right: 20.h,
-                    ),
-                    child: buildDividerSection_mealPlan(
-                      context,
-                      text: "My Meal Plan",
-                      text1: "View",
-                    ),
+                ),
+                Divider(
+                  color: appTheme.gray800,
+                  indent: 20.h,
+                  endIndent: 10.h,
+                ),
+                SizedBox(height: 3.v),
+                buildFavoriteRecipeRow(context),
+                SizedBox(height: 15.v),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 25.h,
+                    right: 20.h,
                   ),
-                  SizedBox(height: 1.v),
-                  Divider(
-                    color: appTheme.gray800,
-                    indent: 20.h,
-                    endIndent: 10.h,
+                  child: buildDividerSection_mealPlan(
+                    context,
+                    text: "My Meal Plan",
+                    text1: "View",
                   ),
-                  SizedBox(height: 10.v),
-                  mealplanDraft(context),
-                ],
-              ),
+                ),
+                SizedBox(height: 1.v),
+                Divider(
+                  color: appTheme.gray800,
+                  indent: 20.h,
+                  endIndent: 10.h,
+                ),
+                SizedBox(height: 10.v),
+                mealplanDraft(context),
+              ],
             ),
           ),
         ),
@@ -608,6 +608,7 @@ class HomePagetate extends State<HomePage> {
     // Get the screen width and height
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final user = FirebaseAuth.instance.currentUser;
 
     return PreferredSize(
       preferredSize: Size.fromHeight(screenHeight * 0.13),
@@ -639,9 +640,9 @@ class HomePagetate extends State<HomePage> {
               ),
               SizedBox(height: 3.v),
               AppbarTitle(
-                text: "User",
+                text: user!.email!,
                 textStyle: TextStyle(
-                  fontSize: 20.fSize,
+                  fontSize: 12.fSize,
                   fontWeight: FontWeight.w500,
                   color: appTheme.gray60002,
                 ),
@@ -652,26 +653,51 @@ class HomePagetate extends State<HomePage> {
         actions: [
           BlocConsumer<AuthenticationBloc, AuthenticationState>(
             listener: (context, state) {
-              if (state is SignOutLoadingState) {
-                const CircularProgressIndicator();
+              if (state is SignOutSuccessState) {
+                // Assuming you have a state like this
+                // Navigate back to the sign-in screen or another appropriate screen
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          SignInTwoScreen()), // Adjust with your actual sign-in screen
+                  (Route<dynamic> route) => false,
+                );
               } else if (state is SignOutFailureState) {
+                // Handle sign-out failure
                 showDialog(
-                    context: context,
-                    builder: (context) {
-                      return const AlertDialog(
-                        content: Text('error'),
-                      );
-                    });
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      content: Text('Failed to sign out. Please try again.'),
+                    );
+                  },
+                );
               }
             },
             builder: (context, state) {
+              if (state is SignOutLoadingState) {
+                print('Signing out...');
+                // Show loading indicator
+                return CircularProgressIndicator();
+              }
+              // Return the sign-out button or any other relevant widget
               return ElevatedButton(
-                  onPressed: () {
-                    BlocProvider.of<AuthenticationBloc>(context).add(SignOut());
-                  },
-                  child: const Text('logOut'));
+                onPressed: () {
+                  BlocProvider.of<AuthenticationBloc>(context).add(SignOut());
+                },
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(appTheme.yellow_primary),
+                  fixedSize: MaterialStateProperty.all<Size>(
+                      Size(screenWidth * 0.3, screenHeight * 0.05)),
+                ),
+                child: const Text('Log Out',
+                    style: TextStyle(fontSize: 12, color: Colors.black)),
+              );
             },
           ),
+          SizedBox(width: 0.02 * screenWidth),
         ],
       ),
     );

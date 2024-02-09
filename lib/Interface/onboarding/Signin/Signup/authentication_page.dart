@@ -16,8 +16,10 @@ class AuthenticationFlowScreen extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            print("[StreamBuilder]user is logged in");
             return HomepageContainerScreen();
           } else {
+            print("[StreamBuilder]user is logged out");
             return OnboardingFirstTimeDownloadScreen();
           }
         },

@@ -10,22 +10,20 @@ class OnboardingFirstTimeDownloadScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            children: [
-              Spacer(),
-              CustomImageView(
-                imagePath: ImageConstant.imgLogo2RemovebgPreview,
-                height: MediaQuery.of(context).size.height * 0.4,
-                width: MediaQuery.of(context).size.height * 0.4,
-              ),
-              _buildOnboardingFirstColumn(context),
-            ],
-          ),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          children: [
+            Spacer(),
+            CustomImageView(
+              imagePath: ImageConstant.imgLogo2RemovebgPreview,
+              height: MediaQuery.of(context).size.height * 0.4,
+              width: MediaQuery.of(context).size.height * 0.4,
+            ),
+            _buildOnboardingFirstColumn(context),
+          ],
         ),
       ),
     );
