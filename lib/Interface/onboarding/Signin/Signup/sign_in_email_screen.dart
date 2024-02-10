@@ -26,7 +26,7 @@ class SignInTwoScreenState extends State<SignInTwoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(context),
       body: Container(
         key: _formKey,
@@ -168,7 +168,8 @@ class SignInTwoScreenState extends State<SignInTwoScreen> {
                       (Route<dynamic> route) =>
                           route is HomepageContainerScreen);
                 } else if (state is SignInFailureState) {
-                  print("error: " + state.errorMessage);
+                  print(
+                      "[sign in]what is the error message: ${state.errorMessage}");
                   showDialog(
                       context: context,
                       builder: (context) {
@@ -183,7 +184,9 @@ class SignInTwoScreenState extends State<SignInTwoScreen> {
                                     .pop(); // Dismiss the dialog
                               },
                               child: const Text(
-                                  'OK'), // 'const' is fine here since the text doesn't change
+                                'OK',
+                                style: TextStyle(color: Colors.black),
+                              ), // 'const' is fine here since the text doesn't change
                             ),
                           ],
                         );

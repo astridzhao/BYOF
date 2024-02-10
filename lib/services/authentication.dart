@@ -17,6 +17,9 @@ class AuthService {
 
       final User? firebaseUser = userCredential.user;
       if (firebaseUser != null) {
+        await firebaseUser.sendEmailVerification().catchError((error) {
+          print("Failed to send verification email: $error");
+        });
         return UserModel(
           id: firebaseUser.uid,
           email: firebaseUser.email ?? '',
@@ -24,14 +27,14 @@ class AuthService {
         );
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for this email.');
-      }
+      throw FirebaseAuthException(
+          code: e.code, message: e.message); // Re-throwing for simplicity
+      // return Future.error(errorMessage);
     } catch (e) {
-      print(e);
+      print(e.toString());
+      return Future.error(e.toString());
     }
+    return null;
   }
 
   Future<UserModel?> signInUser(
@@ -54,12 +57,9 @@ class AuthService {
         );
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
+      throw FirebaseAuthException(code: e.code, message: e.message);
     }
+    return null;
   }
 
   ///signOutUser

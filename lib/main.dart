@@ -58,7 +58,6 @@ class MyApp extends StatelessWidget {
               // Define other static routes here
             },
             onGenerateRoute: (settings) {
-              print("called onGenerateRoute");
               if (settings.name == HomepageContainerScreen.id) {
                 return MaterialPageRoute(
                     builder: (context) => HomepageContainerScreen());

@@ -48,7 +48,8 @@ class _SettingsPageState extends State<SettingsPage> {
               future: getCurrentUserModel(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return Text("Hi! ${snapshot.data!.name!}",
+                  String name = snapshot.data?.name ?? "";
+                  return Text("Hi! ${name}",
                       style: TextStyle(
                           fontFamily: "Outfit",
                           color: Colors.black87,
@@ -145,6 +146,15 @@ class _SettingsPageState extends State<SettingsPage> {
                 );
               },
             ),
+            IconButton(
+                onPressed: () {
+                  // deleteUser();
+                },
+                icon: Icon(
+                  Icons.delete_forever,
+                  color: Colors.red,
+                  size: 30,
+                ))
           ],
         ),
       ),
@@ -170,6 +180,23 @@ class _SettingsPageState extends State<SettingsPage> {
             ))
       ],
     );
+  }
+
+  Future<void> deleteUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        await user.delete();
+        print("User deleted successfully");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("User deleted successfully!")),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to delete user. Please try again.")),
+        );
+      }
+    }
   }
 
   GestureDetector buildAccountOptionRow(BuildContext context, String title) {

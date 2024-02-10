@@ -115,7 +115,6 @@ class SignUpScreenState extends State<SignUpScreen> {
             SizedBox(height: screenHeight * 0.02),
             CustomTextFieldLogin(
               hintText: 'Set your password',
-              
               isPasswordTextField: true,
               labelText: 'Password',
               icons: Icons.password,
@@ -138,7 +137,15 @@ class SignUpScreenState extends State<SignUpScreen> {
                     HomepageContainerScreen.id,
                     (route) => false,
                   );
+                  showAboutDialog(
+                      context: context,
+                      applicationName: "Bring Your Own Fridge",
+                      children: [
+                        Text(
+                            "Welcome to Bring Your Own Fridge! You have successfully signed up. Please check your email to verify your account. Hope you enjoy your saving journey with us!"),
+                      ]);
                 } else if (state is SignUpFailureState) {
+
                   showDialog(
                       context: context,
                       builder: (context) {
@@ -147,12 +154,14 @@ class SignUpScreenState extends State<SignUpScreen> {
                               style: theme.textTheme.bodyMedium),
                           actions: <Widget>[
                             TextButton(
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .pop(); // Dismiss the dialog
-                              },
-                              child: const Text('OK'),
-                            ),
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // Dismiss the dialog
+                                },
+                                child: const Text(
+                                  'OK',
+                                  style: TextStyle(color: Colors.black),
+                                )),
                           ], // 'const' is fine here since the text doesn't change
                         );
                       });
