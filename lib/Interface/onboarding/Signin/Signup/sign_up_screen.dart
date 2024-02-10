@@ -96,6 +96,7 @@ class SignUpScreenState extends State<SignUpScreen> {
             SizedBox(height: 29.v),
             CustomTextFieldLogin(
               hintText: 'Enter your Email',
+              isPasswordTextField: false,
               labelText: 'Email',
               icons: Icons.email,
               controller: emailController,
@@ -114,6 +115,8 @@ class SignUpScreenState extends State<SignUpScreen> {
             SizedBox(height: screenHeight * 0.02),
             CustomTextFieldLogin(
               hintText: 'Set your password',
+              
+              isPasswordTextField: true,
               labelText: 'Password',
               icons: Icons.password,
               controller: passwordController,

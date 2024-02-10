@@ -3,6 +3,7 @@ import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_leading_image.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_elevated_button.dart';
+import 'package:astridzhao_s_food_app/widgets/custom_signin_widget.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 
@@ -18,89 +19,91 @@ class ForgetPasswordScreen extends StatefulWidget {
 class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   TextEditingController emailController = TextEditingController();
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: _buildAppBar(context),
-        body: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(top: 344.v),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 27.h,
-                vertical: 93.v,
-              ),
-              decoration: AppDecoration.gradientGrayToGray,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 5.v),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      decoration: AppDecoration.outlineBlack900,
-                      child: Text(
-                        "Forget Password?",
-                        style: TextStyle(
-                          color: appTheme.gray700,
-                          fontSize: 24.fSize,
-                          fontFamily: 'Outfit',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10.v),
-                  Padding(
-                    padding: EdgeInsets.only(right: 111.h),
+        body: Padding(
+          padding: EdgeInsets.only(top: screenHeight * 0.3),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.1,
+              vertical: screenHeight * 0.1,
+            ),
+            decoration: AppDecoration.gradientGrayToGray,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    decoration: AppDecoration.outlineBlack900,
                     child: Text(
-                      "Don’t worry!",
-                      textAlign: TextAlign.center,
+                      "Forget Password?",
                       style: TextStyle(
-                        color: appTheme.gray800,
-                        fontSize: 14.fSize,
+                        color: appTheme.gray700,
+                        fontSize: 24.fSize,
                         fontFamily: 'Outfit',
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  SizedBox(height: 20.v),
-                  Padding(
-                    padding: EdgeInsets.only(left: 15.h),
-                    child: CustomTextFormField(
-                      controller: emailController,
-                      hintText: "Email",
-                      textInputAction: TextInputAction.done,
-                      textInputType: TextInputType.emailAddress,
-                      prefix: Container(
-                        margin: EdgeInsets.fromLTRB(16.h, 8.v, 22.h, 11.v),
-                        child: CustomImageView(
-                          imagePath: ImageConstant.imgLock,
-                          height: 29.adaptSize,
-                          width: 29.adaptSize,
-                        ),
-                      ),
-                      prefixConstraints: BoxConstraints(
-                        maxHeight: 48.v,
-                      ),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Forget Password?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: appTheme.gray800,
+                      fontSize: 14.fSize,
+                      fontFamily: 'Outfit',
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
-                  SizedBox(height: 20.v),
-                  CustomElevatedButton(
-                    height: 40.v,
-                    width: 187.h,
-                    text: "Find my password",
-                    margin: EdgeInsets.only(right: 57.h),
-                    buttonStyle: CustomButtonStyles.fillGrayTL8,
+                ),
+                SizedBox(height: screenHeight * 0.05),
+                CustomTextFieldLogin(
+                  hintText: 'Enter your Email',
+                  isPasswordTextField: false,
+                  labelText: 'Email',
+                  icons: Icons.email,
+                  controller: emailController,
+                  decoration: InputDecoration(),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                CustomElevatedButton(
+                  onPressed: () {},
+                  text: 'Send',
+                  buttonTextStyle: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.fSize,
+                    fontFamily: 'Outfit',
+                    fontWeight: FontWeight.w700,
                   ),
-                ],
-              ),
+                  buttonStyle: ElevatedButton.styleFrom(
+                    elevation: 3,
+                    backgroundColor: appTheme.green_primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

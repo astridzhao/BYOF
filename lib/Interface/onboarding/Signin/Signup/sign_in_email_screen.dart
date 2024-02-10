@@ -26,28 +26,27 @@ class SignInTwoScreenState extends State<SignInTwoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: _buildAppBar(context),
-        body: Container(
-          key: _formKey,
-          decoration: AppDecoration.gradientGrayToGray,
-          child: Padding(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.2),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.8,
-              width: double.maxFinite,
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  _buildSignInEmailSection(context),
-                  _otherOptionSignInSection(context),
-                ],
-              ),
+      resizeToAvoidBottomInset: true,
+      appBar: _buildAppBar(context),
+      body: Container(
+        key: _formKey,
+        decoration: AppDecoration.gradientGrayToGray,
+        child: Padding(
+          padding:
+              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.2),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.8,
+            width: double.maxFinite,
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                _buildSignInEmailSection(context),
+                _otherOptionSignInSection(context),
+              ],
             ),
           ),
         ),
-      
+      ),
     );
   }
 
@@ -113,6 +112,7 @@ class SignInTwoScreenState extends State<SignInTwoScreen> {
             SizedBox(height: screenHeight * 0.05),
             CustomTextFieldLogin(
               hintText: 'Enter your Email',
+              isPasswordTextField: false,
               labelText: 'Email',
               icons: Icons.email,
               controller: emailController,
@@ -128,6 +128,7 @@ class SignInTwoScreenState extends State<SignInTwoScreen> {
             SizedBox(height: screenHeight * 0.02),
             CustomTextFieldLogin(
               hintText: 'Set your password',
+              isPasswordTextField: true,
               labelText: 'Password',
               icons: Icons.password,
               controller: passwordController,

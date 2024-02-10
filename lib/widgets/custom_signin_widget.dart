@@ -1,7 +1,7 @@
-import 'package:astridzhao_s_food_app/theme/theme_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:astridzhao_s_food_app/theme/theme_helper.dart'; // Assuming this exists for theming
 
-class CustomTextFieldLogin extends StatelessWidget {
+class CustomTextFieldLogin extends StatefulWidget {
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final TextInputType keyboardType;
@@ -9,6 +9,7 @@ class CustomTextFieldLogin extends StatelessWidget {
   final String labelText;
   final InputDecoration decoration;
   final IconData icons;
+  final bool isPasswordTextField;
 
   const CustomTextFieldLogin({
     Key? key,
@@ -19,20 +20,45 @@ class CustomTextFieldLogin extends StatelessWidget {
     required this.labelText,
     required this.decoration,
     required this.icons,
+    required this.isPasswordTextField,
   }) : super(key: key);
+
+  @override
+  _CustomTextFieldLoginState createState() => _CustomTextFieldLoginState();
+}
+
+class _CustomTextFieldLoginState extends State<CustomTextFieldLogin> {
+  late bool showPassword;
+
+  @override
+  void initState() {
+    super.initState();
+    showPassword = false;
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      validator: validator,
-      keyboardType: keyboardType,
-      decoration: decoration.copyWith(
-        // Use copyWith to allow overriding specific properties
-        hintText: hintText,
-        labelText: labelText,
-        prefixIcon: Icon(icons),
-
+      controller: widget.controller,
+      validator: widget.validator,
+      keyboardType: widget.keyboardType,
+      obscureText: widget.isPasswordTextField ? !showPassword : false,
+      decoration: widget.decoration.copyWith(
+        hintText: widget.hintText,
+        labelText: widget.labelText,
+        prefixIcon: Icon(widget.icons),
+        suffixIcon: widget.isPasswordTextField
+            ? IconButton(
+                icon: Icon(
+                  showPassword ? Icons.visibility : Icons.visibility_off,
+                ),
+                onPressed: () {
+                  setState(() {
+                    showPassword = !showPassword;
+                  });
+                },
+              )
+            : null,
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
               color: Colors.black45,
@@ -59,8 +85,6 @@ class CustomTextFieldLogin extends StatelessWidget {
           color: appTheme.green_primary, // Label text color when focused
           fontSize: 18,
         ),
-
-        // Other properties like border, fillColor, etc., can be predefined or customized here
       ),
     );
   }

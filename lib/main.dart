@@ -34,10 +34,6 @@ void main() async {
   );
 }
 
-// class MyApp extends StatefulWidget {
-//   @override
-//   _MyAppState createState() => new _MyAppState();
-// }
 class MyApp extends StatelessWidget {
   final SharedPreferences prefs;
 

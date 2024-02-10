@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/widgets/recipecontentrow_item_widget.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/widgets/saving_summery_widget.dart';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/profile-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/usersetting-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
@@ -651,52 +653,14 @@ class HomePagetate extends State<HomePage> {
           ),
         ),
         actions: [
-          BlocConsumer<AuthenticationBloc, AuthenticationState>(
-            listener: (context, state) {
-              if (state is SignOutSuccessState) {
-                // Assuming you have a state like this
-                // Navigate back to the sign-in screen or another appropriate screen
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          SignInTwoScreen()), // Adjust with your actual sign-in screen
-                  (Route<dynamic> route) => false,
-                );
-              } else if (state is SignOutFailureState) {
-                // Handle sign-out failure
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      content: Text('Failed to sign out. Please try again.'),
-                    );
-                  },
-                );
-              }
-            },
-            builder: (context, state) {
-              if (state is SignOutLoadingState) {
-                print('Signing out...');
-                // Show loading indicator
-                return CircularProgressIndicator();
-              }
-              // Return the sign-out button or any other relevant widget
-              return ElevatedButton(
-                onPressed: () {
-                  BlocProvider.of<AuthenticationBloc>(context).add(SignOut());
-                },
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(appTheme.yellow_primary),
-                  fixedSize: MaterialStateProperty.all<Size>(
-                      Size(screenWidth * 0.3, screenHeight * 0.05)),
-                ),
-                child: const Text('Log Out',
-                    style: TextStyle(fontSize: 12, color: Colors.black)),
-              );
-            },
-          ),
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SettingsPage()));
+              },
+              icon: Icon(Icons.person,
+                  color: appTheme.gray60002, size: 28.fSize)),
+         
           SizedBox(width: 0.02 * screenWidth),
         ],
       ),

@@ -20,7 +20,7 @@ class AuthService {
         return UserModel(
           id: firebaseUser.uid,
           email: firebaseUser.email ?? '',
-          displayName: firebaseUser.displayName ?? '',
+          name: firebaseUser.displayName ?? '',
         );
       }
     } on FirebaseAuthException catch (e) {
@@ -48,8 +48,9 @@ class AuthService {
       if (firebaseUser != null) {
         return UserModel(
           id: firebaseUser.uid,
+          // emailVerified: firebaseUser.emailVerified,
           email: firebaseUser.email ?? '',
-          displayName: firebaseUser.displayName ?? '',
+          name: firebaseUser.displayName ?? '',
         );
       }
     } on FirebaseAuthException catch (e) {
