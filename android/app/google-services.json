@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "237872875039",
+    "project_id": "ricebucket-f417d",
+    "storage_bucket": "ricebucket-f417d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237872875039:android:b7ab7a02e38d6b28a2372a",
+        "android_client_info": {
+          "package_name": "com.example.foodapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJSBW-IKVTyPxCkWDPiHMZS1zAbtowVvc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

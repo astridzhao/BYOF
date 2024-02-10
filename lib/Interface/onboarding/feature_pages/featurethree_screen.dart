@@ -1,6 +1,7 @@
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_options_screen.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/Signin/Signup/create_account_page_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding_first_time_download_screen/feature_pages/featuretwo_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/feature_pages/featuretwo_screen.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_subtitle.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +13,8 @@ class FeaturethreeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: _buildAppBar(context),
         body: Container(
           padding: EdgeInsets.symmetric(
@@ -24,7 +25,7 @@ class FeaturethreeScreen extends StatelessWidget {
           width: double.maxFinite,
           child: Column(
             children: [
-              SizedBox(height: 40.v),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               CustomImageView(
                 imagePath: ImageConstant.imgSlogan31,
                 height: 240.v,
@@ -33,7 +34,7 @@ class FeaturethreeScreen extends StatelessWidget {
                   20.h,
                 ),
               ),
-              SizedBox(height: 41.v),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Container(
                 child: Wrap(
                   children: [
@@ -45,10 +46,11 @@ class FeaturethreeScreen extends StatelessWidget {
                           right: 30.h,
                         ),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
-                              width: 260.h,
+                              width: MediaQuery.of(context).size.width * 0.7,
                               decoration: AppDecoration.outlineBlack900,
                               child: Text(
                                 "TRACK YOUR \n SAVING".toUpperCase(),
@@ -63,9 +65,12 @@ class FeaturethreeScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 52.v),
                             SizedBox(
-                              width: 330,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              height: MediaQuery.of(context).size.height * 0.1,
                               child: Text(
                                 "Did you waste lots of money on food? \n Did you want to save our environment? \n BYOF will help you easily track your saving everyday!",
                                 textAlign: TextAlign.center,
@@ -77,7 +82,9 @@ class FeaturethreeScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 60.v),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.08),
                             _buildNextColumn(context),
                           ],
                         ),
@@ -89,7 +96,7 @@ class FeaturethreeScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      
     );
   }
 
@@ -112,8 +119,8 @@ class FeaturethreeScreen extends StatelessWidget {
       actions: [
         AppbarSubtitle(
           text: "Skip",
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => CreateAccountPageScreen())),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => SignInOneScreen())),
           margin: EdgeInsets.fromLTRB(21.h, 20.v, 21.h, 5.v),
         ),
       ],
@@ -129,14 +136,16 @@ class FeaturethreeScreen extends StatelessWidget {
           style:
               ElevatedButton.styleFrom(backgroundColor: appTheme.green_primary),
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => CreateAccountPageScreen()));
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => SignInOneScreen()));
           },
           child: Text("Next",
               textAlign: TextAlign.center,
               softWrap: true,
               style: TextStyle(
                 fontFamily: "Outfit",
+                fontSize: 16.fSize,
+                color: Colors.white,
               )),
         ),
       ],

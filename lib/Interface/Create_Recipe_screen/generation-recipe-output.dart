@@ -60,8 +60,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: SafeArea(
+    return SafeArea(
       child: Scaffold(
         appBar: customeAppbar(context),
         body: Column(
@@ -123,7 +122,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           ],
         ),
       ),
-    ));
+    );
   }
 
   void saveNetworkImage(String generatedImageUrls) async {
@@ -707,7 +706,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
           icon: Icon(copyIcon),
           tooltip: "Copy",
           onPressed: () {
-            FlutterClipboard.copy(recipeCompanionToCopyableMarkdown(widget.recipe));
+            FlutterClipboard.copy(
+                recipeCompanionToCopyableMarkdown(widget.recipe));
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Copied")),
             );

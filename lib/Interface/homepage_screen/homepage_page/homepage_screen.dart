@@ -1,25 +1,29 @@
-import 'dart:io';
+import 'dart:async';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/widgets/recipecontentrow_item_widget.dart';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/widgets/saving_summery_widget.dart';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/profile-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/usersetting-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
+import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
+import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
-import 'package:astridzhao_s_food_app/Interface/backup_screens/old-favorites_screen.dart';
 import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/Interface/provider_SavingsModel.dart';
-import 'package:provider/provider.dart';
-import '../homepage_screen/homepage_page/widgets/recipecontentrow_item_widget.dart';
-import '../homepage_screen/homepage_page/widgets/saving_summery_widget.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:astridzhao_s_food_app/Interface/favorite_page/myfavorite-screen.dart';
-import 'package:flutter/material.dart';
-import 'dart:async';
 
-class HomepagePage extends StatefulWidget {
-  HomepagePage({Key? key})
+class HomePage extends StatefulWidget {
+  HomePage({Key? key})
       : super(
           key: key,
         );
-  HomepagePageState createState() => HomepagePageState();
+  HomePagetate createState() => HomePagetate();
 }
 
 class Savings {
@@ -28,7 +32,7 @@ class Savings {
   Savings(this.co2, this.dollar);
 }
 
-class HomepagePageState extends State<HomepagePage> {
+class HomePagetate extends State<HomePage> {
   //call database
   final recipe_dao = RecipesDao(DatabaseService().database);
   double savingCo2 = 0;
@@ -45,8 +49,6 @@ class HomepagePageState extends State<HomepagePage> {
 
   Stream<List<String?>> getFilteringValues() {
     final imageURL = recipe_dao.recipes.imageURL;
-    // print(imageURL);
-    // Assuming 'select' and 'get' are correctly defined in your DAO
     final query = recipe_dao.selectOnly(recipe_dao.recipes, distinct: true)
       ..addColumns([imageURL]);
     // Map the results of the query to a list of strings (image URLs)
@@ -61,91 +63,85 @@ class HomepagePageState extends State<HomepagePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: appTheme.yellow5001,
-        appBar: _buildAppBar(context),
-        body: SizedBox(
-          width: SizeUtils.width,
-          height: SizeUtils.height,
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(top: 20.v),
-            child: Container(
-              margin: EdgeInsets.only(bottom: 5.v),
-              padding: EdgeInsets.symmetric(horizontal: 10.h),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 23.h),
-                      child: Text(
-                        "So far, you have",
-                        style: TextStyle(
-                          color: appTheme.black900,
-                          fontSize: 12.fSize,
-                          fontFamily: 'Outfit',
-                          fontWeight: FontWeight.w400,
-                        ),
+    return Scaffold(
+      backgroundColor: appTheme.yellow5001,
+      appBar: _buildAppBar(context),
+      body: SizedBox(
+        width: SizeUtils.width,
+        height: SizeUtils.height,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(top: 20.v),
+          child: Container(
+            margin: EdgeInsets.only(bottom: 5.v),
+            padding: EdgeInsets.symmetric(horizontal: 10.h),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 23.h),
+                    child: Text(
+                      "So far, you have",
+                      style: TextStyle(
+                        color: appTheme.black900,
+                        fontSize: 12.fSize,
+                        fontFamily: 'Outfit',
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
-                  SizedBox(height: 15.v),
-                  _buildSavingSummary(context),
-                  SizedBox(height: 20.v),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 25.h,
-                      right: 20.h,
-                    ),
-                    child: _buildDividerSection_favorite_page(
-                      context,
-                      text: "My Favorite Recipes",
-                      text1: "See all",
-                    ),
+                ),
+                SizedBox(height: 15.v),
+                buildSavingSummary(context),
+                SizedBox(height: 20.v),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 25.h,
+                    right: 20.h,
                   ),
-                  Divider(
-                    color: appTheme.gray800,
-                    indent: 20.h,
-                    endIndent: 10.h,
+                  child: buildDividerSection_favorite_page(
+                    context,
+                    text: "My Favorite Recipes",
+                    text1: "See all",
                   ),
-                  SizedBox(height: 3.v),
-                  _buildFavoriteRecipeRow(context),
-                  SizedBox(height: 15.v),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 25.h,
-                      right: 20.h,
-                    ),
-                    child: _buildDividerSection_mealPlan(
-                      context,
-                      text: "My Meal Plan",
-                      text1: "View",
-                    ),
+                ),
+                Divider(
+                  color: appTheme.gray800,
+                  indent: 20.h,
+                  endIndent: 10.h,
+                ),
+                SizedBox(height: 3.v),
+                buildFavoriteRecipeRow(context),
+                SizedBox(height: 15.v),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 25.h,
+                    right: 20.h,
                   ),
-                  SizedBox(height: 1.v),
-                  Divider(
-                    color: appTheme.gray800,
-                    indent: 20.h,
-                    endIndent: 10.h,
+                  child: buildDividerSection_mealPlan(
+                    context,
+                    text: "My Meal Plan",
+                    text1: "View",
                   ),
-                  SizedBox(height: 10.v),
-                  mealplanDraft(context),
-                ],
-              ),
+                ),
+                SizedBox(height: 1.v),
+                Divider(
+                  color: appTheme.gray800,
+                  indent: 20.h,
+                  endIndent: 10.h,
+                ),
+                SizedBox(height: 10.v),
+                mealplanDraft(context),
+              ],
             ),
           ),
         ),
-        // floatingActionButton: Padding(
-        //   padding: EdgeInsets.fromLTRB(50, 0, 10, 0),
-        //   child: _buildCreateRecipeButton(context),
-        // ),
       ),
     );
   }
 
   /// Section Widget
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget buildAppBar(BuildContext context) {
     // Get the screen width and height
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -154,48 +150,32 @@ class HomepagePageState extends State<HomepagePage> {
       preferredSize: Size.fromHeight(screenHeight * 0.1),
       child: // Space above AppBar, adjust the height as needed
           CustomAppBar(
-        leading: CircleAvatar(
-          // Adjust the radius as needed
-          backgroundColor: Colors.transparent,
-          child: CustomImageView(
-            imagePath: ImageConstant.imgAvatar,
-            height: 100.adaptSize,
-            width: 100.adaptSize,
-            margin: EdgeInsets.all(0.03 * screenWidth),
+        elevation: 0,
+        backgroundColor: appTheme.yellow5001,
+        centerTitle: true,
+        title: Text(
+          'Bring Your Own Fridge',
+          style: TextStyle(
+              color: Color.fromARGB(190, 0, 0, 0),
+              fontSize: 16.fSize,
+              fontWeight: FontWeight.w500,
+              fontFamily: "Outfit"),
+        ),
+        toolbarHeight: screenHeight * 0.1,
+        leadingWidth: MediaQuery.of(context).size.width * 0.2,
+        leading: Builder(builder: (BuildContext context) {
+          return CustomImageView(
+            imagePath: ImageConstant.imgLogo2RemovebgPreview,
             fit: BoxFit.contain,
-          ),
-        ),
-        title: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: 0.02 * screenWidth, vertical: 0.1 * screenHeight),
-          child: Column(
-            children: [
-              AppbarTitle(
-                text: "Novice Cook",
-                textStyle: TextStyle(
-                  fontSize: 15.fSize,
-                  fontWeight: FontWeight.normal,
-                  color: appTheme.gray60002,
-                ),
-              ),
-              SizedBox(height: 3.v),
-              AppbarTitle(
-                text: "Astrid Zhao",
-                textStyle: TextStyle(
-                  fontSize: 20.fSize,
-                  fontWeight: FontWeight.w500,
-                  color: appTheme.gray60002,
-                ),
-              ),
-            ],
-          ),
-        ),
+            margin: EdgeInsets.only(left: 10.h),
+          );
+        }),
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildSavingSummary(BuildContext context) {
+  Widget buildSavingSummary(BuildContext context) {
     Savings savings = getSavingNums();
 
     return SizedBox(
@@ -219,7 +199,7 @@ class HomepagePageState extends State<HomepagePage> {
     );
   }
 
-  Widget _buildFavoriteRecipeRow(BuildContext context) {
+  Widget buildFavoriteRecipeRow(BuildContext context) {
     return Container(
       height: 76.v,
       padding: EdgeInsets.symmetric(vertical: 5.v),
@@ -248,11 +228,8 @@ class HomepagePageState extends State<HomepagePage> {
             itemBuilder: (context, index) {
               // Use the URL if it's not null, otherwise use the default image URL
               String imageUrl = urls[index] ?? default_image_url;
-              File imageFile = File(imageUrl);
-              return RecipecontentrowItemWidget(imagefilePath: imageUrl);
 
-              // log(imageFile.path);
-              // return RecipecontentrowItemWidget(imagefilePath: imageUrl);
+              return RecipecontentrowItemWidget(imagefilePath: imageUrl);
             },
           );
         },
@@ -522,7 +499,7 @@ class HomepagePageState extends State<HomepagePage> {
   }
 
   /// Common widget
-  Widget _buildDividerSection_favorite_page(
+  Widget buildDividerSection_favorite_page(
     BuildContext context, {
     required String text,
     required String text1,
@@ -564,7 +541,7 @@ class HomepagePageState extends State<HomepagePage> {
     );
   }
 
-  Widget _buildDividerSection_mealPlan(
+  Widget buildDividerSection_mealPlan(
     BuildContext context, {
     required String text,
     required String text1,
@@ -597,12 +574,96 @@ class HomepagePageState extends State<HomepagePage> {
               ),
             ),
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => FavoriteRecipePage()));
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(
+                        "Sorry! This feature is not available yet.",
+                        style:
+                            TextStyle(fontFamily: "Outfit", fontSize: 14.fSize),
+                      ),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "OK",
+                              style: TextStyle(
+                                  fontFamily: "Outfit",
+                                  fontSize: 12.fSize,
+                                  color: appTheme.black900),
+                            ))
+                      ],
+                    );
+                  });
             },
           ),
         ),
       ],
+    );
+  }
+
+  /// Section Widget
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    // Get the screen width and height
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    final user = FirebaseAuth.instance.currentUser;
+
+    return PreferredSize(
+      preferredSize: Size.fromHeight(screenHeight * 0.13),
+      child: CustomAppBar(
+        backgroundColor: Colors.transparent,
+        leading: CircleAvatar(
+          // Adjust the radius as needed
+          backgroundColor: Colors.transparent,
+          child: CustomImageView(
+            imagePath: ImageConstant.imgAvatar,
+            height: 100.adaptSize,
+            width: 100.adaptSize,
+            margin: EdgeInsets.all(0.03 * screenWidth),
+            fit: BoxFit.contain,
+          ),
+        ),
+        title: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: 0.02 * screenWidth, vertical: 0.1 * screenHeight),
+          child: Column(
+            children: [
+              AppbarTitle(
+                text: "Level",
+                textStyle: TextStyle(
+                  fontSize: 15.fSize,
+                  fontWeight: FontWeight.normal,
+                  color: appTheme.gray60002,
+                ),
+              ),
+              SizedBox(height: 3.v),
+              AppbarTitle(
+                text: user!.email!,
+                textStyle: TextStyle(
+                  fontSize: 12.fSize,
+                  fontWeight: FontWeight.w500,
+                  color: appTheme.gray60002,
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SettingsPage()));
+              },
+              icon: Icon(Icons.person,
+                  color: appTheme.gray60002, size: 28.fSize)),
+         
+          SizedBox(width: 0.02 * screenWidth),
+        ],
+      ),
     );
   }
 }

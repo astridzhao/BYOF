@@ -1,6 +1,7 @@
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/homepage_screen.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/Interface/backup_screens/old-create_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/home-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/backup_screens/NoAccount-home-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/favorite_page/myfavorite-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/myfridge_screen/_myfridge_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/creation-screen.dart';
@@ -10,7 +11,9 @@ import 'package:astridzhao_s_food_app/Interface/homepage_screen/bottom_bar.dart'
 
 // ignore_for_file: must_be_immutable
 class HomepageContainerScreen extends StatefulWidget {
-  HomepageContainerScreen({Key? key}) : super(key: key);
+  static String id = 'home_screen';
+  // const HomeScreen({super.key});
+  const HomepageContainerScreen({Key? key}) : super(key: key);
 
   _HomepageContainerScreenState createState() =>
       _HomepageContainerScreenState();
@@ -18,33 +21,6 @@ class HomepageContainerScreen extends StatefulWidget {
 
 class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
-
-//   String resultCompletion = """{
-//    "Title":"Asian Baked Chicken with Mushroom",
-//    "Ingredient List":[
-//       "2 chicken breasts",
-//       "1 onion, sliced",
-//       "1 cup mushrooms, sliced",
-//       "2 tablespoons soy sauce",
-//       "1 tablespoon hoisin sauce",
-//       "1 tablespoon honey",
-//       "1 tablespoon sesame oil",
-//       "1 teaspoon garlic powder",
-//       "1 teaspoon ginger powder",
-//       "Salt and pepper, to taste"
-//    ],
-//    "Step-by-Step Instructions":[
-//       "Preheat the oven to 375°F (190°C).",
-//       "In a small bowl, mix together the soy sauce, hoisin sauce, honey, sesame oil, garlic powder, ginger powder, salt, and pepper.",
-//       "Place the chicken breasts in a baking dish and pour the sauce mixture over them, making sure to coat each breast evenly.",
-//       "Add the sliced onions and mushrooms around the chicken in the baking dish.",
-//       "Cover the dish with aluminum foil and bake in the preheated oven for 25-30 minutes, or until the chicken is cooked through.",
-//       "Remove the foil and continue baking for an additional 5 minutes to allow the chicken to brown slightly.",
-//       "Serve the Asian baked chicken with mushroom over rice or alongside steamed vegetables."
-//    ],
-//    "Expected Cooking Time":40,
-//    "Note":"You can adjust the cooking time slightly depending on the thickness of the chicken breasts."
-// }""";
   // Function to navigate to CreateScreen
   void navigateToCreateScreen(BuildContext context) {
     Navigator.of(context).push(
@@ -82,7 +58,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
               BottomBarItem(
                 bottomItemSelectedColor: appTheme.yellow_secondary,
                 label: 'Home',
-                screen: NoAccount_HomepagePage(),
+                screen: HomePage(),
                 selectedIcon: Icons.home,
               ),
               BottomBarItem(
@@ -115,7 +91,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
   Widget getCurrentPage(String currentRoute) {
     switch (currentRoute) {
       case AppRoutes.homepagePage:
-        return NoAccount_HomepagePage();
+        return HomePage();
       case AppRoutes.createScreen:
         return CreateScreen();
       case AppRoutes.myFavoriteScreen:
@@ -123,44 +99,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
       case AppRoutes.myFridgeScreen:
         return MyfridgePage();
       default:
-        return NoAccount_HomepagePage();
+        return HomePage();
     }
   }
 }
-
-
-/// Section Widget
-//   Widget _buildBottomBar(BuildContext context) {
-//     return CustomBottomBar(onChanged: (BottomBarEnum type) {
-//       Navigator.pushNamed(navigatorKey.currentContext!, getCurrentRoute(type));
-//     });
-//   }
-
-//   ///Handling route based on bottom click actions
-//   String getCurrentRoute(BottomBarEnum type) {
-//     switch (type) {
-//       case BottomBarEnum.Iconbutton:
-//         return AppRoutes.homepagePage;
-//       default:
-//         return "/";
-//     }
-//   }
-//     Widget _buildCreateRecipeButton(BuildContext context) {
-//     return Positioned(
-//       child: CustomElevatedButton(
-//         alignment: Alignment.bottomCenter,
-//         height: 48.v,
-//         width: 160.h, // This ensures the button stretches across the width
-//         text: "Create Recipe",
-//         buttonTextStyle: TextStyle(
-//           fontSize: 16, // Example size
-//           fontWeight: FontWeight.bold, // Example weight
-//           color: Colors.white, // Example color
-//         ),
-//         buttonStyle: CustomButtonStyles.fillYellow,
-//         onPressed: () {
-//           _navigateToNextScreen(context);
-//         },
-//       ),
-//     );
-//   }
