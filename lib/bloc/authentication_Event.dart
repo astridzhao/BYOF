@@ -9,11 +9,14 @@ abstract class AuthenticationEvent {
 class SignUpUser extends AuthenticationEvent {
   final String email;
   final String password;
+  final bool emailVerified;
 
-  const SignUpUser(this.email, this.password);
+  const SignUpUser(this.email, this.password, {this.emailVerified = false});
 
   @override
-  List<Object> get props => [email, password];
+  List<Object> get props => [email, password, emailVerified];
+
+  String toString() => 'SignUpSuccessState(emailVerified: $emailVerified)';
 }
 
 class SignInUser extends AuthenticationEvent {

@@ -40,6 +40,11 @@ class SignUpSuccessState extends AuthenticationState {
   List<Object?> get props => [user];
 }
 
+class SignUpNeedsVerificationState extends AuthenticationState {
+  final String email;
+  SignUpNeedsVerificationState(this.email);
+}
+
 class SignInSuccessState extends AuthenticationState {
   final UserModel user;
   SignInSuccessState(this.user);

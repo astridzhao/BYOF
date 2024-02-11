@@ -83,10 +83,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       try {
         await user.updateDisplayName(name);
         print("User name updated successfully");
-
         await user.reload();
-        // Access the updated user object
-        final updatedUser = FirebaseAuth.instance.currentUser;
+
         // This should now print the updated name // Reload the user to refresh the user's profile data
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Profile updated successfully!")),
@@ -102,7 +100,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   Widget displayUserInformation(context, snapshot) {
     final user = snapshot.data;
-    print("user name: " + user.name);
+
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return Column(children: <Widget>[
@@ -148,8 +146,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
         alignment: Alignment.center,
         child: Column(
           children: [
-            buildTextField("User Name", "${user.name ?? 'Anonymous'}", true),
-            buildTextField("E-mail", "${user.email ?? 'Anonymous'}", false),
+            buildTextField("User Name", "${user.name ?? ''}", true),
+            buildTextField("E-mail", "${user.email ?? ''}", false),
             SizedBox(
               height: screenHeight * 0.02,
             ),
