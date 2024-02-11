@@ -21,18 +21,21 @@ class AuthenticationBloc
         final UserModel? user =
             await authService.signUpUser(event.email, event.password);
         if (user != null) {
-          emit(SignUpSuccessState(user));
+          await FirebaseAuth.instance.currentUser?.reload();
+          print(
+              "email verified ${FirebaseAuth.instance.currentUser?.emailVerified}");
+          if (FirebaseAuth.instance.currentUser?.emailVerified == true) {
+            print("Emitting SignUpSuccessState");
+            emit(SignUpSuccessState(user));
+          } else {
+            print("Emitting SignUpNeedsVerificationState");
+            emit(SignUpNeedsVerificationState(event.email));
+          }
         } else {
           emit(SignUpFailureState('An unknown error occurred'));
         }
       } on FirebaseAuthException catch (e) {
-        if (e.code == 'weak-password') {
-          print('weak-password');
-          emit(SignUpFailureState('The password provided is too weak.'));
-        } else if (e.code == 'email-already-in-use') {
-          emit(
-              SignUpFailureState('The account already exists for this email.'));
-        }
+        emit(SignUpFailureState(e.message ?? 'An unknown error occurred'));
       } catch (e) {
         print(e.toString());
       }
@@ -45,20 +48,36 @@ class AuthenticationBloc
         final UserModel? user =
             await authService.signInUser(event.email, event.password);
         if (user != null) {
+          // User is successfully signed in and not null
           emit(SignInSuccessState(user));
         } else {
-          emit(SignInFailureState('Check your email and password.'));
+          // Handle the case where user is null - maybe emit a different state
+          // or a failure state with a specific error message
+          emit(SignInFailureState('Authentication failed. Please try again.'));
         }
       } on FirebaseAuthException catch (e) {
-        if (e.code == 'user-not-found') {
-          emit(SignInFailureState('No user found for this email.'));
-          print('No user found for this email.');
-        } else if (e.code == 'wrong-password') {
-          emit(SignInFailureState('Wrong Password.'));
-          print('Wrong Password.');
-        } else {
-          emit(SignInFailureState('An unknown error occurred'));
+        String errorMessage;
+        switch (e.code) {
+          case 'user-not-found':
+            errorMessage = 'No user found for that email.';
+            break;
+          case 'wrong-password':
+            errorMessage = 'Wrong password provided for that user.';
+            break;
+          case 'user-disabled':
+            errorMessage = 'The user account has been disabled.';
+            break;
+          case 'too-many-requests':
+            errorMessage = 'Too many requests. Try again later.';
+            break;
+          case 'operation-not-allowed':
+            errorMessage = 'Signing in with email and password is not enabled.';
+            break;
+          default:
+            errorMessage = 'An unexpected error occurred. Please try again.';
         }
+      
+        emit(SignInFailureState(e.message! + errorMessage));
       } catch (e) {
         // Handle any other errors
         emit(SignInFailureState(e.toString()));
@@ -71,8 +90,6 @@ class AuthenticationBloc
 
       try {
         authService.signOutUser();
-        print("user sign out [bloc]");
-
         emit(SignOutSuccessState());
       } catch (e) {
         print('error');
