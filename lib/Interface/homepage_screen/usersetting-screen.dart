@@ -146,15 +146,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 );
               },
             ),
-            IconButton(
-                onPressed: () {
-                  // deleteUser();
-                },
-                icon: Icon(
-                  Icons.delete_forever,
-                  color: Colors.red,
-                  size: 30,
-                ))
           ],
         ),
       ),

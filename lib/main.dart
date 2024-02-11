@@ -64,7 +64,6 @@ class MyApp extends StatelessWidget {
               }
             },
             onUnknownRoute: (settings) {
-              print("called onUnknownRoute");
               return MaterialPageRoute(
                   builder: (context) => HomepageContainerScreen());
               // builder: (context) => UndefinedRouteScreen(name: settings.name));

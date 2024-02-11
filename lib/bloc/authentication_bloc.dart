@@ -21,13 +21,21 @@ class AuthenticationBloc
         final UserModel? user =
             await authService.signUpUser(event.email, event.password);
         if (user != null) {
-          // Send a verification email
-          emit(SignUpSuccessState(user));
+          await FirebaseAuth.instance.currentUser?.reload();
+          print(
+              "email verified ${FirebaseAuth.instance.currentUser?.emailVerified}");
+          if (FirebaseAuth.instance.currentUser?.emailVerified == true) {
+            print("Emitting SignUpSuccessState");
+            emit(SignUpSuccessState(user));
+          } else {
+            print("Emitting SignUpNeedsVerificationState");
+            emit(SignUpNeedsVerificationState(event.email));
+          }
         } else {
           emit(SignUpFailureState('An unknown error occurred'));
         }
       } on FirebaseAuthException catch (e) {
-        emit(SignInFailureState(e.message ?? 'An unknown error occurred'));
+        emit(SignUpFailureState(e.message ?? 'An unknown error occurred'));
       } catch (e) {
         print(e.toString());
       }
@@ -68,7 +76,8 @@ class AuthenticationBloc
           default:
             errorMessage = 'An unexpected error occurred. Please try again.';
         }
-        emit(SignInFailureState(e.message ?? errorMessage));
+      
+        emit(SignInFailureState(e.message! + errorMessage));
       } catch (e) {
         // Handle any other errors
         emit(SignInFailureState(e.toString()));

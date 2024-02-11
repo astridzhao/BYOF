@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_signin_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -27,6 +28,14 @@ class SignUpScreen extends StatefulWidget {
 class SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      checkEmailVerified();
+    });
+  }
 
   @override
   void dispose() {
@@ -131,21 +140,49 @@ class SignUpScreenState extends State<SignUpScreen> {
             SizedBox(height: screenHeight * 0.03),
             BlocConsumer<AuthenticationBloc, AuthenticationState>(
               listener: (context, state) {
-                if (state is SignUpSuccessState) {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    HomepageContainerScreen.id,
-                    (route) => false,
-                  );
-                  showAboutDialog(
+                // if (state is SignUpSuccessState) {
+                //   Navigator.pushNamedAndRemoveUntil(
+                //     context,
+                //     HomepageContainerScreen.id,
+                //     (route) => false,
+                //   );
+                print(state.toString());
+                if (state is SignUpNeedsVerificationState) {
+                  print("Email verification needed");
+                  showDialog(
                       context: context,
-                      applicationName: "Bring Your Own Fridge",
-                      children: [
-                        Text(
-                            "Welcome to Bring Your Own Fridge! You have successfully signed up. Please check your email to verify your account. Hope you enjoy your saving journey with us!"),
-                      ]);
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text("Bring Your Own Fridge"),
+                          content: Text(
+                              "Welcome to Bring Your Own Fridge!A verification email has been sent to ${state.email}. Please check your inbox and click the verification link to proceed. Hope you enjoy your saving journey with us!"),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close the dialog
+                                // Optionally, provide a way for the user to request another verification email here
+                              },
+                              child: Text(
+                                'OK',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                // Call the checkEmailVerified method here
+                                checkEmailVerified();
+                              },
+                              child: Text(
+                                'I Verified My Email',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ],
+                        );
+                      });
+                } else if (state is SignUpSuccessState) {
+                  print("wrong");
                 } else if (state is SignUpFailureState) {
-
                   showDialog(
                       context: context,
                       builder: (context) {
@@ -177,6 +214,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                         SignUpUser(
                           emailController.text.trim(),
                           passwordController.text.trim(),
+                          emailVerified: false,
                         ),
                       );
                     },
@@ -220,6 +258,28 @@ class SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> checkEmailVerified() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    await user
+        ?.reload(); // Refresh the user's state to get the latest email verification status
+    user = FirebaseAuth.instance.currentUser;
+
+    if (user != null && user.emailVerified) {
+      // Email has been verified. Here, you can finalize creating the account,
+      // or if it's already created, grant access to the app's features.
+      Fluttertoast.showToast(msg: "Email successfully verified!");
+      // Email has been verified, proceed with the application flow
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        HomepageContainerScreen.id,
+        (route) => false,
+      );
+    } else {
+      // Email is not verified, prompt the user or offer to resend the verification email
+      Fluttertoast.showToast(msg: "Please verify your email to continue.");
+    }
   }
 }
 

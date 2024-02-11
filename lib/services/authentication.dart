@@ -16,7 +16,8 @@ class AuthService {
       );
 
       final User? firebaseUser = userCredential.user;
-      if (firebaseUser != null) {
+      if (firebaseUser != null && firebaseUser.emailVerified == false) {
+        print("[authentication]send verification email");
         await firebaseUser.sendEmailVerification().catchError((error) {
           print("Failed to send verification email: $error");
         });
@@ -24,6 +25,8 @@ class AuthService {
           id: firebaseUser.uid,
           email: firebaseUser.email ?? '',
           name: firebaseUser.displayName ?? '',
+          // Consider adding an emailVerified field to your UserModel to keep track of this status
+          emailVerified: firebaseUser.emailVerified,
         );
       }
     } on FirebaseAuthException catch (e) {
@@ -51,13 +54,18 @@ class AuthService {
       if (firebaseUser != null) {
         return UserModel(
           id: firebaseUser.uid,
-          // emailVerified: firebaseUser.emailVerified,
+          emailVerified: firebaseUser.emailVerified,
           email: firebaseUser.email ?? '',
           name: firebaseUser.displayName ?? '',
         );
       }
     } on FirebaseAuthException catch (e) {
-      throw FirebaseAuthException(code: e.code, message: e.message);
+      print("sign in error" + e.toString());
+      // throw FirebaseAuthException(code: e.code, message: e.message);
+      return Future.error(e);
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e);
     }
     return null;
   }

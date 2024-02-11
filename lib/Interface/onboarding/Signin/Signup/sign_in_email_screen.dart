@@ -163,13 +163,9 @@ class SignInTwoScreenState extends State<SignInTwoScreen> {
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
                               HomepageContainerScreen()),
-                      // (route) => false,
-                      // ModalRoute.withName('/'),
                       (Route<dynamic> route) =>
                           route is HomepageContainerScreen);
                 } else if (state is SignInFailureState) {
-                  print(
-                      "[sign in]what is the error message: ${state.errorMessage}");
                   showDialog(
                       context: context,
                       builder: (context) {
