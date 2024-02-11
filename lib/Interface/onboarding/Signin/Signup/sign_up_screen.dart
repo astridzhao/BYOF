@@ -177,6 +177,21 @@ class SignUpScreenState extends State<SignUpScreen> {
                                 style: TextStyle(color: Colors.black),
                               ),
                             ),
+                            TextButton(
+                              onPressed: () {
+                                // Call the checkEmailVerified method here
+                                try {
+                                  FirebaseAuth.instance.currentUser
+                                      ?.sendEmailVerification();
+                                } catch (e) {
+                                  debugPrint('$e');
+                                }
+                              },
+                              child: Text(
+                                'Resend Email',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                           ],
                         );
                       });
