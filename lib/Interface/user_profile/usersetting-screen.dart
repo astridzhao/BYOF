@@ -1,5 +1,6 @@
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
-import 'package:astridzhao_s_food_app/Interface/homepage_screen/profile-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/user_profile/choosesubscription-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/user_profile/profile-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:astridzhao_s_food_app/theme/theme_helper.dart';
@@ -211,7 +212,7 @@ class _SettingsPageState extends State<SettingsPage> {
               SizedBox(height: screenHeight * 0.02),
               sectionHeader("Support & About"),
               eachSection(context, 'My Subscription',
-                  Icons.subscriptions_outlined, EditProfilePage()),
+                  Icons.subscriptions_outlined, SubscriptionPage_choosePlan()),
               eachSection(context, 'Help and Support',
                   Icons.question_mark_outlined, EditProfilePage()),
               SizedBox(height: screenHeight * 0.1),

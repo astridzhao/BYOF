@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/widgets/recipecontentrow_item_widget.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/widgets/saving_summery_widget.dart';
-import 'package:astridzhao_s_food_app/Interface/homepage_screen/usersetting-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/user_profile/usersetting-screen.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';

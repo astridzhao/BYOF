@@ -6,14 +6,15 @@ class UserModel {
   final String? photoUrl;
   final bool? emailVerified;
   final String id;
+  final String? subsriptionstatus;
 
-  UserModel({
-    this.name,
-    required this.email,
-    this.photoUrl,
-    this.emailVerified,
-    required this.id,
-  });
+  UserModel(
+      {this.name,
+      required this.email,
+      this.photoUrl,
+      this.emailVerified,
+      required this.id,
+      this.subsriptionstatus = "inactive"});
 }
 
 Future<UserModel?> getCurrentUserModel() async {

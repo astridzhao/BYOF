@@ -1,4 +1,4 @@
-import 'package:astridzhao_s_food_app/Interface/homepage_screen/usersetting-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/user_profile/usersetting-screen.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
