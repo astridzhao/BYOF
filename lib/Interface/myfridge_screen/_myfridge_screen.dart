@@ -129,7 +129,7 @@ class MyfridgePageState extends State<MyfridgePage> {
             // padding: EdgeInsets.only(top: 20),
             child: Column(
               children: [
-                SizedBox(height: 10.v),
+                SizedBox(height: 30.v),
                 SectionHeader(title: "Fiber"),
                 SizedBox(height: 1.v),
                 _buildFiberList(context),

@@ -132,163 +132,175 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int _pageIndex = 0;
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: widget.bottomItems[_pageIndex].screen,
-        floatingActionButtonLocation: widget.floatingActionButtonLocation ??
-            FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: SizedBox(
-          height: widget.fabHeight ?? 70,
-          width: widget.fabWidth ?? 70,
-          child: FloatingActionButton(
+      body: widget.bottomItems[_pageIndex].screen,
+      floatingActionButtonLocation: widget.floatingActionButtonLocation ??
+          FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: SizedBox(
+        height: widget.fabHeight ?? 70,
+        width: widget.fabWidth ?? 70,
+        child: FloatingActionButton(
             shape: CircleBorder(),
             onPressed: widget.onPressFAB,
             backgroundColor: widget.fabBackGroundColor ?? Colors.green,
             elevation: widget.fabElevation ?? 20,
-            child: widget.fabIcon ??
-                Icon(
-                  Icons.qr_code,
-                  size: 40,
-                ),
-          ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          height: MediaQuery.of(context).size.height * 0.1,
-          color: appTheme.green_primary,
-          shape: widget.centerNotched
-              ? CenterNotchedShape(notchRadius: widget.notchedRadius!)
-              : null,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List<Widget>.generate(
-                widget.bottomItems.length + 1,
-                (int index) => Expanded(
-                  child: index == (widget.bottomItems.length / 2)
-                      ? Container(
-                          height: widget.fabHeight ?? 45,
-                          padding: const EdgeInsets.only(top: 20),
-                          alignment: Alignment.bottomCenter,
-                          child: widget.fabChild ??
-                              Text(
-                                '',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: widget.fabBackGroundColor ??
-                                      Colors.orange,
-                                ),
-                              ),
-                        )
-                      : InkWell(
-                          onTap: () {
-                            setState(() {
-                              _pageIndex =
-                                  index > (widget.bottomItems.length / 2)
-                                      ? index - 1
-                                      : index;
-                            });
-                            if (_pageIndex == 0) {
-                              setState(() {});
-                            }
-                          },
-                          child: SizedBox(
-                            height: widget.bottomNavItemHeight ?? 43,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  height: widget.bottomNavItemIconHeight ??
-                                      MediaQuery.of(context).size.height *
-                                          0.027,
-                                  child: widget
-                                          .bottomItems[(index >
-                                                  (widget.bottomItems.length /
-                                                      2)
-                                              ? index - 1
-                                              : index)]
-                                          .icon ??
-                                      Icon(
+            child: widget.fabIcon),
+      ),
+      bottomNavigationBar: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+            Radius.circular(20.0),
+          )),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(
+              Radius.circular(40.0),
+            ),
+            child: BottomAppBar(
+              height: MediaQuery.of(context).size.height * 0.1,
+              color: appTheme.green_primary,
+              shape: widget.centerNotched
+                  ? CenterNotchedShape(notchRadius: widget.notchedRadius!)
+                  : null,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List<Widget>.generate(
+                    widget.bottomItems.length + 1,
+                    (int index) => Expanded(
+                      child: index == (widget.bottomItems.length / 2)
+                          ? Container(
+                              height: widget.fabHeight ?? 45,
+                              padding: const EdgeInsets.only(top: 20),
+                              alignment: Alignment.bottomCenter,
+                              child: widget.fabChild ??
+                                  Text(
+                                    '',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: widget.fabBackGroundColor ??
+                                          Colors.orange,
+                                    ),
+                                  ),
+                            )
+                          : InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _pageIndex =
+                                      index > (widget.bottomItems.length / 2)
+                                          ? index - 1
+                                          : index;
+                                });
+                                if (_pageIndex == 0) {
+                                  setState(() {});
+                                }
+                              },
+                              child: SizedBox(
+                                height: widget.bottomNavItemHeight ?? 50,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: widget.bottomNavItemIconHeight ??
+                                          MediaQuery.of(context).size.height *
+                                              0.027,
+                                      child: widget
+                                              .bottomItems[(index >
+                                                      (widget.bottomItems
+                                                              .length /
+                                                          2)
+                                                  ? index - 1
+                                                  : index)]
+                                              .icon ??
+                                          Icon(
+                                            widget
+                                                .bottomItems[(index >
+                                                        (widget.bottomItems
+                                                                .length /
+                                                            2)
+                                                    ? index - 1
+                                                    : index)]
+                                                .selectedIcon,
+                                            size: (index >
+                                                            widget.bottomItems
+                                                                    .length /
+                                                                2
+                                                        ? index - 1
+                                                        : index) ==
+                                                    _pageIndex
+                                                ? widget.bottomNavItemSelectedIconSize ??
+                                                    30
+                                                : widget.bottomNavItemunSelectedIconSize ??
+                                                    27,
+                                            color: (index >
+                                                            widget.bottomItems
+                                                                    .length /
+                                                                2
+                                                        ? index - 1
+                                                        : index) ==
+                                                    _pageIndex
+                                                ? widget.bottomItems[_pageIndex]
+                                                    .bottomItemSelectedColor
+                                                : widget.bottomItems[_pageIndex]
+                                                        .bottomItemUnSelectedColor ??
+                                                    Color.fromARGB(
+                                                        255, 62, 61, 61),
+                                          ),
+                                    ),
+                                    SizedBox(
+                                      height: 2,
+                                    ),
+                                    SizedBox(
+                                      height:
+                                          widget.bottomNavItemLabelHeight ?? 18,
+                                      child: Text(
                                         widget
                                             .bottomItems[(index >
                                                     (widget.bottomItems.length /
                                                         2)
                                                 ? index - 1
                                                 : index)]
-                                            .selectedIcon,
-                                        size: (index >
-                                                        widget.bottomItems
-                                                                .length /
-                                                            2
-                                                    ? index - 1
-                                                    : index) ==
-                                                _pageIndex
-                                            ? widget.bottomNavItemSelectedIconSize ??
-                                                30
-                                            : widget.bottomNavItemunSelectedIconSize ??
-                                                27,
-                                        color: (index >
-                                                        widget.bottomItems
-                                                                .length /
-                                                            2
-                                                    ? index - 1
-                                                    : index) ==
-                                                _pageIndex
-                                            ? widget.bottomItems[_pageIndex]
-                                                .bottomItemSelectedColor
-                                            : widget.bottomItems[_pageIndex]
-                                                    .bottomItemUnSelectedColor ??
-                                                Color.fromARGB(255, 62, 61, 61),
-                                      ),
-                                ),
-                                SizedBox(
-                                  height: 2,
-                                ),
-                                SizedBox(
-                                  height: widget.bottomNavItemLabelHeight ?? 15,
-                                  child: Text(
-                                    widget
-                                        .bottomItems[(index >
-                                                (widget.bottomItems.length / 2)
-                                            ? index - 1
-                                            : index)]
-                                        .label,
-                                    style: TextStyle(
-                                      color: (index >
-                                                      widget.bottomItems
-                                                              .length /
-                                                          2
-                                                  ? index - 1
-                                                  : index) ==
-                                              _pageIndex
-                                          ? widget.bottomItems[_pageIndex]
-                                              .bottomItemSelectedColor
-                                          : widget.bottomItems[_pageIndex]
-                                                  .bottomItemUnSelectedColor ??
-                                              Color.fromARGB(255, 62, 61, 61),
-                                      fontWeight:
-                                          widget.bottomItemLabelFontWeight ??
+                                            .label,
+                                        style: TextStyle(
+                                          color: (index >
+                                                          widget.bottomItems
+                                                                  .length /
+                                                              2
+                                                      ? index - 1
+                                                      : index) ==
+                                                  _pageIndex
+                                              ? widget.bottomItems[_pageIndex]
+                                                  .bottomItemSelectedColor
+                                              : widget.bottomItems[_pageIndex]
+                                                      .bottomItemUnSelectedColor ??
+                                                  Color.fromARGB(
+                                                      255, 62, 61, 61),
+                                          fontWeight: widget
+                                                  .bottomItemLabelFontWeight ??
                                               FontWeight.w600,
-                                      fontSize: (index >
-                                                      widget.bottomItems
-                                                              .length /
-                                                          2
-                                                  ? index - 1
-                                                  : index) ==
-                                              _pageIndex
-                                          ? widget.bottomNavItemSelectedLabelSize ??
-                                              11
-                                          : widget.bottomNavItemunSelectedLabelSize ??
-                                              10,
+                                          fontSize: (index >
+                                                          widget.bottomItems
+                                                                  .length /
+                                                              2
+                                                      ? index - 1
+                                                      : index) ==
+                                                  _pageIndex
+                                              ? widget.bottomNavItemSelectedLabelSize ??
+                                                  11
+                                              : widget.bottomNavItemunSelectedLabelSize ??
+                                                  10,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-      );
+          )));
 }

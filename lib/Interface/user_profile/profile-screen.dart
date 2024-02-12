@@ -10,6 +10,23 @@ class EditProfilePage extends StatefulWidget {
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
+class UserInformationProvider with ChangeNotifier {
+  UserModel? _userModel;
+
+  UserModel? get userModel => _userModel;
+
+  Future<void> fetchCurrentUserModel() async {
+    _userModel =
+        await getCurrentUserModel(); // Your existing method to fetch user data
+    notifyListeners();
+  }
+
+  void updateUserModel(UserModel newUserModel) {
+    _userModel = newUserModel;
+    notifyListeners();
+  }
+}
+
 class _EditProfilePageState extends State<EditProfilePage> {
   bool showPassword = false;
   TextEditingController nameController = TextEditingController();
@@ -82,6 +99,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (user != null) {
       try {
         await user.updateDisplayName(name);
+        Provider.of<UserInformationProvider>(context, listen: false)
+            .fetchCurrentUserModel();
+
         print("User name updated successfully");
         await user.reload();
 
@@ -208,9 +228,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
             floatingLabelBehavior: FloatingLabelBehavior.always,
             hintText: placeholder,
             hintStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w300,
+              color: Colors.black45,
             )),
       ),
     );

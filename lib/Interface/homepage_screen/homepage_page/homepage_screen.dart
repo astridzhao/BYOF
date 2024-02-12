@@ -59,19 +59,38 @@ class HomePagetate extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: appTheme.yellow5001,
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    return SafeArea(
+        child: Scaffold(
+      // backgroundColor: appTheme.yellow5001,
       appBar: _buildAppBar(context),
       body: SizedBox(
         width: SizeUtils.width,
         height: SizeUtils.height,
         child: SingleChildScrollView(
-          padding: EdgeInsets.only(top: 20.v),
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
           child: Container(
+            decoration: BoxDecoration(
+              color: appTheme.yellow5001, // The color of the container
+              borderRadius: BorderRadius.all(
+                Radius.circular(20.0),
+              ),
+              boxShadow: [
+                // Optional: to add elevation to your BottomNavBar
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 0,
+                  blurRadius: 10,
+                  offset: Offset(0, 4), // changes position of shadow
+                ),
+              ],
+            ),
             margin: EdgeInsets.only(bottom: 5.v),
             padding: EdgeInsets.symmetric(horizontal: 10.h),
             child: Column(
               children: [
+                SizedBox(height: screenHeight * 0.02),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
@@ -87,13 +106,12 @@ class HomePagetate extends State<HomePage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 15.v),
+                SizedBox(height: screenHeight * 0.02),
                 buildSavingSummary(context),
-                SizedBox(height: 20.v),
+                SizedBox(height: screenHeight * 0.04),
                 Padding(
-                  padding: EdgeInsets.only(
-                    left: 25.h,
-                    right: 20.h,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.05,
                   ),
                   child: buildDividerSection_favorite_page(
                     context,
@@ -106,34 +124,33 @@ class HomePagetate extends State<HomePage> {
                   indent: 20.h,
                   endIndent: 10.h,
                 ),
-                SizedBox(height: 3.v),
+                SizedBox(height: screenHeight * 0.02),
                 buildFavoriteRecipeRow(context),
-                SizedBox(height: 15.v),
+                SizedBox(height: screenHeight * 0.02),
                 Padding(
-                  padding: EdgeInsets.only(
-                    left: 25.h,
-                    right: 20.h,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.05,
                   ),
-                  child: buildDividerSection_mealPlan(
+                  child: buildDividerSection_favorite_page(
                     context,
                     text: "My Meal Plan",
                     text1: "View",
                   ),
                 ),
-                SizedBox(height: 1.v),
                 Divider(
                   color: appTheme.gray800,
                   indent: 20.h,
                   endIndent: 10.h,
                 ),
-                SizedBox(height: 10.v),
+                SizedBox(height: screenHeight * 0.02),
                 mealplanDraft(context),
+                SizedBox(height: screenHeight * 0.02),
               ],
             ),
           ),
         ),
       ),
-    );
+    ));
   }
 
   /// Section Widget
@@ -609,6 +626,7 @@ class HomePagetate extends State<HomePage> {
     final user = FirebaseAuth.instance.currentUser;
 
     return CustomAppBar(
+      elevation: 0,
       toolbarHeight: MediaQuery.of(context).size.height * 0.1,
       leadingWidth: MediaQuery.of(context).size.width * 0.2,
       backgroundColor: Colors.transparent,

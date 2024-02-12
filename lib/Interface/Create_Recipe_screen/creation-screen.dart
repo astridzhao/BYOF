@@ -277,11 +277,11 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
 
     return SafeArea(
         child: Scaffold(
-      backgroundColor: appTheme.yellow5001,
+      // backgroundColor: appTheme.yellow5001,
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-        backgroundColor: Colors.transparent,  
+        backgroundColor: Colors.transparent,
         actions: <Widget>[
           TextButton(
             child: Text(
@@ -347,7 +347,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                       alignment: Alignment.topCenter,
                       //Language Picker Widget
                       child: Padding(
-                          padding: EdgeInsets.only(left: 30.h, right: 30.h),
+                          padding: EdgeInsets.only(left: 25.h, right: 25.h),
                           child: Column(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -371,7 +371,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                                   decoration: BoxDecoration(
                                     color: appTheme.gray700,
                                     borderRadius: BorderRadius.circular(
-                                      20.h,
+                                      10.h,
                                     ),
                                   ),
                                   child: GridView.count(

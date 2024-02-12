@@ -21,12 +21,6 @@ class HomepageContainerScreen extends StatefulWidget {
 
 class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
-  // Function to navigate to CreateScreen
-  void navigateToCreateScreen(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => CreateScreen()),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +33,10 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
     double navBarWidth = screenWidth * 0.9;
 
     return SafeArea(
+      // bottom: false,
+      // top: false,
       child: Scaffold(
-        backgroundColor: appTheme.yellow5001,
+        // backgroundColor: appTheme.yellow5001,
         body: Navigator(
             key: navigatorKey,
             initialRoute: AppRoutes.homepagePage,
@@ -48,40 +44,39 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
                 pageBuilder: (ctx, ani, ani1) =>
                     getCurrentPage(routeSetting.name!),
                 transitionDuration: Duration(seconds: 0))),
-        bottomNavigationBar: Container(
-          child: BottomNavBar(
-            notchedRadius: 20,
-            centerNotched: false,
-            fabIcon: Icon(Icons.emoji_events),
-            fabBackGroundColor: appTheme.yellow_secondary,
-            bottomItems: <BottomBarItem>[
-              BottomBarItem(
-                bottomItemSelectedColor: appTheme.yellow_secondary,
-                label: 'Home',
-                screen: HomePage(),
-                selectedIcon: Icons.home,
-              ),
-              BottomBarItem(
-                bottomItemSelectedColor: appTheme.yellow_secondary,
-                label: 'My Favorite',
-                screen: FavoriteRecipePage2(),
-                selectedIcon: Icons.collections_bookmark_outlined,
-              ),
-              BottomBarItem(
-                bottomItemSelectedColor: appTheme.yellow_secondary,
-                label: 'Create',
-                selectedIcon: Icons.dinner_dining_rounded,
-                screen: Azure_CreateScreen(),
-                // screen: GenerationScreen(resultCompletion: resultCompletion),
-              ),
-              BottomBarItem(
-                bottomItemSelectedColor: appTheme.yellow_secondary,
-                label: 'My Fridge',
-                screen: MyfridgePage(),
-                selectedIcon: Icons.notifications_active,
-              ),
-            ],
-          ),
+        bottomNavigationBar: BottomNavBar(
+          // height: navBarHeight,
+          notchedRadius: 20,
+          centerNotched: false,
+          fabIcon: Icon(Icons.emoji_events),
+          fabBackGroundColor: appTheme.yellow_secondary,
+          bottomItems: <BottomBarItem>[
+            BottomBarItem(
+              bottomItemSelectedColor: appTheme.yellow_secondary,
+              label: 'Home',
+              screen: HomePage(),
+              selectedIcon: Icons.home,
+            ),
+            BottomBarItem(
+              bottomItemSelectedColor: appTheme.yellow_secondary,
+              label: 'My Favorite',
+              screen: FavoriteRecipePage2(),
+              selectedIcon: Icons.collections_bookmark_outlined,
+            ),
+            BottomBarItem(
+              bottomItemSelectedColor: appTheme.yellow_secondary,
+              label: 'Create',
+              selectedIcon: Icons.dinner_dining_rounded,
+              screen: Azure_CreateScreen(),
+              // screen: GenerationScreen(resultCompletion: resultCompletion),
+            ),
+            BottomBarItem(
+              bottomItemSelectedColor: appTheme.yellow_secondary,
+              label: 'My Fridge',
+              screen: MyfridgePage(),
+              selectedIcon: Icons.notifications_active,
+            ),
+          ],
         ),
       ),
     );

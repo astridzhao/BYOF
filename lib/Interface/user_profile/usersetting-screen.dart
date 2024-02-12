@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -20,7 +21,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void initState() {
-    user!.reload();
     super.initState();
   }
 
@@ -36,21 +36,43 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     }
 
+    // Widget userName() {
+    //   return FutureBuilder<UserModel?>(
+    //     future: getCurrentUserModel(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.connectionState == ConnectionState.done) {
+    //         String name = snapshot.data?.name ?? "";
+    //         print("name: $name");
+    //         return Text("${name}",
+    //             style: TextStyle(
+    //                 fontFamily: "Outfit",
+    //                 color: Colors.black87,
+    //                 fontSize: 20,
+    //                 fontWeight: FontWeight.w500));
+    //       } else {
+    //         return Text("no name");
+    //       }
+    //     },
+    //   );
+    // }
     Widget userName() {
-      return FutureBuilder<UserModel?>(
-        future: getCurrentUserModel(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            String name = snapshot.data?.name ?? "";
+      // Use Provider to listen to changes in UserInformationProvider
+      return Consumer<UserInformationProvider>(
+        builder: (context, userInfoProvider, child) {
+          // You can call fetchCurrentUserModel if the userModel is null or whenever you want to refresh the data.
+          if (userInfoProvider.userModel == null) {
+            userInfoProvider
+                .fetchCurrentUserModel(); // This will only fetch if data is null, adjust logic as needed.
+            return CircularProgressIndicator(); // Show loading indicator while data is being fetched
+          } else {
+            String name = userInfoProvider.userModel?.name ?? "no name";
             print("name: $name");
-            return Text("${name}",
+            return Text("$name",
                 style: TextStyle(
                     fontFamily: "Outfit",
                     color: Colors.black87,
                     fontSize: 20,
                     fontWeight: FontWeight.w500));
-          } else {
-            return Text("no name");
           }
         },
       );
