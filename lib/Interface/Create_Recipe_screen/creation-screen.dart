@@ -281,15 +281,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-        leadingWidth: MediaQuery.of(context).size.width * 0.2,
-        backgroundColor: Colors.transparent,
-        leading: Builder(builder: (BuildContext context) {
-          return CustomImageView(
-            imagePath: ImageConstant.imgLogo2RemovebgPreview,
-            fit: BoxFit.contain,
-            margin: EdgeInsets.only(left: 10.h),
-          );
-        }),
+        backgroundColor: Colors.transparent,  
         actions: <Widget>[
           TextButton(
             child: Text(

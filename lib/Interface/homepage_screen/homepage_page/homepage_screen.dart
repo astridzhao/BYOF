@@ -1,13 +1,9 @@
 import 'dart:async';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/widgets/recipecontentrow_item_widget.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/widgets/saving_summery_widget.dart';
-import 'package:astridzhao_s_food_app/Interface/homepage_screen/profile-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/usersetting-screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
-import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_title.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
@@ -612,58 +608,37 @@ class HomePagetate extends State<HomePage> {
     double screenHeight = MediaQuery.of(context).size.height;
     final user = FirebaseAuth.instance.currentUser;
 
-    return PreferredSize(
-      preferredSize: Size.fromHeight(screenHeight * 0.13),
-      child: CustomAppBar(
+    return CustomAppBar(
+      toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+      leadingWidth: MediaQuery.of(context).size.width * 0.2,
+      backgroundColor: Colors.transparent,
+      leading: CircleAvatar(
+        // Adjust the radius as needed
         backgroundColor: Colors.transparent,
-        leading: CircleAvatar(
-          // Adjust the radius as needed
-          backgroundColor: Colors.transparent,
-          child: CustomImageView(
-            imagePath: ImageConstant.imgAvatar,
-            height: 100.adaptSize,
-            width: 100.adaptSize,
-            margin: EdgeInsets.all(0.03 * screenWidth),
-            fit: BoxFit.contain,
-          ),
+        child: CustomImageView(
+          imagePath: ImageConstant.imgLogo2RemovebgPreview,
+          margin: EdgeInsets.all(0.03 * screenWidth),
+          fit: BoxFit.contain,
         ),
-        title: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: 0.02 * screenWidth, vertical: 0.1 * screenHeight),
-          child: Column(
-            children: [
-              AppbarTitle(
-                text: "Level",
-                textStyle: TextStyle(
-                  fontSize: 15.fSize,
-                  fontWeight: FontWeight.normal,
-                  color: appTheme.gray60002,
-                ),
-              ),
-              SizedBox(height: 3.v),
-              AppbarTitle(
-                text: user!.email!,
-                textStyle: TextStyle(
-                  fontSize: 12.fSize,
-                  fontWeight: FontWeight.w500,
-                  color: appTheme.gray60002,
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SettingsPage()));
-              },
-              icon: Icon(Icons.person,
-                  color: appTheme.gray60002, size: 28.fSize)),
-         
-          SizedBox(width: 0.02 * screenWidth),
-        ],
       ),
+      title: AppbarTitle(
+        text: "Level",
+        textStyle: TextStyle(
+          fontSize: 15.fSize,
+          fontWeight: FontWeight.w500,
+          color: appTheme.black900,
+        ),
+      ),
+      actions: [
+        IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => SettingsPage()));
+            },
+            icon:
+                Icon(Icons.person, color: appTheme.gray60002, size: 28.fSize)),
+        SizedBox(width: 0.02 * screenWidth),
+      ],
     );
   }
 }

@@ -16,178 +16,210 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final user = FirebaseAuth.instance.currentUser;
+
+  @override
+  void initState() {
+    user!.reload();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 1,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(
-                  builder: (context) => HomepageContainerScreen()),
-              (Route<dynamic> route) => false, // Remove all routes below
-            );
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: appTheme.green_primary,
+    void navigation_screen(BuildContext context, Widget screen) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => screen),
+      );
+    }
+
+    Widget userName() {
+      return FutureBuilder<UserModel?>(
+        future: getCurrentUserModel(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            String name = snapshot.data?.name ?? "";
+            print("name: $name");
+            return Text("${name}",
+                style: TextStyle(
+                    fontFamily: "Outfit",
+                    color: Colors.black87,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500));
+          } else {
+            return Text("no name");
+          }
+        },
+      );
+    }
+
+    Widget userEmail() {
+      return FutureBuilder<UserModel?>(
+        future: getCurrentUserModel(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            String email = snapshot.data?.email ?? "";
+            print("name: $email");
+            return Text("${email}",
+                style: TextStyle(
+                    fontFamily: "Outfit",
+                    color: Colors.black87,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w200));
+          } else {
+            return Text("no name");
+          }
+        },
+      );
+    }
+
+    Widget sectionHeader(String title) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          // Icon(
+          //   icon,
+          //   color: appTheme.green_primary,
+          // ),
+          SizedBox(
+            width: screenWidth * 0.03,
           ),
+          Text(
+            title,
+            style: TextStyle(
+                fontFamily: "Outfit",
+                color: Colors.black87,
+                fontSize: 20,
+                fontWeight: FontWeight.bold),
+          )
+        ],
+      );
+    }
+
+    Widget eachSection(
+        BuildContext context, String title, IconData icon, Widget screen) {
+      return ListTile(
+        leading: Icon(
+          icon,
+          color: appTheme.green_primary,
         ),
-      ),
-      body: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.05, vertical: screenHeight * 0.01),
-        child: ListView(
-          children: [
-            FutureBuilder<UserModel?>(
-              future: getCurrentUserModel(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  String name = snapshot.data?.name ?? "";
-                  return Text("Hi! ${name}",
-                      style: TextStyle(
-                          fontFamily: "Outfit",
-                          color: Colors.black87,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold));
-                } else {
-                  return Text("no name");
-                }
-              },
-            ),
-            SizedBox(
-              height: screenHeight * 0.02,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.person,
-                  color: appTheme.green_primary,
-                ),
-                SizedBox(
-                  width: screenWidth * 0.02,
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => EditProfilePage()));
-                  },
-                  child: Text(
-                    "My Account",
-                    style: TextStyle(
-                        fontFamily: "Outfit",
-                        color: Colors.black87,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(
-              height: screenHeight * 0.012,
-            ),
-            buildAccountOptionRow(context, "Change password"),
-            buildAccountOptionRow(context, "Content settings"),
-            buildAccountOptionRow(context, "Social"),
-            buildAccountOptionRow(context, "Language"),
-            buildAccountOptionRow(context, "Privacy and security"),
-            SizedBox(
-              height: 40,
-            ),
-            BlocConsumer<AuthenticationBloc, AuthenticationState>(
-              listener: (context, state) {
-                if (state is SignOutSuccessState) {
-                  // Assuming you have a state like this
-                  // Navigate back to the sign-in screen or another appropriate screen
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            SignInTwoScreen()), // Adjust with your actual sign-in screen
-                    (Route<dynamic> route) => false,
-                  );
-                } else if (state is SignOutFailureState) {
-                  // Handle sign-out failure
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        content: Text('Failed to sign out. Please try again.'),
-                      );
-                    },
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state is SignOutLoadingState) {
-                  print('Signing out...');
-                  // Show loading indicator
-                  return CircularProgressIndicator();
-                }
-                // Return the sign-out button or any other relevant widget
-                return ElevatedButton(
-                  onPressed: () {
-                    BlocProvider.of<AuthenticationBloc>(context).add(SignOut());
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        appTheme.yellow_primary),
-                    fixedSize: MaterialStateProperty.all<Size>(
-                        Size(screenWidth * 0.3, screenHeight * 0.05)),
-                  ),
-                  child: const Text('Log Out',
-                      style: TextStyle(fontSize: 12, color: Colors.black)),
+        title: Text(title),
+        trailing: Icon(Icons.arrow_forward_ios),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => screen),
+          );
+        },
+      );
+    }
+
+    Widget signOutButton() {
+      double screenWidth = MediaQuery.of(context).size.width;
+      double screenHeight = MediaQuery.of(context).size.height;
+      return BlocConsumer<AuthenticationBloc, AuthenticationState>(
+        listener: (context, state) {
+          if (state is SignOutSuccessState) {
+            // Assuming you have a state like this
+            // Navigate back to the sign-in screen or another appropriate screen
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      SignInTwoScreen()), // Adjust with your actual sign-in screen
+              (Route<dynamic> route) => false,
+            );
+          } else if (state is SignOutFailureState) {
+            // Handle sign-out failure
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  content: Text('Failed to sign out. Please try again.'),
                 );
               },
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is SignOutLoadingState) {
+            print('Signing out...');
+            // Show loading indicator
+            return CircularProgressIndicator();
+          }
+          // Return the sign-out button or any other relevant widget
+          return ElevatedButton(
+            onPressed: () {
+              BlocProvider.of<AuthenticationBloc>(context).add(SignOut());
+            },
+            style: ButtonStyle(
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(appTheme.yellow_primary),
+              fixedSize: MaterialStateProperty.all<Size>(
+                  Size(screenWidth * 0.3, screenHeight * 0.05)),
             ),
-          ],
+            child: const Text('Log Out',
+                style: TextStyle(fontSize: 12, color: Colors.black)),
+          );
+        },
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-    );
-  }
-
-  Row buildNotificationOptionRow(String title, bool isActive) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey[600]),
+      body: ListView(children: <Widget>[
+        UserAccountsDrawerHeader(
+          margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+          accountName: userName(),
+          accountEmail: userEmail(),
+          currentAccountPicture: CircleAvatar(
+            backgroundImage: AssetImage(
+                'assets/images/img_avatar.png'), // Replace with actual image path
+          ),
+          currentAccountPictureSize: Size.square(screenWidth * 0.15),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: AssetImage(
+                  "assets/images/favoritescreen_background.png"), // Replace with your image path
+              opacity: 0.2,
+            ),
+          ),
         ),
-        Transform.scale(
-            scale: 0.7,
-            child: CupertinoSwitch(
-              value: isActive,
-              onChanged: (bool val) {},
-            ))
-      ],
+        SizedBox(height: screenHeight * 0.02),
+        Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            color: Color.fromARGB(255, 233, 240, 228),
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Column(children: <Widget>[
+              SizedBox(height: screenHeight * 0.02),
+              sectionHeader("Account"),
+              eachSection(context, 'Edit profile',
+                  Icons.account_circle_outlined, EditProfilePage()),
+              eachSection(context, 'Security', Icons.lock, EditProfilePage()),
+              eachSection(
+                  context, 'Privacy', Icons.privacy_tip, EditProfilePage()),
+              SizedBox(height: screenHeight * 0.02),
+              sectionHeader("Support & About"),
+              eachSection(context, 'My Subscription',
+                  Icons.subscriptions_outlined, EditProfilePage()),
+              eachSection(context, 'Help and Support',
+                  Icons.question_mark_outlined, EditProfilePage()),
+              SizedBox(height: screenHeight * 0.1),
+              signOutButton(),
+              SizedBox(height: screenHeight * 0.02),
+            ])),
+      ]),
     );
-  }
-
-  Future<void> deleteUser() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      try {
-        await user.delete();
-        print("User deleted successfully");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("User deleted successfully!")),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to delete user. Please try again.")),
-        );
-      }
-    }
   }
 
   GestureDetector buildAccountOptionRow(BuildContext context, String title) {
