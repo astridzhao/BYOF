@@ -146,11 +146,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
             child: widget.fabIcon),
       ),
       bottomNavigationBar: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
+              color: Colors.transparent,
               borderRadius: BorderRadius.all(
-            Radius.circular(20.0),
-          )),
+                Radius.circular(20.0),
+              )),
           child: ClipRRect(
             borderRadius: BorderRadius.all(
               Radius.circular(40.0),
@@ -287,9 +288,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                                                       : index) ==
                                                   _pageIndex
                                               ? widget.bottomNavItemSelectedLabelSize ??
-                                                  11
+                                                  14
                                               : widget.bottomNavItemunSelectedLabelSize ??
-                                                  10,
+                                                  11,
                                         ),
                                       ),
                                     ),

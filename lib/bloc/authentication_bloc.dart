@@ -1,3 +1,4 @@
+import 'package:astridzhao_s_food_app/Interface/user_profile/firebasestore.dart';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
@@ -20,12 +21,14 @@ class AuthenticationBloc
       try {
         final UserModel? user =
             await authService.signUpUser(event.email, event.password);
+        
         if (user != null) {
           await FirebaseAuth.instance.currentUser?.reload();
           print(
               "email verified ${FirebaseAuth.instance.currentUser?.emailVerified}");
           if (FirebaseAuth.instance.currentUser?.emailVerified == true) {
             print("Emitting SignUpSuccessState");
+            await createOrUpdateUserDocument(user, "Basic Plan"); 
             emit(SignUpSuccessState(user));
           } else {
             print("Emitting SignUpNeedsVerificationState");

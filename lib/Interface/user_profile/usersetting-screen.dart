@@ -1,5 +1,5 @@
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
-import 'package:astridzhao_s_food_app/Interface/user_profile/choosesubscription-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/user_profile/subscription/choosesubscription-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/profile-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
@@ -139,6 +139,35 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     }
 
+    Widget subscriptionPlan(BuildContext context) {
+      // Directly return a Consumer widget to use within the ListTile's title
+      return Consumer<UserInformationProvider>(
+        builder: (context, userInfoProvider, child) {
+          // Here, instead of returning a String, we return a Text widget
+          print("subscription plan: ${userInfoProvider.userModel?.productId}");
+          String subscriptionStatus =
+              userInfoProvider.userModel?.productId ?? "Inactive";
+          return Text(subscriptionStatus);
+        },
+      );
+    }
+
+    Widget subscriptionSection(BuildContext context, Widget currentPlan,
+        IconData icon, Widget screen) {
+      return ListTile(
+        leading: Image.asset("assets/images/img_savingdollar.png"),
+        title: currentPlan,
+        // subtitle: Text(subscriptionType),
+        trailing: Icon(Icons.arrow_forward_ios),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => screen),
+          );
+        },
+      );
+    }
+
     Widget signOutButton() {
       double screenWidth = MediaQuery.of(context).size.width;
       double screenHeight = MediaQuery.of(context).size.height;
@@ -233,8 +262,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   context, 'Privacy', Icons.privacy_tip, EditProfilePage()),
               SizedBox(height: screenHeight * 0.02),
               sectionHeader("Support & About"),
-              eachSection(context, 'My Subscription',
-                  Icons.subscriptions_outlined, SubscriptionPage_choosePlan()),
+              SizedBox(height: screenHeight * 0.02),
+              subscriptionSection(context, subscriptionPlan(context),
+                  Icons.subscriptions_outlined, SubscriptionPage()),
+              eachSection(context, 'View Subscription Plans',
+                  Icons.subscriptions_outlined, SubscriptionPage()),
               eachSection(context, 'Help and Support',
                   Icons.question_mark_outlined, EditProfilePage()),
               SizedBox(height: screenHeight * 0.1),

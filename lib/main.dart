@@ -3,6 +3,7 @@ import 'package:astridzhao_s_food_app/Interface/loading_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/authentication_page.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/profile-screen.dart';
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,6 +28,9 @@ void main() async {
   ThemeHelper().changeTheme('primary');
 
   await Firebase.initializeApp();
+
+
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => SavingsModel(prefs: prefs),
