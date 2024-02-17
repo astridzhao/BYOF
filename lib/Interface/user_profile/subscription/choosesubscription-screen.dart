@@ -1,5 +1,9 @@
-import 'package:astridzhao_s_food_app/constant.dart';
+import 'dart:io';
+
+import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
+import 'package:astridzhao_s_food_app/resources/constant.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -12,7 +16,52 @@ class SubscriptionPage extends StatefulWidget {
 }
 
 class SubscriptionPageState extends State<SubscriptionPage> {
+  @override
+  void initState() {
+    initPlatformState();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Purchases.removeCustomerInfoUpdateListener(
+        (customerInfo) async {}); // Dispose of listener
+  }
+
+  Future<void> initPlatformState() async {
+    // Enable debug logs before calling `configure`.
+    await Purchases.setLogLevel(LogLevel.debug);
+    final user = FirebaseAuth.instance.currentUser;
+    //observerMode is false, so Purchases will automatically handle finishing transactions.
+    PurchasesConfiguration configuration = PurchasesConfiguration(appleApiKey)
+      ..appUserID = user!.uid
+      ..observerMode = false;
+
+    await Purchases.configure(configuration);
+
+    //TODO: add revenuecat data into firebase
+    String purchaseID =
+        await Purchases.appUserID; //revenuecat appUserID added to firestore
+
+    ///adds a listener that triggers whenever there's a change in the user's subscription information.
+    Purchases.addCustomerInfoUpdateListener((customerInfo) async {
+      //retrieves the latest customer information from RevenueCat
+      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+      if ((customerInfo.entitlements.all[entitlementId] != null &&
+          customerInfo.entitlements.all[entitlementId]!.isActive)) {
+        Storedata(user.uid).updateUserSubscription(customerInfo);
+      }
+      // updateUserSubscription(user.uid, customerInfo);
+      if (mounted) {
+        //Notify the framework that the internal state of this object has changed.
+        setState(() {});
+      }
+    });
+  }
+
   bool _isLoading = false;
+
   void perfomMagic() async {
     setState(() {
       _isLoading = true;
@@ -20,19 +69,72 @@ class SubscriptionPageState extends State<SubscriptionPage> {
 
     CustomerInfo customerInfo = await Purchases.getCustomerInfo();
 
+    // if already have the entitlement, don't show the paywall
     if (customerInfo.entitlements.all[entitlementId] != null &&
         customerInfo.entitlements.all[entitlementId]?.isActive == true) {
-      // appData.currentData = WeatherData.generateData();
-
       setState(() {
         _isLoading = false;
       });
+      print("You already have the entitlement");
     } else {
       Offerings? offerings;
       try {
         offerings = await Purchases.getOfferings();
+
+        // offerings are empty, show a message to your user
+        if (offerings.current == null ||
+            offerings.current!.availablePackages.isNotEmpty) {
+          await showModalBottomSheet(
+            useRootNavigator: true,
+            isDismissible: true,
+            isScrollControlled: true,
+            backgroundColor: Colors.black,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+            ),
+            context: context,
+            builder: (BuildContext context) {
+              return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setModalState) {
+                return Container(
+                  height: 200,
+                  child: Center(
+                    child: Text(
+                      "No offerings available",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                );
+              });
+            },
+          );
+        } else {
+          // current offering is available, show paywall
+          await showModalBottomSheet(
+            useRootNavigator: true,
+            isDismissible: true,
+            isScrollControlled: true,
+            backgroundColor: Colors.black,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+            ),
+            context: context,
+            builder: (BuildContext context) {
+              return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setModalState) {
+                return Paywall(
+                  offering: offerings!.current!,
+                );
+              });
+            },
+          );
+        }
       } on PlatformException catch (e) {
         String? error = e.message;
+        print("Error: $error");
         await showDialog(
             context: context,
             builder: (BuildContext context) => AlertDialog(
@@ -42,7 +144,8 @@ class SubscriptionPageState extends State<SubscriptionPage> {
                       ElevatedButton(
                         onPressed: () =>
                             Navigator.pop(context, false), // passing false
-                        child: Text('No'),
+                        child:
+                            Text('OK', style: TextStyle(color: Colors.black54)),
                       ),
                     ]));
       }
@@ -50,30 +153,6 @@ class SubscriptionPageState extends State<SubscriptionPage> {
       setState(() {
         _isLoading = false;
       });
-
-      if (offerings == null || offerings.current == null) {
-        // offerings are empty, show a message to your user
-      } else {
-        // current offering is available, show paywall
-        await showModalBottomSheet(
-          useRootNavigator: true,
-          isDismissible: true,
-          isScrollControlled: true,
-          backgroundColor: Colors.black,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-          ),
-          context: context,
-          builder: (BuildContext context) {
-            return StatefulBuilder(
-                builder: (BuildContext context, StateSetter setModalState) {
-              return Paywall(
-                offering: offerings!.current!,
-              );
-            });
-          },
-        );
-      }
     }
   }
 
@@ -178,7 +257,10 @@ class SubscriptionPageState extends State<SubscriptionPage> {
               onPressed: () => perfomMagic(),
               child: Text(
                 "Buy Subscription",
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: appTheme.green_primary),
               ),
             ),
           ),

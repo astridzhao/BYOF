@@ -1,8 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:astridzhao_s_food_app/Interface/user_profile/usersetting-screen.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
+import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
 import 'package:astridzhao_s_food_app/user.dart';
+import 'package:astridzhao_s_food_app/widgets/utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -30,6 +36,7 @@ class UserInformationProvider with ChangeNotifier {
 class _EditProfilePageState extends State<EditProfilePage> {
   bool showPassword = false;
   TextEditingController nameController = TextEditingController();
+  Uint8List? finalImage;
 
   @override
   void initState() {
@@ -102,13 +109,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         Provider.of<UserInformationProvider>(context, listen: false)
             .fetchCurrentUserModel();
 
-        print("User name updated successfully");
         await user.reload();
-
-        // This should now print the updated name // Reload the user to refresh the user's profile data
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Profile updated successfully!")),
-        );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -123,41 +124,130 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+
+    Widget displayImage() {
+      final user = FirebaseAuth.instance.currentUser;
+      String imageURL;
+      // Use FutureBuilder to wait for the async operation to complete
+      return FutureBuilder<DocumentSnapshot>(
+        future: FirebaseFirestore.instance
+            .collection('userProfile')
+            .doc(user!.uid)
+            .get(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
+            // Data fetched successfully, get the image URL
+            final data = snapshot.data!.data() as Map<String, dynamic>?;
+            String? imageURL = data?['image'];
+            return finalImage != null
+                ? CircleAvatar(
+                    radius: 80,
+                    backgroundColor: appTheme.orange_primary,
+                    backgroundImage: MemoryImage(finalImage!))
+                : imageURL != null
+                    ? CircleAvatar(
+                        radius: 80,
+                        backgroundColor: appTheme.orange_primary,
+                        backgroundImage: NetworkImage(imageURL))
+                    : const CircleAvatar(
+                        radius: 80,
+                        backgroundColor: Colors.lightGreen,
+                        backgroundImage: AssetImage("assets/images/chief.png"));
+          } else if (snapshot.hasError) {
+            // Handle error state
+            print("Error fetching user profile image: ${snapshot.error}");
+            // Optionally, show a default avatar or an error icon
+          }
+
+          // While data is loading, show the selected image or a default image
+          return finalImage != null
+              ? CircleAvatar(
+                  radius: 80,
+                  backgroundColor: appTheme.orange_primary,
+                  backgroundImage: MemoryImage(finalImage!))
+              : const CircleAvatar(
+                  radius: 80,
+                  backgroundColor: Colors.lightGreen,
+                  backgroundImage: AssetImage("assets/images/chief.png"));
+        },
+      );
+    }
+
+    //   if (user != null) {
+
+    //     DocumentReference userProfileDoc =
+    //         firestore.collection('userProfile').doc(user.uid);
+    //     userProfileDoc.get().then(
+    //       (DocumentSnapshot doc) {
+    //         final data = doc.data() as Map<String, dynamic>;
+    //         imageURL = data['image'];
+    //       },
+    //       onError: (e) => print("Error getting document: $e"),
+    //     );
+    //   }
+
+    //   return imageURL != null
+    //       ? CircleAvatar(
+    //           radius: 80,
+    //           backgroundColor: appTheme.orange_primary,
+    //           backgroundImage: NetworkImage(imageURL))
+    //       : finalImage != null
+    //           ? CircleAvatar(
+    //               radius: 80,
+    //               backgroundColor: appTheme.orange_primary,
+    //               backgroundImage: MemoryImage(finalImage!))
+    //           : const CircleAvatar(
+    //               radius: 80,
+    //               backgroundColor: Colors.lightGreen,
+    //               backgroundImage: AssetImage("assets/images/chief.png"));
+    // }
+
+    Future<void> uploadImage() async {
+      Uint8List image = await PickImage(ImageSource.gallery);
+      setState(() {
+        finalImage = image;
+      });
+    }
+
+    Widget changeProfilePic() {
+      return Container(
+          height: 50,
+          width: 50,
+          child: IconButton(
+            icon: Icon(Icons.add_a_photo),
+            color: Colors.black87,
+            onPressed: () => uploadImage(),
+          ));
+    }
+
+    void saveProfile() async {
+      updateUserName(nameController.text);
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        String userId = user.uid;
+        print("[FirebaseAuth] userId: $userId");
+        String message = await Storedata(userId).createUserDocument(
+            name: nameController.text, image: finalImage ?? Uint8List(0));
+
+        // // This should now print the updated name // Reload the user to refresh the user's profile data
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text("Profile updated successfully!"),
+              duration: Duration(seconds: 2)),
+        );
+        // Handle the message (success or error) appropriately
+        print("from storedata: $message");
+      } else {
+        // Handle the case where no user is signed in
+        print("No user is signed in");
+      }
+    }
+
     return Column(children: <Widget>[
-      Container(
-        width: screenHeight * 0.2,
-        height: screenHeight * 0.3,
-        decoration: BoxDecoration(
-          border: Border.all(
-              width: 4, color: Theme.of(context).scaffoldBackgroundColor),
-          boxShadow: [
-            BoxShadow(
-                spreadRadius: 2,
-                blurRadius: 10,
-                color: Colors.black.withOpacity(0.1),
-                offset: Offset(0, 10))
-          ],
-          shape: BoxShape.circle,
-          image: DecorationImage(
-              fit: BoxFit.cover, image: AssetImage("assets/images/chief.png")),
-        ),
-      ),
-      Container(
-        height: 40,
-        width: 40,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            width: 4,
-            color: Theme.of(context).scaffoldBackgroundColor,
-          ),
-          color: appTheme.orange_primary,
-        ),
-        child: Icon(
-          Icons.edit,
-          color: Colors.white,
-        ),
-      ),
+      displayImage(),
+      changeProfilePic(),
       SizedBox(
         height: screenHeight * 0.05,
       ),
@@ -177,16 +267,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          // OutlinedButton(
-          //   onPressed: () {},
-          //   child: Text("CANCEL",
-          //       style: TextStyle(
-          //           fontSize: 14, letterSpacing: 2.2, color: Colors.black)),
-          // ),
           OutlinedButton(
             onPressed: () {
-              print("what I input is " + nameController.text);
-              updateUserName(nameController.text);
+              final user = FirebaseAuth.instance.currentUser;
+
+              if (user != null) {
+                // user.updateDisplayName(nameController.text);
+                saveProfile();
+              }
             },
             child: Text(
               "SAVE",

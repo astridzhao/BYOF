@@ -84,7 +84,6 @@ class _SettingsPageState extends State<SettingsPage> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             String email = snapshot.data?.email ?? "";
-            print("name: $email");
             return Text("${email}",
                 style: TextStyle(
                     fontFamily: "Outfit",
@@ -144,7 +143,8 @@ class _SettingsPageState extends State<SettingsPage> {
       return Consumer<UserInformationProvider>(
         builder: (context, userInfoProvider, child) {
           // Here, instead of returning a String, we return a Text widget
-          print("subscription plan: ${userInfoProvider.userModel?.productId}");
+          print(
+              "subscription plan [user model]: ${userInfoProvider.userModel?.productId}");
           String subscriptionStatus =
               userInfoProvider.userModel?.productId ?? "Inactive";
           return Text(subscriptionStatus);

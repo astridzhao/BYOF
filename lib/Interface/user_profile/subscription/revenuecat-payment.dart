@@ -1,8 +1,9 @@
-import 'package:astridzhao_s_food_app/Interface/user_profile/firebasestore.dart';
+import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/subscription/appdata.dart';
-import 'package:astridzhao_s_food_app/constant.dart';
+import 'package:astridzhao_s_food_app/resources/constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 class Paywall extends StatefulWidget {
@@ -57,14 +58,28 @@ class _PaywallState extends State<Paywall> {
                         CustomerInfo customerInfo =
                             await Purchases.purchasePackage(
                                 myProductList[index]);
-                        // Update subscription data in Firestore using userId
-                        await updateUserSubscription(userId, customerInfo);
 
-                        // // Trigger UI update based on new subscription status
-                        // context.read<SubscriptionStatusProvider>().updateStatus(
-                        //     customerInfo); // Assuming Provider for subscription status
-                      } catch (e) {
-                        print(e);
+                        // Update subscription data in Firestore using userId
+                        print("userId: $userId");
+                        print("customerInfo: $customerInfo");
+                        customerInfo.activeSubscriptions.forEach((element) {
+                          print("activeSubscriptions: $element");
+                        });
+                        await Storedata(userId)
+                            .updateUserSubscription( customerInfo);
+                        if (customerInfo
+                            .entitlements.all[entitlementId]!.isActive) {
+                          // Unlock that great "pro" content
+                          // // Trigger UI update based on new subscription status
+                          // context.read<SubscriptionStatusProvider>().updateStatus(
+                          //     customerInfo); // Assuming Provider for subscription status
+                        }
+                      } on PlatformException catch (e) {
+                        var errorCode = PurchasesErrorHelper.getErrorCode(e);
+                        if (errorCode !=
+                            PurchasesErrorCode.purchaseCancelledError) {
+                          print(e);
+                        }
                       }
 
                       setState(() {});

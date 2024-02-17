@@ -662,7 +662,7 @@ class _GenerationScreenState extends State<GenerationScreen_favorite> {
             log("image saving path: " + file.path);
             await (recipesDao.update(recipesDao.recipes)..where((tbl) => tbl.id.equals(currentID)))
               ..write(RecipesCompanion(imageURL: drift.Value(path.basename(generatedImageUrls))));
-            log("image saving name: " + path.basename(generatedImageUrls));
+            // log("image saving name: " + path.basename(generatedImageUrls));
           }
         },
       ),
