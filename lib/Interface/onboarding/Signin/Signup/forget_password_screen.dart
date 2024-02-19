@@ -5,6 +5,7 @@ import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_elevated_button.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_signin_widget.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_text_form_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
@@ -44,7 +45,7 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   child: Container(
                     decoration: AppDecoration.outlineBlack900,
                     child: Text(
-                      "Forget Password?",
+                      "Reset Password",
                       style: TextStyle(
                         color: appTheme.gray700,
                         fontSize: 24.fSize,
@@ -55,60 +56,72 @@ class ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.02),
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Forget Password?",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: appTheme.gray800,
-                      fontSize: 14.fSize,
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
                 SizedBox(height: screenHeight * 0.05),
-                CustomTextFieldLogin(
-                  hintText: 'Enter your Email',
-                  isPasswordTextField: false,
-                  labelText: 'Email',
-                  icons: Icons.email,
-                  controller: emailController,
-                  decoration: InputDecoration(),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    return null;
-                  },
-                ),
+                _inputEmail(),
                 SizedBox(height: screenHeight * 0.02),
-                CustomElevatedButton(
-                  onPressed: () {},
-                  text: 'Send',
-                  buttonTextStyle: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.fSize,
-                    fontFamily: 'Outfit',
-                    fontWeight: FontWeight.w700,
-                  ),
-                  buttonStyle: ElevatedButton.styleFrom(
-                    elevation: 3,
-                    backgroundColor: appTheme.green_primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
+                resetButton(),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _inputEmail() {
+    return CustomTextFieldLogin(
+      hintText: 'Enter your Email',
+      isPasswordTextField: false,
+      labelText: 'Email',
+      icons: Icons.email,
+      controller: emailController,
+      decoration: InputDecoration(),
+      keyboardType: TextInputType.emailAddress,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your email';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget resetButton() {
+    double screenHeight = MediaQuery.of(context).size.height;
+    return CustomElevatedButton(
+      onPressed: () async {
+        try {
+          await FirebaseAuth.instance
+              .sendPasswordResetEmail(email: emailController.text.trim());
+          _showSnackBar('Password reset link sent');
+        } on FirebaseAuthException catch (e) {
+          _showSnackBar(e.message.toString());
+        }
+      },
+      text: 'Send',
+      height: screenHeight * 0.06,
+      buttonTextStyle: TextStyle(
+        color: Colors.white,
+        fontSize: 16.fSize,
+        fontFamily: 'Outfit',
+        fontWeight: FontWeight.w700,
+      ),
+      buttonStyle: ElevatedButton.styleFrom(
+        elevation: 3,
+        backgroundColor: appTheme.green_primary,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showSnackBar(String msg) async {
+    final snackBar = SnackBar(
+      content: Text(msg),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   /// Section Widget

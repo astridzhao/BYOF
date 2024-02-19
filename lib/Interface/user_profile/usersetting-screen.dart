@@ -1,13 +1,16 @@
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
+import 'package:astridzhao_s_food_app/Interface/user_profile/security-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/subscription/choosesubscription-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/profile-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:astridzhao_s_food_app/theme/theme_helper.dart';
 import 'package:astridzhao_s_food_app/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -22,40 +25,16 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
+    user!.reload();
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    Uint8List? finalImage;
 
-    void navigation_screen(BuildContext context, Widget screen) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => screen),
-      );
-    }
-
-    // Widget userName() {
-    //   return FutureBuilder<UserModel?>(
-    //     future: getCurrentUserModel(),
-    //     builder: (context, snapshot) {
-    //       if (snapshot.connectionState == ConnectionState.done) {
-    //         String name = snapshot.data?.name ?? "";
-    //         print("name: $name");
-    //         return Text("${name}",
-    //             style: TextStyle(
-    //                 fontFamily: "Outfit",
-    //                 color: Colors.black87,
-    //                 fontSize: 20,
-    //                 fontWeight: FontWeight.w500));
-    //       } else {
-    //         return Text("no name");
-    //       }
-    //     },
-    //   );
-    // }
-    Widget userName() {
+    Widget displayUserName() {
       // Use Provider to listen to changes in UserInformationProvider
       return Consumer<UserInformationProvider>(
         builder: (context, userInfoProvider, child) {
@@ -78,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     }
 
-    Widget userEmail() {
+    Widget displayUserEmail() {
       return FutureBuilder<UserModel?>(
         future: getCurrentUserModel(),
         builder: (context, snapshot) {
@@ -91,8 +70,57 @@ class _SettingsPageState extends State<SettingsPage> {
                     fontSize: 16,
                     fontWeight: FontWeight.w200));
           } else {
-            return Text("no name");
+            return Text("no email");
           }
+        },
+      );
+    }
+
+    Widget displayImage() {
+      String? imageURL;
+      // Use FutureBuilder to wait for the async operation to complete
+      return FutureBuilder<DocumentSnapshot>(
+        future: FirebaseFirestore.instance
+            .collection('userProfile')
+            .doc(user!.uid)
+            .get(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
+            // Data fetched successfully, get the image URL
+            final data = snapshot.data!.data() as Map<String, dynamic>?;
+            imageURL = data?['image'];
+            return finalImage != null
+                ? CircleAvatar(
+                    radius: 80,
+                    backgroundColor: appTheme.orange_primary,
+                    backgroundImage: MemoryImage(finalImage!))
+                : imageURL != null
+                    ? CircleAvatar(
+                        radius: 80,
+                        backgroundColor: appTheme.orange_primary,
+                        backgroundImage: NetworkImage(imageURL!))
+                    : const CircleAvatar(
+                        radius: 80,
+                        backgroundColor: Colors.lightGreen,
+                        backgroundImage: AssetImage("assets/images/chief.png"));
+          } else if (snapshot.hasError) {
+            // Handle error state
+            print("Error fetching user profile image: ${snapshot.error}");
+            // Optionally, show a default avatar or an error icon
+          }
+
+          // While data is loading, show the selected image or a default image
+          return finalImage != null
+              ? CircleAvatar(
+                  radius: 80,
+                  backgroundColor: appTheme.orange_primary,
+                  backgroundImage: MemoryImage(finalImage!))
+              : const CircleAvatar(
+                  radius: 80,
+                  backgroundColor: Colors.lightGreen,
+                  backgroundImage: AssetImage("assets/images/chief.png"));
         },
       );
     }
@@ -229,12 +257,13 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(children: <Widget>[
         UserAccountsDrawerHeader(
           margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-          accountName: userName(),
-          accountEmail: userEmail(),
-          currentAccountPicture: CircleAvatar(
-            backgroundImage: AssetImage(
-                'assets/images/img_avatar.png'), // Replace with actual image path
-          ),
+          accountName: displayUserName(),
+          accountEmail: displayUserEmail(),
+          currentAccountPicture: displayImage(),
+          // currentAccountPicture: CircleAvatar(
+          //   backgroundImage: AssetImage(
+          //       'assets/images/img_avatar.png'), // Replace with actual image path
+          // ),
           currentAccountPictureSize: Size.square(screenWidth * 0.15),
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -257,9 +286,9 @@ class _SettingsPageState extends State<SettingsPage> {
               sectionHeader("Account"),
               eachSection(context, 'Edit profile',
                   Icons.account_circle_outlined, EditProfilePage()),
-              eachSection(context, 'Security', Icons.lock, EditProfilePage()),
-              eachSection(
-                  context, 'Privacy', Icons.privacy_tip, EditProfilePage()),
+              // eachSection(context, 'Security', Icons.lock, SecuritySetting()),
+              // eachSection(
+              //     context, 'Notification', Icons.privacy_tip, EditProfilePage()),
               SizedBox(height: screenHeight * 0.02),
               sectionHeader("Support & About"),
               SizedBox(height: screenHeight * 0.02),

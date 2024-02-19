@@ -61,6 +61,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
+        title: Text('Edit Profile'),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 1,
         leading: IconButton(
@@ -77,10 +78,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: Container(
           child: Column(
             children: <Widget>[
-              Text(
-                "Edit Profile",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
-              ),
               SizedBox(
                 height: screenHeight * 0.02,
               ),
@@ -127,7 +124,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     Widget displayImage() {
       final user = FirebaseAuth.instance.currentUser;
-      String imageURL;
+      String? imageURL;
       // Use FutureBuilder to wait for the async operation to complete
       return FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance
@@ -140,7 +137,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               snapshot.hasData) {
             // Data fetched successfully, get the image URL
             final data = snapshot.data!.data() as Map<String, dynamic>?;
-            String? imageURL = data?['image'];
+            imageURL = data?['image'];
             return finalImage != null
                 ? CircleAvatar(
                     radius: 80,
@@ -150,7 +147,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ? CircleAvatar(
                         radius: 80,
                         backgroundColor: appTheme.orange_primary,
-                        backgroundImage: NetworkImage(imageURL))
+                        backgroundImage: NetworkImage(imageURL!))
                     : const CircleAvatar(
                         radius: 80,
                         backgroundColor: Colors.lightGreen,
@@ -174,35 +171,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         },
       );
     }
-
-    //   if (user != null) {
-
-    //     DocumentReference userProfileDoc =
-    //         firestore.collection('userProfile').doc(user.uid);
-    //     userProfileDoc.get().then(
-    //       (DocumentSnapshot doc) {
-    //         final data = doc.data() as Map<String, dynamic>;
-    //         imageURL = data['image'];
-    //       },
-    //       onError: (e) => print("Error getting document: $e"),
-    //     );
-    //   }
-
-    //   return imageURL != null
-    //       ? CircleAvatar(
-    //           radius: 80,
-    //           backgroundColor: appTheme.orange_primary,
-    //           backgroundImage: NetworkImage(imageURL))
-    //       : finalImage != null
-    //           ? CircleAvatar(
-    //               radius: 80,
-    //               backgroundColor: appTheme.orange_primary,
-    //               backgroundImage: MemoryImage(finalImage!))
-    //           : const CircleAvatar(
-    //               radius: 80,
-    //               backgroundColor: Colors.lightGreen,
-    //               backgroundImage: AssetImage("assets/images/chief.png"));
-    // }
 
     Future<void> uploadImage() async {
       Uint8List image = await PickImage(ImageSource.gallery);
