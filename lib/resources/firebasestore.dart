@@ -2,8 +2,10 @@ import 'package:astridzhao_s_food_app/resources/constant.dart';
 import 'package:astridzhao_s_food_app/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'dart:developer';
 
 final FirebaseStorage _firebasestorage_realtime = FirebaseStorage.instance;
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -51,11 +53,11 @@ class Storedata {
       emailVerified: user.emailVerified,
       id: user.id,
       // subscriptionId: appUserID,
-      productId: productId,
-      status: "inActive",
-      startDate: DateTime.now(),
-      endDate: DateTime.now().add(Duration(days: 30)),
-      renewalStatus: true,
+      // productId: productId,
+      // status: "inActive",
+      // startDate: DateTime.now(),
+      // endDate: DateTime.now().add(Duration(days: 30)),
+      // renewalStatus: true,
     ).toJson();
 
     // await firestore.collection('userProfile').doc(user.id).update(data);
@@ -80,12 +82,14 @@ class Storedata {
       final subscriptionId = Purchases.appUserID; // If available
       // Build update data with only necessary fields
       final updatedData = await {
-        'productId': productId,
+        'productId': productId, //subscription plan name
         'expireDate': expireDate,
         'startDate': startDate,
         'renewalStatus': renewalStatus,
         'subscriptionId': subscriptionId,
       };
+
+      debugPrint(updatedData.toString());
 
       // Update user document in Firestore
       // await firestore.collection('userProfile').doc(userId).update(updatedData);
@@ -94,6 +98,35 @@ class Storedata {
       // Handle Firebase errors appropriately (e.g., logging, user feedback)
       print(e.message);
       print("An error occurred updating your subscription.");
+    }
+  }
+
+  Future<Map<String, dynamic>> getSubscriptionInfo() async {
+    try {
+      // Fetch the document from Firestore
+      DocumentSnapshot documentSnapshot = await userProfileDoc.get();
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+        print("[getSubscriptionInfo] data: $data");
+
+        // Extract expirationDate and renewalStatus from the document
+        String? productId = data['productId'];
+        dynamic expirationDate = data['expireDate']?.toDate();
+        bool? renewalStatus = data['renewalStatus'];
+
+        // Return the relevant information
+        return {
+          'plan': productId ?? "Basic Plan",
+          'expirationDate': expirationDate,
+          'renewalStatus': renewalStatus ?? true,
+        };
+      } else {
+        throw Exception("Document does not exist.");
+      }
+    } catch (e) {
+      print("Error retrieving subscription info: $e");
+      throw Exception("Error retrieving subscription info.");
     }
   }
 }

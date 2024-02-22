@@ -3,6 +3,7 @@ import 'package:astridzhao_s_food_app/Interface/user_profile/security-screen.dar
 import 'package:astridzhao_s_food_app/Interface/user_profile/subscription/choosesubscription-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/profile-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/user_profile/subscription/planDetail-screen.dart';
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:astridzhao_s_food_app/theme/theme_helper.dart';
 import 'package:astridzhao_s_food_app/user.dart';
@@ -91,11 +92,12 @@ class _SettingsPageState extends State<SettingsPage> {
             // Data fetched successfully, get the image URL
             final data = snapshot.data!.data() as Map<String, dynamic>?;
             imageURL = data?['image'];
+            // ignore: unnecessary_null_comparison
             return finalImage != null
                 ? CircleAvatar(
                     radius: 80,
                     backgroundColor: appTheme.orange_primary,
-                    backgroundImage: MemoryImage(finalImage!))
+                    backgroundImage: MemoryImage(finalImage))
                 : imageURL != null
                     ? CircleAvatar(
                         radius: 80,
@@ -112,11 +114,12 @@ class _SettingsPageState extends State<SettingsPage> {
           }
 
           // While data is loading, show the selected image or a default image
+          // ignore: unnecessary_null_comparison
           return finalImage != null
               ? CircleAvatar(
                   radius: 80,
                   backgroundColor: appTheme.orange_primary,
-                  backgroundImage: MemoryImage(finalImage!))
+                  backgroundImage: MemoryImage(finalImage))
               : const CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.lightGreen,
@@ -129,10 +132,6 @@ class _SettingsPageState extends State<SettingsPage> {
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          // Icon(
-          //   icon,
-          //   color: appTheme.green_primary,
-          // ),
           SizedBox(
             width: screenWidth * 0.03,
           ),
@@ -166,19 +165,19 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     }
 
-    Widget subscriptionPlan(BuildContext context) {
-      // Directly return a Consumer widget to use within the ListTile's title
-      return Consumer<UserInformationProvider>(
-        builder: (context, userInfoProvider, child) {
-          // Here, instead of returning a String, we return a Text widget
-          print(
-              "subscription plan [user model]: ${userInfoProvider.userModel?.productId}");
-          String subscriptionStatus =
-              userInfoProvider.userModel?.productId ?? "Inactive";
-          return Text(subscriptionStatus);
-        },
-      );
-    }
+    // Widget subscriptionPlan(BuildContext context) {
+    //   // Directly return a Consumer widget to use within the ListTile's title
+    //   return Consumer<UserInformationProvider>(
+    //     builder: (context, userInfoProvider, child) {
+    //       // Here, instead of returning a String, we return a Text widget
+    //       print(
+    //           "subscription plan [user model]: ${userInfoProvider.userModel?.productId}");
+    //       String subscriptionStatus =
+    //           userInfoProvider.userModel?.productId ?? "Inactive";
+    //       return Text(subscriptionStatus);
+    //     },
+    //   );
+    // }
 
     Widget subscriptionSection(BuildContext context, Widget currentPlan,
         IconData icon, Widget screen) {
@@ -292,8 +291,10 @@ class _SettingsPageState extends State<SettingsPage> {
               SizedBox(height: screenHeight * 0.02),
               sectionHeader("Support & About"),
               SizedBox(height: screenHeight * 0.02),
-              subscriptionSection(context, subscriptionPlan(context),
-                  Icons.subscriptions_outlined, SubscriptionPage()),
+              // subscriptionSection(context, subscriptionPlan(context),
+              //     Icons.subscriptions_outlined, PlanDetailPage()),
+              eachSection(context, 'View My Plan', Icons.subscriptions_outlined,
+                  PlanDetailPage()),
               eachSection(context, 'View Subscription Plans',
                   Icons.subscriptions_outlined, SubscriptionPage()),
               eachSection(context, 'Help and Support',

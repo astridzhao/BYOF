@@ -28,7 +28,7 @@ class AuthenticationBloc
               "email verified ${FirebaseAuth.instance.currentUser?.emailVerified}");
           if (FirebaseAuth.instance.currentUser?.emailVerified == true) {
             print("Emitting SignUpSuccessState");
-            await Storedata(user.id).updateUserDocument(user, "Basic Plan");
+            // await Storedata(user.id).updateUserSubscription(customerInfo);
             emit(SignUpSuccessState(user));
           } else {
             print("Emitting SignUpNeedsVerificationState");

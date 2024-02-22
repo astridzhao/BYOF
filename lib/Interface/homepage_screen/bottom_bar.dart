@@ -146,7 +146,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             child: widget.fabIcon),
       ),
       bottomNavigationBar: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
               color: Colors.transparent,
               borderRadius: BorderRadius.all(

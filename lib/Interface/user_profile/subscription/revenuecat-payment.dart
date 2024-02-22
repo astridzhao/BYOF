@@ -4,6 +4,7 @@ import 'package:astridzhao_s_food_app/resources/constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:developer';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 class Paywall extends StatefulWidget {
@@ -51,7 +52,7 @@ class _PaywallState extends State<Paywall> {
               itemBuilder: (BuildContext context, int index) {
                 var myProductList = widget.offering.availablePackages;
                 return Card(
-                  color: Colors.black,
+                  color: Colors.white,
                   child: ListTile(
                     onTap: () async {
                       try {
@@ -59,17 +60,18 @@ class _PaywallState extends State<Paywall> {
                             await Purchases.purchasePackage(
                                 myProductList[index]);
 
-                        // Update subscription data in Firestore using userId
-                        print("userId: $userId");
-                        print("customerInfo: $customerInfo");
                         customerInfo.activeSubscriptions.forEach((element) {
-                          print("activeSubscriptions: $element");
+                          log("activeSubscriptions: $element");
+                          debugPrint("activeSubscriptions: $element");
                         });
-                        await Storedata(userId)
-                            .updateUserSubscription( customerInfo);
+
                         if (customerInfo
                             .entitlements.all[entitlementId]!.isActive) {
-                          // Unlock that great "pro" content
+                          // Update subscription data in Firestore using userId
+                          await Storedata(userId)
+                              .updateUserSubscription(customerInfo);
+
+                          // TODO:Unlock that great "pro" content
                           // // Trigger UI update based on new subscription status
                           // context.read<SubscriptionStatusProvider>().updateStatus(
                           //     customerInfo); // Assuming Provider for subscription status

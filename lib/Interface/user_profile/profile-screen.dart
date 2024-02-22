@@ -37,6 +37,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   bool showPassword = false;
   TextEditingController nameController = TextEditingController();
   Uint8List? finalImage;
+  String? imageURL;
 
   @override
   void initState() {
@@ -46,12 +47,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (user != null && user.displayName != null) {
       nameController.text = user.displayName!;
     } // Get current user details
+    fetchUserProfileImageUrl(); // Your custom method to fetch and set the imageURL
   }
 
   void dispose() {
     // Clean up the controller when the widget is disposed.
     nameController.dispose();
     super.dispose();
+  }
+
+  Future<void> fetchUserProfileImageUrl() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection('userProfile')
+          .doc(user.uid)
+          .get();
+      if (docSnapshot.exists) {
+        setState(() {
+          imageURL = docSnapshot.data()?['image'];
+        });
+      }
+    }
   }
 
   @override
@@ -123,57 +140,58 @@ class _EditProfilePageState extends State<EditProfilePage> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     Widget displayImage() {
-      final user = FirebaseAuth.instance.currentUser;
-      String? imageURL;
-      // Use FutureBuilder to wait for the async operation to complete
-      return FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('userProfile')
-            .doc(user!.uid)
-            .get(),
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done &&
-              snapshot.hasData) {
-            // Data fetched successfully, get the image URL
-            final data = snapshot.data!.data() as Map<String, dynamic>?;
-            imageURL = data?['image'];
-            return finalImage != null
-                ? CircleAvatar(
-                    radius: 80,
-                    backgroundColor: appTheme.orange_primary,
-                    backgroundImage: MemoryImage(finalImage!))
-                : imageURL != null
-                    ? CircleAvatar(
-                        radius: 80,
-                        backgroundColor: appTheme.orange_primary,
-                        backgroundImage: NetworkImage(imageURL!))
-                    : const CircleAvatar(
-                        radius: 80,
-                        backgroundColor: Colors.lightGreen,
-                        backgroundImage: AssetImage("assets/images/chief.png"));
-          } else if (snapshot.hasError) {
-            // Handle error state
-            print("Error fetching user profile image: ${snapshot.error}");
-            // Optionally, show a default avatar or an error icon
-          }
+      // final user = FirebaseAuth.instance.currentUser;
 
-          // While data is loading, show the selected image or a default image
-          return finalImage != null
+      // Use FutureBuilder to wait for the async operation to complete
+      // return FutureBuilder<DocumentSnapshot>(
+      //   future: FirebaseFirestore.instance
+      //       .collection('userProfile')
+      //       .doc(user!.uid)
+      //       .get(),
+      //   builder:
+      //       (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+      //     if (snapshot.connectionState == ConnectionState.done &&
+      //         snapshot.hasData) {
+      //       // Data fetched successfully, get the image URL
+      //       final data = snapshot.data!.data() as Map<String, dynamic>?;
+      //       imageURL = data?['image'];
+      return finalImage != null
+          ? CircleAvatar(
+              radius: 80,
+              backgroundColor: appTheme.orange_primary,
+              backgroundImage: MemoryImage(finalImage!))
+          : imageURL != null
               ? CircleAvatar(
                   radius: 80,
                   backgroundColor: appTheme.orange_primary,
-                  backgroundImage: MemoryImage(finalImage!))
+                  backgroundImage: NetworkImage(imageURL!))
               : const CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.lightGreen,
                   backgroundImage: AssetImage("assets/images/chief.png"));
-        },
-      );
+      // } else if (snapshot.hasError) {
+      //   // Handle error state
+      //   print("Error fetching user profile image: ${snapshot.error}");
+      //   // Optionally, show a default avatar or an error icon
+      // }
+
+      //     // While data is loading, show the selected image or a default image
+      //     return finalImage != null
+      //         ? CircleAvatar(
+      //             radius: 80,
+      //             backgroundColor: appTheme.orange_primary,
+      //             backgroundImage: MemoryImage(finalImage!))
+      //         : const CircleAvatar(
+      //             radius: 80,
+      //             backgroundColor: Colors.lightGreen,
+      //             backgroundImage: AssetImage("assets/images/chief.png"));
+      //   },
+      // );
     }
 
     Future<void> uploadImage() async {
       Uint8List image = await PickImage(ImageSource.gallery);
+
       setState(() {
         finalImage = image;
       });

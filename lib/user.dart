@@ -6,29 +6,30 @@ class UserModel {
   final String? photoUrl;
   final bool? emailVerified;
   final String id;
-  String? subscriptionId;
-  String? productId;
-  String? status;
-  DateTime? startDate;
-  DateTime? endDate;
-  bool? renewalStatus;
-  DateTime? nextRenewalDate;
-  String? customField; //e.g. "promo_code_applied"
+  // String? subscriptionId;
+  // String? productId;
+  // String? status;
+  // DateTime? startDate;
+  // DateTime? endDate;
+  // bool? renewalStatus;
+  // DateTime? nextRenewalDate;
+  // String? customField; //e.g. "promo_code_applied"
 
-  UserModel(
-      {this.name,
-      required this.email,
-      this.photoUrl,
-      this.emailVerified,
-      required this.id,
-      this.productId = "Basic Plan",
-      this.subscriptionId,
-      this.status = "Active",
-      this.startDate,
-      this.endDate,
-      this.nextRenewalDate,
-      this.renewalStatus,
-      this.customField});
+  UserModel({
+    this.name,
+    required this.email,
+    this.photoUrl,
+    this.emailVerified,
+    required this.id,
+    // this.productId = "Basic Plan",
+    // this.subscriptionId,
+    // this.status = "Active",
+    // this.startDate,
+    // this.endDate,
+    // this.nextRenewalDate,
+    // this.renewalStatus,
+    // this.customField
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -36,14 +37,14 @@ class UserModel {
       'photoUrl': photoUrl,
       'emailVerified': emailVerified,
       'id': id,
-      'productId': productId,
-      'subscriptionId': subscriptionId,
-      'status': status,
-      'startDate': startDate,
-      'endDate': endDate,
-      'renewalStatus': renewalStatus,
-      'nextRenewalDate': nextRenewalDate,
-      'customField': customField
+      // 'productId': productId,
+      // 'subscriptionId': subscriptionId,
+      // 'status': status,
+      // 'startDate': startDate,
+      // 'endDate': endDate,
+      // 'renewalStatus': renewalStatus,
+      // 'nextRenewalDate': nextRenewalDate,
+      // 'customField': customField
     };
   }
 

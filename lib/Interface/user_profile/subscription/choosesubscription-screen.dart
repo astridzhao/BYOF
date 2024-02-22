@@ -52,7 +52,7 @@ class SubscriptionPageState extends State<SubscriptionPage> {
           customerInfo.entitlements.all[entitlementId]!.isActive)) {
         Storedata(user.uid).updateUserSubscription(customerInfo);
       }
-      // updateUserSubscription(user.uid, customerInfo);
+
       if (mounted) {
         //Notify the framework that the internal state of this object has changed.
         setState(() {});
@@ -80,58 +80,82 @@ class SubscriptionPageState extends State<SubscriptionPage> {
       Offerings? offerings;
       try {
         offerings = await Purchases.getOfferings();
-
-        // offerings are empty, show a message to your user
-        if (offerings.current == null ||
-            offerings.current!.availablePackages.isNotEmpty) {
-          await showModalBottomSheet(
-            useRootNavigator: true,
-            isDismissible: true,
-            isScrollControlled: true,
-            backgroundColor: Colors.black,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-            ),
-            context: context,
-            builder: (BuildContext context) {
-              return StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setModalState) {
-                return Container(
-                  height: 200,
-                  child: Center(
-                    child: Text(
-                      "No offerings available",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                );
-              });
-            },
-          );
-        } else {
-          // current offering is available, show paywall
-          await showModalBottomSheet(
-            useRootNavigator: true,
-            isDismissible: true,
-            isScrollControlled: true,
-            backgroundColor: Colors.black,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-            ),
-            context: context,
-            builder: (BuildContext context) {
-              return StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setModalState) {
-                return Paywall(
-                  offering: offerings!.current!,
-                );
-              });
-            },
-          );
+        if (offerings.current == null) {
+          const snackbar = SnackBar(content: Text("No plans available"));
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
         }
+        final packages = offerings.current!.availablePackages;
+        
+        await showModalBottomSheet(
+          useRootNavigator: true,
+          isDismissible: true,
+          isScrollControlled: true,
+          backgroundColor: Colors.black,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+          ),
+          context: context,
+          builder: (BuildContext context) {
+            return StatefulBuilder(
+                builder: (BuildContext context, StateSetter setModalState) {
+              return Paywall(
+                offering: offerings!.current!,
+              );
+            });
+          },
+        );
+
+        //   // offerings are empty, show a message to your user
+        //   if (offerings.current == null ||
+        //       offerings.current!.availablePackages.isNotEmpty) {
+        //     await showModalBottomSheet(
+        //       useRootNavigator: true,
+        //       isDismissible: true,
+        //       isScrollControlled: true,
+        //       backgroundColor: Colors.black,
+        //       shape: const RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        //       ),
+        //       context: context,
+        //       builder: (BuildContext context) {
+        //         return StatefulBuilder(
+        //             builder: (BuildContext context, StateSetter setModalState) {
+        //           return Container(
+        //             height: 200,
+        //             child: Center(
+        //               child: Text(
+        //                 "No offerings available",
+        //                 style: TextStyle(
+        //                   color: Colors.white,
+        //                   fontSize: 20,
+        //                 ),
+        //               ),
+        //             ),
+        //           );
+        //         });
+        //       },
+        //     );
+        //   } else {
+        //     // current offering is available, show paywall
+        //     await showModalBottomSheet(
+        //       useRootNavigator: true,
+        //       isDismissible: true,
+        //       isScrollControlled: true,
+        //       backgroundColor: Colors.black,
+        //       shape: const RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        //       ),
+        //       context: context,
+        //       builder: (BuildContext context) {
+        //         return StatefulBuilder(
+        //             builder: (BuildContext context, StateSetter setModalState) {
+        //           return Paywall(
+        //             offering: offerings!.current!,
+        //           );
+        //         });
+        //       },
+        //     );
+        //   }
       } on PlatformException catch (e) {
         String? error = e.message;
         print("Error: $error");
