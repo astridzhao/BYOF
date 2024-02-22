@@ -1,3 +1,4 @@
+import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/subscription/appdata.dart';
 import 'package:astridzhao_s_food_app/resources/constant.dart';
@@ -30,20 +31,30 @@ class _PaywallState extends State<Paywall> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
       child: SafeArea(
         child: Wrap(
           children: <Widget>[
             Container(
-                height: 70.0,
+                margin: const EdgeInsets.only(top: 16.0),
+                height: MediaQuery.of(context).size.height * 0.05,
                 width: double.infinity,
-                decoration: const BoxDecoration(color: Colors.black),
-                child: const Center(child: Text('RiceBucket'))),
-            const Padding(
-              padding:
-                  EdgeInsets.only(top: 32, bottom: 16, left: 16.0, right: 16.0),
-              child: SizedBox(
-                child: Text('PREMIUM SUBSCRIPTION'),
+                decoration: BoxDecoration(color: Colors.black),
+                child: const Center(
+                    child: Text(
+                  'RiceBucket',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ))),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: screenWidth * 0.05, horizontal: screenWidth * 0.05),
+              child: const SizedBox(
+                child: Text(
+                  'PREMIUM SUBSCRIPTION',
+                  style: TextStyle(color: Colors.white, fontSize: 14),
+                ),
                 width: double.infinity,
               ),
             ),
@@ -56,6 +67,7 @@ class _PaywallState extends State<Paywall> {
                   child: ListTile(
                     onTap: () async {
                       try {
+                        //made purchase
                         CustomerInfo customerInfo =
                             await Purchases.purchasePackage(
                                 myProductList[index]);
@@ -89,12 +101,17 @@ class _PaywallState extends State<Paywall> {
                     },
                     title: Text(
                       myProductList[index].storeProduct.title,
+                      style: TextStyle(
+                          color: appTheme.green_primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
                     ),
                     subtitle: Text(
                       myProductList[index].storeProduct.description,
                     ),
                     trailing: Text(
                       myProductList[index].storeProduct.priceString,
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                 );
@@ -108,6 +125,7 @@ class _PaywallState extends State<Paywall> {
               child: SizedBox(
                 child: Text(
                   footerText,
+                  style: TextStyle(color: Colors.white54, fontSize: 12),
                 ),
                 width: double.infinity,
               ),

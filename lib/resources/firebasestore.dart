@@ -64,9 +64,8 @@ class Storedata {
     await userProfileDoc.update(data);
   }
 
-  Future<void> updateUserSubscription(CustomerInfo customerInfo) async {
+  Future<String> updateUserSubscription(CustomerInfo customerInfo) async {
     // Retrieve updated user information based on customerInfo
-
     try {
       // Extract relevant subscription information
       final productId =
@@ -78,18 +77,17 @@ class Storedata {
           customerInfo.entitlements.all[entitlementId]?.expirationDate;
       final renewalStatus =
           customerInfo.entitlements.all[entitlementId]?.isActive ?? false;
-
       final subscriptionId = Purchases.appUserID; // If available
       // Build update data with only necessary fields
       final updatedData = await {
-        'productId': productId, //subscription plan name
-        'expireDate': expireDate,
-        'startDate': startDate,
-        'renewalStatus': renewalStatus,
-        'subscriptionId': subscriptionId,
+        'productId': productId.toString(), //subscription plan name
+        'expireDate': expireDate.toString(),
+        'startDate': startDate.toString(),
+        'renewalStatus': renewalStatus.toString(),
+        'subscriptionId': subscriptionId.toString(),
       };
 
-      debugPrint(updatedData.toString());
+      print("updateUserSubscription: " + updatedData.toString());
 
       // Update user document in Firestore
       // await firestore.collection('userProfile').doc(userId).update(updatedData);
@@ -99,6 +97,7 @@ class Storedata {
       print(e.message);
       print("An error occurred updating your subscription.");
     }
+    return "Subscription updated successfully";
   }
 
   Future<Map<String, dynamic>> getSubscriptionInfo() async {
@@ -108,18 +107,29 @@ class Storedata {
       if (documentSnapshot.exists) {
         Map<String, dynamic> data =
             documentSnapshot.data() as Map<String, dynamic>;
-        print("[getSubscriptionInfo] data: $data");
-
+        print("[getSubscriptionInfo]: " + data.toString());
         // Extract expirationDate and renewalStatus from the document
         String? productId = data['productId'];
-        dynamic expirationDate = data['expireDate']?.toDate();
-        bool? renewalStatus = data['renewalStatus'];
+        String planName = "Basic Plan";
+        print("[getSubscriptionInfo]: " + productId.toString());
+        if (productId.toString() == "ricebucket01") {
+          planName = "Premium Basic";
+        }
+        if (productId.toString() == "ricebucket02") {
+          planName = "Premium Plus";
+        }
 
+        String expirationDate = data['expireDate'];
+        String renewalStatus = data['renewalStatus'];
+
+        print("[getSubscriptionInfo-PLAN]: " + planName);
+        print("[getSubscriptionInfo-EXPIRE]: " + expirationDate);
+        print("[getSubscriptionInfo-RENEWAL]: " + renewalStatus);
         // Return the relevant information
         return {
-          'plan': productId ?? "Basic Plan",
+          'plan': planName,
           'expirationDate': expirationDate,
-          'renewalStatus': renewalStatus ?? true,
+          'renewalStatus': renewalStatus,
         };
       } else {
         throw Exception("Document does not exist.");

@@ -68,116 +68,55 @@ class SubscriptionPageState extends State<SubscriptionPage> {
     });
 
     CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-
-    // if already have the entitlement, don't show the paywall
-    if (customerInfo.entitlements.all[entitlementId] != null &&
-        customerInfo.entitlements.all[entitlementId]?.isActive == true) {
-      setState(() {
-        _isLoading = false;
-      });
-      print("You already have the entitlement");
-    } else {
-      Offerings? offerings;
-      try {
-        offerings = await Purchases.getOfferings();
-        if (offerings.current == null) {
-          const snackbar = SnackBar(content: Text("No plans available"));
-          ScaffoldMessenger.of(context).showSnackBar(snackbar);
-        }
-        final packages = offerings.current!.availablePackages;
-        
-        await showModalBottomSheet(
-          useRootNavigator: true,
-          isDismissible: true,
-          isScrollControlled: true,
-          backgroundColor: Colors.black,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-          ),
-          context: context,
-          builder: (BuildContext context) {
-            return StatefulBuilder(
-                builder: (BuildContext context, StateSetter setModalState) {
-              return Paywall(
-                offering: offerings!.current!,
-              );
-            });
-          },
-        );
-
-        //   // offerings are empty, show a message to your user
-        //   if (offerings.current == null ||
-        //       offerings.current!.availablePackages.isNotEmpty) {
-        //     await showModalBottomSheet(
-        //       useRootNavigator: true,
-        //       isDismissible: true,
-        //       isScrollControlled: true,
-        //       backgroundColor: Colors.black,
-        //       shape: const RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-        //       ),
-        //       context: context,
-        //       builder: (BuildContext context) {
-        //         return StatefulBuilder(
-        //             builder: (BuildContext context, StateSetter setModalState) {
-        //           return Container(
-        //             height: 200,
-        //             child: Center(
-        //               child: Text(
-        //                 "No offerings available",
-        //                 style: TextStyle(
-        //                   color: Colors.white,
-        //                   fontSize: 20,
-        //                 ),
-        //               ),
-        //             ),
-        //           );
-        //         });
-        //       },
-        //     );
-        //   } else {
-        //     // current offering is available, show paywall
-        //     await showModalBottomSheet(
-        //       useRootNavigator: true,
-        //       isDismissible: true,
-        //       isScrollControlled: true,
-        //       backgroundColor: Colors.black,
-        //       shape: const RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-        //       ),
-        //       context: context,
-        //       builder: (BuildContext context) {
-        //         return StatefulBuilder(
-        //             builder: (BuildContext context, StateSetter setModalState) {
-        //           return Paywall(
-        //             offering: offerings!.current!,
-        //           );
-        //         });
-        //       },
-        //     );
-        //   }
-      } on PlatformException catch (e) {
-        String? error = e.message;
-        print("Error: $error");
-        await showDialog(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-                    title: Text("Error"),
-                    content: Container(child: Text(error!)),
-                    actions: [
-                      ElevatedButton(
-                        onPressed: () =>
-                            Navigator.pop(context, false), // passing false
-                        child:
-                            Text('OK', style: TextStyle(color: Colors.black54)),
-                      ),
-                    ]));
+    Offerings? offerings;
+    try {
+      offerings = await Purchases.getOfferings();
+      if (offerings.current == null) {
+        const snackbar = SnackBar(content: Text("No plans available"));
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
       }
+      final packages = offerings.current!.availablePackages;
 
-      setState(() {
-        _isLoading = false;
-      });
+      await showModalBottomSheet(
+        useRootNavigator: true,
+        isDismissible: true,
+        isScrollControlled: true,
+        backgroundColor: Colors.black,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+            return Paywall(
+              offering: offerings!.current!,
+            );
+          });
+        },
+      );
+    } on PlatformException catch (e) {
+      String? error = e.message;
+      print("Error: $error");
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                  title: Text("Error"),
+                  content: Container(child: Text(error!)),
+                  actions: [
+                    ElevatedButton(
+                      onPressed: () =>
+                          Navigator.pop(context, false), // passing false
+                      child:
+                          Text('OK', style: TextStyle(color: Colors.black54)),
+                    ),
+                  ]));
     }
+
+    setState(() {
+      _isLoading = false;
+    });
+    // }
   }
 
   @override
@@ -269,20 +208,20 @@ class SubscriptionPageState extends State<SubscriptionPage> {
                 scrollDirection: Axis.horizontal,
                 itemCount: plans.length,
                 itemBuilder: (context, index) {
-                  return PlanCard(plan: plans[index]);
+                   return PlanCard(plan: plans[index]);
                 },
               ),
             ),
           ),
           SizedBox(height: screenHeight * 0.01),
           Padding(
-            padding: const EdgeInsets.only(bottom: 30.0),
+            padding: const EdgeInsets.only(bottom: 40.0),
             child: TextButton(
               onPressed: () => perfomMagic(),
               child: Text(
                 "Buy Subscription",
                 style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: appTheme.green_primary),
               ),
@@ -337,23 +276,23 @@ class PlanCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
-                color: appTheme.green_primary,
+                color: appTheme.orange_primary,
               ),
             ),
             SizedBox(height: screenHeight * 0.01),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.all(12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              child: Text(
-                'Choose Plan',
-                style: TextStyle(fontSize: 14.0, color: Colors.black54),
-              ),
-              onPressed: () => (),
-            ),
+            // ElevatedButton(
+            //   style: ElevatedButton.styleFrom(
+            //     padding: EdgeInsets.all(12),
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(8.0),
+            //     ),
+            //   ),
+            //   child: Text(
+            //     'Choose Plan',
+            //     style: TextStyle(fontSize: 14.0, color: Colors.black54),
+            //   ),
+            //   onPressed: () => {},
+            // ),
           ],
         ),
       ),

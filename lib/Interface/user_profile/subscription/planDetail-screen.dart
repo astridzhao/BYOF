@@ -38,21 +38,21 @@ class PlanDetailPageState extends State<PlanDetailPage> {
       Map<String, dynamic> subscriptionInfo =
           await storedata.getSubscriptionInfo();
       String plan = subscriptionInfo['plan'];
-      dynamic date = subscriptionInfo['expirationDate'];
-      bool? renewalStatus = subscriptionInfo['renewalStatus'];
-      log("plan: $plan");
-      debugPrint("plan: $plan");
-      log("expirationDate: $date");
-      log("renewalStatus: $renewalStatus");
-
+      String date = subscriptionInfo['expirationDate'];
+      String renewalStatus = subscriptionInfo['renewalStatus'];
       String status = "Inactive";
 
+      print("subscriptionInfo: $subscriptionInfo");
+      print("[plandetail]plan: $plan");
+      print("[plandetail]expirationDate: $date");
+      print("[plandetail]renewalStatus: $renewalStatus");
+
       if (plan == "Basic Plan") {
-        date = DateTime.utc(2030, 1, 1);
-        status = "Active";
-      } else if (renewalStatus == true &&
-          date != null &&
-          date.isAfter(DateTime.now())) {
+        date = DateTime.utc(2030, 1, 1).toString();
+        status = "Infinity";
+      } else if (renewalStatus == "true" &&
+          // ignore: unnecessary_null_comparison
+          date != null) {
         status = "Active";
       }
 
@@ -61,7 +61,7 @@ class PlanDetailPageState extends State<PlanDetailPage> {
         displayStatus = status;
         displayExpirationDate = date;
       });
-      print("status: $displayStatus");
+      print("[plandetail]status: $displayStatus");
     } catch (e) {
       print("Error fetching subscription status: $e");
       setState(() {
