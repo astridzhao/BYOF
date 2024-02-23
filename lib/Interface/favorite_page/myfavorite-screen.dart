@@ -1,10 +1,12 @@
 import 'dart:core';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
 import 'package:astridzhao_s_food_app/widgets/slideDirection.dart';
 import 'package:dio/dio.dart';
 import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -300,20 +302,39 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                         );
                                       },
                                     );
+                                    bool canGenerate = await Storedata(
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid)
+                                        .decrementGenerationLimit();
+                                    if (canGenerate) {
+                                      // execute generate image function
+                                      await generateImage(i, recipe.id,
+                                          recipe.title.toString());
 
-                                    // execute generate image function
-                                    await generateImage(
-                                        i, recipe.id, recipe.title.toString());
+                                      // pop off alert waiting box
+                                      Navigator.of(context).pop();
 
-                                    // pop off alert waiting box
-                                    Navigator.of(context).pop();
-
-                                    // show image box
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          popupDialogImage(context),
-                                    );
+                                      // show image box
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            popupDialogImage(context),
+                                      );
+                                    } else {
+                                      print(
+                                          "You've reached your generation limit.");
+                                      Fluttertoast.showToast(
+                                        msg:
+                                            "You've reached your generation limit.",
+                                        fontSize: 14.fSize,
+                                        toastLength: Toast.LENGTH_LONG,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 2,
+                                        backgroundColor:
+                                            appTheme.orange_primary,
+                                        textColor: Colors.black,
+                                      );
+                                    }
                                   }
                                 },
 

@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:astridzhao_s_food_app/core/app_export.dart';
+import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/generation-recipe-output.dart';
 import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/RecipeSettingBottomSheet.dart';
@@ -245,6 +247,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     var screenWidth = MediaQuery.of(context).size.width;
     // Adjust aspect ratio based on screen width
     double childAspectRatio;
@@ -275,31 +278,19 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
       crossAxisSpacing = 5; // You may need to adjust this value
     }
 
-    return SafeArea(
-        child: Scaffold(
-      backgroundColor: appTheme.yellow5001,
-      resizeToAvoidBottomInset: false,
-      appBar: CustomAppBar(
-        toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-        leadingWidth: MediaQuery.of(context).size.width * 0.2,
-        backgroundColor: Colors.transparent,
-        leading: Builder(builder: (BuildContext context) {
-          return CustomImageView(
-            imagePath: ImageConstant.imgLogo2RemovebgPreview,
-            fit: BoxFit.contain,
-            margin: EdgeInsets.only(left: 10.h),
-          );
-        }),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              "Generate",
-              style: TextStyle(
-                  fontSize: 15.fSize,
-                  fontFamily: "Outfit",
-                  color: appTheme.green_primary),
-            ),
-            onPressed: () async {
+    Widget _generateButton() {
+      return TextButton(
+          child: Text(
+            "Generate",
+            style: TextStyle(
+                fontSize: 15.fSize,
+                fontFamily: "Outfit",
+                color: appTheme.green_primary),
+          ),
+          onPressed: () async {
+            bool canGenerate =
+                await Storedata(user!.uid).decrementGenerationLimit();
+            if (canGenerate) {
               // handle situtaion of empty input
               if (selectedIngredients.isEmpty ||
                   atomInputContainerController.text.isEmpty) {
@@ -341,10 +332,43 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                     builder: (context) =>
                         GenerationScreen(resultCompletion: resultCompletion)));
               }
-            },
-          ),
+            } else {
+              // Notify the user that they cannot generate anymore
+              print("You've reached your generation limit.");
+              Fluttertoast.showToast(
+                msg: "You've reached your generation limit.",
+                fontSize: 14.fSize,
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 2,
+                backgroundColor: appTheme.orange_primary,
+                textColor: Colors.black,
+              );
+            }
+          });
+    }
+
+    CustomAppBar _appbar() {
+      return CustomAppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: appTheme.green_primary),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+        backgroundColor: Colors.transparent,
+        actions: <Widget>[
+          _generateButton(),
         ],
-      ),
+      );
+    }
+
+    return SafeArea(
+        child: Scaffold(
+      // backgroundColor: appTheme.yellow5001,
+      resizeToAvoidBottomInset: false,
+      appBar: _appbar(),
       body: Stack(children: [
         SingleChildScrollView(
             child: Container(
@@ -355,7 +379,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                       alignment: Alignment.topCenter,
                       //Language Picker Widget
                       child: Padding(
-                          padding: EdgeInsets.only(left: 30.h, right: 30.h),
+                          padding: EdgeInsets.only(left: 25.h, right: 25.h),
                           child: Column(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -379,7 +403,7 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                                   decoration: BoxDecoration(
                                     color: appTheme.gray700,
                                     borderRadius: BorderRadius.circular(
-                                      20.h,
+                                      10.h,
                                     ),
                                   ),
                                   child: GridView.count(

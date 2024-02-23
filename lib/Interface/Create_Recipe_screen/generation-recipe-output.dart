@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'dart:core';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
 import 'package:astridzhao_s_food_app/widgets/generation_azure/RecipeImageGenerator.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart' as drift;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -27,7 +29,7 @@ import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 
 class GenerationScreen extends StatefulWidget {
   final String resultCompletion;
-  final RecipesCompanion recipe;
+  final RecipesCompanion? recipe;
 
   GenerationScreen({Key? key, required this.resultCompletion})
       : recipe = RecipeFromLLMJson(resultCompletion),
@@ -202,55 +204,72 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     fontSize: 15.fSize)),
             onPressed: () async {
               // alert of generating...
-              showDialog(
-                context: context,
-                barrierDismissible:
-                    false, // User must tap button to close dialog
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Center(
-                          child: Text(
-                            "Crafting a delightful dish image...",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: 'Outfit', fontSize: 12.fSize),
+              bool canGenerate =
+                  await Storedata(FirebaseAuth.instance.currentUser!.uid)
+                      .decrementGenerationLimit();
+              if (canGenerate) {
+                showDialog(
+                  context: context,
+                  barrierDismissible:
+                      false, // User must tap button to close dialog
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Center(
+                            child: Text(
+                              "Crafting a delightful dish image...",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontFamily: 'Outfit', fontSize: 12.fSize),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 20.h,
-                          height: 20.v, // Adjust the height as needed
-                          child: CircularProgressIndicator(),
-                        ),
-                        SizedBox(height: 20.v),
-                        Text("Do not exit.",
-                            style: TextStyle(
-                              fontFamily: 'Outfit',
-                              fontWeight: FontWeight.bold,
-                              wordSpacing: 0,
-                              letterSpacing: 0,
-                              fontSize: 10.fSize,
-                              color: appTheme.orange_primary,
-                            )),
-                      ],
-                    ),
-                  );
-                },
-              );
+                        ],
+                      ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 20.h,
+                            height: 20.v, // Adjust the height as needed
+                            child: CircularProgressIndicator(),
+                          ),
+                          SizedBox(height: 20.v),
+                          Text("Do not exit.",
+                              style: TextStyle(
+                                fontFamily: 'Outfit',
+                                fontWeight: FontWeight.bold,
+                                wordSpacing: 0,
+                                letterSpacing: 0,
+                                fontSize: 10.fSize,
+                                color: appTheme.orange_primary,
+                              )),
+                        ],
+                      ),
+                    );
+                  },
+                );
 
-              await generateImage(widget.recipe.title.toString());
-              Navigator.of(context).pop();
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => popupDialogImage(context),
-              );
+                await generateImage(widget.recipe!.title.toString());
+                Navigator.of(context).pop();
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => popupDialogImage(context),
+                );
+              } else {
+                // Notify the user that they cannot generate anymore
+                print("You've reached your generation limit.");
+                Fluttertoast.showToast(
+                  msg: "You've reached your generation limit.",
+                  fontSize: 14.fSize,
+                  toastLength: Toast.LENGTH_LONG,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 2,
+                  backgroundColor: appTheme.orange_primary,
+                  textColor: Colors.black,
+                );
+              }
             },
           ),
         )
@@ -307,7 +326,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
     return Container(
         padding: EdgeInsets.fromLTRB(60, 0, 60, 20),
         alignment: Alignment.topCenter,
-        child: AutoSizeText(widget.recipe.title.value.toString(),
+        child: AutoSizeText(widget.recipe!.title.value.toString(),
             textAlign: TextAlign.center,
             maxLines: 2,
             style: TextStyle(
@@ -376,7 +395,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                         itemBuilder: (context, index) {
                           return ListTile(
                             title: Text(
-                              widget.recipe.ingredients.value.join("\n \n"),
+                              widget.recipe!.ingredients.value.join("\n \n"),
                               style: TextStyle(
                                 fontFamily: "Outfit",
                                 fontSize: 12.fSize,
@@ -421,7 +440,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                 // Wrap the Text widget in Expanded
                 child: SingleChildScrollView(
                   // Make it scrollable
-                  child: Text(widget.recipe.notes.value.toString(),
+                  child: Text(widget.recipe!.notes.value.toString(),
                       style: TextStyle(
                           fontFamily: "Outfit",
                           fontSize: 12.fSize,
@@ -475,7 +494,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                   itemBuilder: (context, index) {
                     return ListTile(
                       title: Text(
-                          widget.recipe.instructions.value.join('\n \n'),
+                          widget.recipe!.instructions.value.join('\n \n'),
                           style: TextStyle(
                               fontFamily: "Outfit",
                               fontSize: 12.fSize,
@@ -545,7 +564,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       bottom: 11.v,
                     ),
                     child: Text(
-                      widget.recipe.savingSummary_CO2.value.toString(),
+                      widget.recipe!.savingSummary_CO2.value.toString(),
                       style: TextStyle(
                           fontFamily: "Outfit",
                           fontSize: 18.fSize,
@@ -587,7 +606,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
                       bottom: 10.v,
                     ),
                     child: Text(
-                      widget.recipe.savingSummary_money.value.toString(),
+                      widget.recipe!.savingSummary_money.value.toString(),
                       style: TextStyle(
                           fontFamily: "Outfit",
                           fontSize: 18.fSize,
@@ -641,7 +660,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           ),
           Spacer(),
           Text(
-            widget.recipe.cookTime.value.toString(),
+            widget.recipe!.cookTime.value.toString(),
             style: TextStyle(fontFamily: "Outfit", fontSize: 14.fSize),
           ),
           Spacer(),
@@ -707,7 +726,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           tooltip: "Copy",
           onPressed: () {
             FlutterClipboard.copy(
-                recipeCompanionToCopyableMarkdown(widget.recipe));
+                recipeCompanionToCopyableMarkdown(widget.recipe!));
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Copied")),
             );
@@ -789,7 +808,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
           });
           final insertedRecipe = await recipesDao
               .into(recipesDao.recipes)
-              .insertReturning(widget.recipe);
+              .insertReturning(widget.recipe!);
           int currentID = insertedRecipe.id;
           if (generatedImageUrls != "") {
             //save image to local -> generatedImageUrls
@@ -802,7 +821,7 @@ class _GenerationScreenState extends State<GenerationScreen> {
             await file.writeAsBytes(response.bodyBytes);
             await (recipesDao.update(recipesDao.recipes)..where((tbl) => tbl.id.equals(currentID)))
               ..write(RecipesCompanion(imageURL: drift.Value(path.basename(generatedImageUrls))));
-            log("image saving name: " + path.basename(generatedImageUrls));
+            // log("image saving name: " + path.basename(generatedImageUrls));
           }
         },
       ),
@@ -836,8 +855,8 @@ class _GenerationScreenState extends State<GenerationScreen> {
               index_color == 2;
             });
 
-            incrementSavingNums(widget.recipe.savingSummary_CO2.value,
-                widget.recipe.savingSummary_money.value);
+            incrementSavingNums(widget.recipe!.savingSummary_CO2.value,
+                widget.recipe!.savingSummary_money.value);
           }),
     );
   }

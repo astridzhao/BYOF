@@ -1,0 +1,183 @@
+{
+  "identifier" : "8D29B656",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "6477763598",
+      "localizations" : [
+        {
+          "description" : " 让冰箱里的食材焕发新生，饭桶带你体验AI量身定制食谱，共创零浪费生活！",
+          "displayName" : "饭桶",
+          "locale" : "zh_CN"
+        },
+        {
+          "description" : "Save Environment, Save Money, Save Time",
+          "displayName" : "RiceBucket",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "ricebucket10270120",
+      "referenceName" : "RiceBucket",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6477497530",
+    "_developerTeamID" : "RCY8FN6D3V",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 730183029.12010503,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21446216",
+      "localizations" : [
+
+      ],
+      "name" : "RiceBucket Premium ",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+            {
+              "eligibility" : [
+                "new"
+              ],
+              "internalID" : "B64A6C05",
+              "isStackable" : true,
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "referenceName" : "WasteLessCreateMore",
+              "subscriptionPeriod" : "P1W"
+            }
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6477813283",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Premium Basic: Unlock Limited Features.",
+              "displayName" : "Try it Out!",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "ricebucket01",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium Basic Plan",
+          "subscriptionGroupID" : "21446216",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "12.99",
+          "familyShareable" : true,
+          "groupNumber" : 3,
+          "internalID" : "6477813381",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Spread Out the Words! Less Waste, Save More!",
+              "displayName" : "Let's Save Together!",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "ricebucket03",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium Family Plan",
+          "subscriptionGroupID" : "21446216",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "8.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6477812656",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlock All Features! Make Meal Plan Easier!",
+              "displayName" : "Enjoy My Premium",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "ricebucket02",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium Plus Plan",
+          "subscriptionGroupID" : "21446216",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
