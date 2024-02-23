@@ -179,11 +179,11 @@ class _SettingsPageState extends State<SettingsPage> {
     //   );
     // }
 
-    Widget subscriptionSection(BuildContext context, Widget currentPlan,
-        IconData icon, Widget screen) {
+    Widget subscriptionSection(
+        BuildContext context, String title, IconData icon, Widget screen) {
       return ListTile(
         leading: Image.asset("assets/images/img_savingdollar.png"),
-        title: currentPlan,
+        title: Text(title),
         // subtitle: Text(subscriptionType),
         trailing: Icon(Icons.arrow_forward_ios),
         onTap: () {
@@ -291,12 +291,11 @@ class _SettingsPageState extends State<SettingsPage> {
               SizedBox(height: screenHeight * 0.02),
               sectionHeader("Support & About"),
               SizedBox(height: screenHeight * 0.02),
-              // subscriptionSection(context, subscriptionPlan(context),
-              //     Icons.subscriptions_outlined, PlanDetailPage()),
-              eachSection(context, 'View My Plan', Icons.subscriptions_outlined,
-                  PlanDetailPage()),
+              subscriptionSection(context, "My Subscription",
+                  Icons.subscriptions_outlined, PlanDetailPage()),
+
               eachSection(context, 'View Subscription Plans',
-                  Icons.subscriptions_outlined, SubscriptionPage()),
+                  Icons.subscriptions, SubscriptionPage()),
               eachSection(context, 'Help and Support',
                   Icons.question_mark_outlined, EditProfilePage()),
               SizedBox(height: screenHeight * 0.1),

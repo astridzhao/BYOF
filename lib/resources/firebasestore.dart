@@ -33,10 +33,12 @@ class Storedata {
       {required String name, required Uint8List image}) async {
     try {
       String imageUrl = await uploadProfileImage("profileImage", image);
+      int generationLimit = 10;
       print("[createUserDocument] user profile image: $imageUrl");
       await userProfileDoc.set({
         'name': name,
         'image': imageUrl,
+        'generationLimit': generationLimit.toString(),
       });
       print("[firestore]Profile created successfully");
       return "Profile created successfully";
@@ -44,24 +46,6 @@ class Storedata {
       print(e);
       return e.toString();
     }
-  }
-
-  Future<void> updateUserDocument(UserModel user, String productId) async {
-    final data = UserModel(
-      email: user.email,
-      photoUrl: user.photoUrl,
-      emailVerified: user.emailVerified,
-      id: user.id,
-      // subscriptionId: appUserID,
-      // productId: productId,
-      // status: "inActive",
-      // startDate: DateTime.now(),
-      // endDate: DateTime.now().add(Duration(days: 30)),
-      // renewalStatus: true,
-    ).toJson();
-
-    // await firestore.collection('userProfile').doc(user.id).update(data);
-    await userProfileDoc.update(data);
   }
 
   Future<String> updateUserSubscription(CustomerInfo customerInfo) async {
@@ -78,6 +62,16 @@ class Storedata {
       final renewalStatus =
           customerInfo.entitlements.all[entitlementId]?.isActive ?? false;
       final subscriptionId = Purchases.appUserID; // If available
+
+      final generationLimit;
+
+      if (productId == "ricebucket01") {
+        generationLimit = 50;
+      } else if (productId == "ricebucket02") {
+        generationLimit = 300;
+      } else {
+        generationLimit = 10;
+      }
       // Build update data with only necessary fields
       final updatedData = await {
         'productId': productId.toString(), //subscription plan name
@@ -85,6 +79,7 @@ class Storedata {
         'startDate': startDate.toString(),
         'renewalStatus': renewalStatus.toString(),
         'subscriptionId': subscriptionId.toString(),
+        'generationLimit': generationLimit.toString(),
       };
 
       print("updateUserSubscription: " + updatedData.toString());
@@ -110,6 +105,7 @@ class Storedata {
         print("[getSubscriptionInfo]: " + data.toString());
         // Extract expirationDate and renewalStatus from the document
         String? productId = data['productId'];
+
         String planName = "Basic Plan";
         print("[getSubscriptionInfo]: " + productId.toString());
         if (productId.toString() == "ricebucket01") {
@@ -121,15 +117,18 @@ class Storedata {
 
         String expirationDate = data['expireDate'];
         String renewalStatus = data['renewalStatus'];
+        String generationLimit = data['generationLimit'];
 
         print("[getSubscriptionInfo-PLAN]: " + planName);
         print("[getSubscriptionInfo-EXPIRE]: " + expirationDate);
         print("[getSubscriptionInfo-RENEWAL]: " + renewalStatus);
+        print("[getSubscriptionInfo-GENERATION]: " + generationLimit);
         // Return the relevant information
         return {
           'plan': planName,
           'expirationDate': expirationDate,
           'renewalStatus': renewalStatus,
+          'generationLimit': generationLimit,
         };
       } else {
         throw Exception("Document does not exist.");
@@ -137,6 +136,35 @@ class Storedata {
     } catch (e) {
       print("Error retrieving subscription info: $e");
       throw Exception("Error retrieving subscription info.");
+    }
+  }
+
+  Future<bool> decrementGenerationLimit() async {
+    try {
+      // Fetch current generation limit from Firestore
+      DocumentSnapshot documentSnapshot = await userProfileDoc.get();
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+        int currentLimit = int.parse(data['generationLimit']);
+
+        if (currentLimit <= 0) {
+          print("Generation limit reached. No more generations allowed.");
+          return false; // Indicate that the generation limit has been reached
+        } else {
+          // Decrement the generation limit and update Firestore
+          int newLimit = currentLimit - 1;
+          await userProfileDoc.update({'generationLimit': newLimit.toString()});
+          print("Generation limit decremented. New limit: $newLimit");
+          return true; // Indicate successful decrement
+        }
+      } else {
+        print("Document does not exist.");
+        return false; // Handle the case where the document doesn't exist
+      }
+    } catch (e) {
+      print("Error decrementing generation limit: $e");
+      return false; // Handle exceptions
     }
   }
 }

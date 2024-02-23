@@ -640,7 +640,7 @@ class HomePagetate extends State<HomePage> {
         ),
       ),
       title: AppbarTitle(
-        text: "Level",
+        text: "Bring Your Own Fridge",
         textStyle: TextStyle(
           fontSize: 15.fSize,
           fontWeight: FontWeight.w500,

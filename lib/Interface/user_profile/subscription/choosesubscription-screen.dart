@@ -156,8 +156,7 @@ class SubscriptionPageState extends State<SubscriptionPage> {
         'title': 'Try It Out',
         'subtitle': 'Basic Premium Plan',
         'features': [
-          'Up to 50 times Recipe Customization',
-          'Preview Dishes',
+          'Up to 50 times Recipe Customization and Preview Dishes',
           'Free Fridge Organizer',
         ],
         'price': '\$ 4.99/month',
@@ -166,11 +165,9 @@ class SubscriptionPageState extends State<SubscriptionPage> {
         'title': 'Enjoy My Premium',
         'subtitle': 'Upgraded Premium Plan',
         'features': [
-          'Advanced classroom features',
-          'Additional set of tools',
-          'Good quality student leads',
-          'Customized dashboard',
-          '24/7 chat/call assistance',
+          'Unlimited times Recipe Customization and Preview Dishes',
+          'Get Access to RiceBucket Meal Plan',
+          'Free Fridge Organizer',
         ],
         'price': '\$ 8.99/month',
       },
@@ -178,11 +175,10 @@ class SubscriptionPageState extends State<SubscriptionPage> {
         'title': "Let's Save Together",
         'subtitle': 'Family Premium Plan',
         'features': [
-          'Advanced classroom features',
-          'Additional set of tools',
-          'Good quality student leads',
-          'Customized dashboard',
-          '24/7 chat/call assistance',
+          'Share Plan with up to 4 People',
+          'Unlimited times Recipe Customization and Preview Dishes',
+          'Get Access to RiceBucket Meal Plan',
+          'Free Fridge Organizer',
         ],
         'price': '\$ 12.99/month',
       },
@@ -208,7 +204,7 @@ class SubscriptionPageState extends State<SubscriptionPage> {
                 scrollDirection: Axis.horizontal,
                 itemCount: plans.length,
                 itemBuilder: (context, index) {
-                   return PlanCard(plan: plans[index]);
+                  return PlanCard(plan: plans[index]);
                 },
               ),
             ),

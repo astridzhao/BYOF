@@ -48,7 +48,11 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
           // height: navBarHeight,
           notchedRadius: 20,
           centerNotched: false,
-          fabIcon: Icon(Icons.emoji_events),
+          fabIcon: Icon(Icons.create),
+          fabIconPress: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => Azure_CreateScreen()));
+          },
           fabBackGroundColor: appTheme.yellow_secondary,
           bottomItems: <BottomBarItem>[
             BottomBarItem(
@@ -59,13 +63,13 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
             ),
             BottomBarItem(
               bottomItemSelectedColor: appTheme.yellow_secondary,
-              label: 'My Favorite',
+              label: 'My Fav',
               screen: FavoriteRecipePage2(),
               selectedIcon: Icons.collections_bookmark_outlined,
             ),
             BottomBarItem(
               bottomItemSelectedColor: appTheme.yellow_secondary,
-              label: 'Create',
+              label: 'Meal Plan',
               selectedIcon: Icons.dinner_dining_rounded,
               screen: Azure_CreateScreen(),
               // screen: GenerationScreen(resultCompletion: resultCompletion),

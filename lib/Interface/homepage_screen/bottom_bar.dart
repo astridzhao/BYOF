@@ -1,5 +1,6 @@
 library botton_nav_bar;
 
+import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/creation-screen.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:botton_nav_bar/src/notched_shape.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,7 @@ class BottomNavBar extends StatefulWidget {
     this.floatingActionButtonLocation,
     this.fabIcon,
     this.fabElevation,
+    this.fabIconPress,
     this.bottomNavItemSelectedIconSize,
     this.bottomNavItemunSelectedIconSize,
     this.bottomNavItemSelectedLabelSize,
@@ -59,7 +61,6 @@ class BottomNavBar extends StatefulWidget {
     this.bottomNavItemHeight,
     this.bottomNavItemIconHeight,
     this.bottomNavItemLabelHeight,
-    this.onPressFAB,
     this.notchedRadius,
     this.centerNotched = false,
   });
@@ -83,6 +84,9 @@ class BottomNavBar extends StatefulWidget {
 
   /// FAB elevation
   final double? fabElevation;
+
+  /// FAB onpress function
+  final Function()? fabIconPress;
 
   /// FAB Height
   final double? fabHeight;
@@ -114,9 +118,6 @@ class BottomNavBar extends StatefulWidget {
   /// bottomitem font weight
   final FontWeight? bottomItemLabelFontWeight;
 
-  /// function for fab
-  final Function()? onPressFAB;
-
   /// u want notched center or not
   final bool centerNotched;
 
@@ -130,6 +131,7 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _pageIndex = 0;
+
   @override
   Widget build(BuildContext context) => Scaffold(
       body: widget.bottomItems[_pageIndex].screen,
@@ -140,7 +142,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
         width: widget.fabWidth ?? 70,
         child: FloatingActionButton(
             shape: CircleBorder(),
-            onPressed: widget.onPressFAB,
+            onPressed: () {
+              widget.fabIconPress!();
+            
+            },
             backgroundColor: widget.fabBackGroundColor ?? Colors.green,
             elevation: widget.fabElevation ?? 20,
             child: widget.fabIcon),
@@ -231,9 +236,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                                                         : index) ==
                                                     _pageIndex
                                                 ? widget.bottomNavItemSelectedIconSize ??
-                                                    30
+                                                    27
                                                 : widget.bottomNavItemunSelectedIconSize ??
-                                                    27,
+                                                    25,
                                             color: (index >
                                                             widget.bottomItems
                                                                     .length /
@@ -288,7 +293,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                                                       : index) ==
                                                   _pageIndex
                                               ? widget.bottomNavItemSelectedLabelSize ??
-                                                  14
+                                                  13
                                               : widget.bottomNavItemunSelectedLabelSize ??
                                                   11,
                                         ),

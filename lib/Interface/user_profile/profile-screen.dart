@@ -140,21 +140,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     Widget displayImage() {
-      // final user = FirebaseAuth.instance.currentUser;
-
-      // Use FutureBuilder to wait for the async operation to complete
-      // return FutureBuilder<DocumentSnapshot>(
-      //   future: FirebaseFirestore.instance
-      //       .collection('userProfile')
-      //       .doc(user!.uid)
-      //       .get(),
-      //   builder:
-      //       (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-      //     if (snapshot.connectionState == ConnectionState.done &&
-      //         snapshot.hasData) {
-      //       // Data fetched successfully, get the image URL
-      //       final data = snapshot.data!.data() as Map<String, dynamic>?;
-      //       imageURL = data?['image'];
       return finalImage != null
           ? CircleAvatar(
               radius: 80,
@@ -169,24 +154,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   radius: 80,
                   backgroundColor: Colors.lightGreen,
                   backgroundImage: AssetImage("assets/images/chief.png"));
-      // } else if (snapshot.hasError) {
-      //   // Handle error state
-      //   print("Error fetching user profile image: ${snapshot.error}");
-      //   // Optionally, show a default avatar or an error icon
-      // }
-
-      //     // While data is loading, show the selected image or a default image
-      //     return finalImage != null
-      //         ? CircleAvatar(
-      //             radius: 80,
-      //             backgroundColor: appTheme.orange_primary,
-      //             backgroundImage: MemoryImage(finalImage!))
-      //         : const CircleAvatar(
-      //             radius: 80,
-      //             backgroundColor: Colors.lightGreen,
-      //             backgroundImage: AssetImage("assets/images/chief.png"));
-      //   },
-      // );
     }
 
     Future<void> uploadImage() async {

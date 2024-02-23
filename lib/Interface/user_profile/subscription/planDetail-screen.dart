@@ -16,8 +16,9 @@ class PlanDetailPageState extends State<PlanDetailPage> {
   User? user = FirebaseAuth.instance.currentUser;
   late Storedata storedata;
   String displayPlan = "Basic Plan";
-  String displayStatus = "Checking...";
+  String displayStatus = "Active";
   dynamic displayExpirationDate = null;
+  String displayGenerationLimit = "10";
 
   // Initialize the TapGestureRecognizer
   TapGestureRecognizer _tapGestureRecognizer = TapGestureRecognizer()
@@ -40,12 +41,14 @@ class PlanDetailPageState extends State<PlanDetailPage> {
       String plan = subscriptionInfo['plan'];
       String date = subscriptionInfo['expirationDate'];
       String renewalStatus = subscriptionInfo['renewalStatus'];
+      String generationLimit = subscriptionInfo['generationLimit'];
       String status = "Inactive";
 
       print("subscriptionInfo: $subscriptionInfo");
       print("[plandetail]plan: $plan");
       print("[plandetail]expirationDate: $date");
       print("[plandetail]renewalStatus: $renewalStatus");
+      print("[plandetail]generationLimit: $generationLimit");
 
       if (plan == "Basic Plan") {
         date = DateTime.utc(2030, 1, 1).toString();
@@ -60,6 +63,7 @@ class PlanDetailPageState extends State<PlanDetailPage> {
         displayPlan = plan;
         displayStatus = status;
         displayExpirationDate = date;
+        displayGenerationLimit = generationLimit;
       });
       print("[plandetail]status: $displayStatus");
     } catch (e) {
@@ -68,6 +72,7 @@ class PlanDetailPageState extends State<PlanDetailPage> {
         displayPlan = "Error";
         displayStatus = "Error";
         displayExpirationDate = null;
+        displayGenerationLimit = "Error";
       });
     }
   }
@@ -209,6 +214,8 @@ class PlanDetailPageState extends State<PlanDetailPage> {
               height: screenHeight * 0.02,
             ),
             sectionHeader(context, "My Subscription"),
+            eachSection(
+                context, "Generation Time Left", Icons.numbers, displayGenerationLimit),
             eachSection(context, "Cancel Subscription", Icons.description,
                 "cancel today :("),
             SizedBox(
