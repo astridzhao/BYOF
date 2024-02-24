@@ -40,24 +40,23 @@ class SubscriptionPageState extends State<SubscriptionPage> {
 
     await Purchases.configure(configuration);
 
-    //TODO: add revenuecat data into firebase
-    String purchaseID =
-        await Purchases.appUserID; //revenuecat appUserID added to firestore
+    //   //add revenuecat data into firebase
+    //   //adds a listener that triggers whenever there's a change in the user's subscription information.
+    //   Purchases.addCustomerInfoUpdateListener((customerInfo) async {
+    //     //retrieves the latest customer information from RevenueCat
+    //     CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+    //     print("[choosesubscriptionpage]customerInfo: $customerInfo");
+    //     if ((customerInfo.entitlements.all[entitlementId] != null &&
+    //         customerInfo.entitlements.all[entitlementId]!.isActive)) {
+    //       Storedata(user.uid).updateUserSubscription(customerInfo);
+    //     }
 
-    ///adds a listener that triggers whenever there's a change in the user's subscription information.
-    Purchases.addCustomerInfoUpdateListener((customerInfo) async {
-      //retrieves the latest customer information from RevenueCat
-      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-      if ((customerInfo.entitlements.all[entitlementId] != null &&
-          customerInfo.entitlements.all[entitlementId]!.isActive)) {
-        Storedata(user.uid).updateUserSubscription(customerInfo);
-      }
-
-      if (mounted) {
-        //Notify the framework that the internal state of this object has changed.
-        setState(() {});
-      }
-    });
+    //     if (mounted) {
+    //       //Notify the framework that the internal state of this object has changed.
+    //       setState(() {});
+    //     }
+    //   });
+    // }
   }
 
   bool _isLoading = false;
@@ -67,7 +66,16 @@ class SubscriptionPageState extends State<SubscriptionPage> {
       _isLoading = true;
     });
 
-    CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+    //TODO: unlock features based on subscription status
+    // CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+    // if (customerInfo.entitlements.all[entitlementId] != null &&
+    //     customerInfo.entitlements.all[entitlementId]!.isActive == true) {
+    //      .....
+    //   setState(() {
+    //     _isLoading = false;
+    //   });
+    // }
+
     Offerings? offerings;
     try {
       offerings = await Purchases.getOfferings();

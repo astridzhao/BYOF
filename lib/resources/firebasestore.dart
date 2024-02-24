@@ -21,7 +21,7 @@ class Storedata {
 
   Future<String> uploadProfileImage(String childname, Uint8List image) async {
     Reference _ref =
-        _firebasestorage_realtime.ref().child(childname).child('id');
+        _firebasestorage_realtime.ref().child(childname).child(userId);
     UploadTask uploadTask = _ref.putData(image);
     TaskSnapshot taskSnapshot = await uploadTask;
     String downloadurl = await taskSnapshot.ref.getDownloadURL();
@@ -34,10 +34,23 @@ class Storedata {
     try {
       String imageUrl = await uploadProfileImage("profileImage", image);
       int generationLimit = 10;
+      String expireDate = DateTime.utc(2030, 1, 1).toString();
+      String productId = "default";
+      String startDate = DateTime.now().toString();
+      final accessStatus = false;
+      final renewStatus = true;
+      final subscriptionId = Purchases.appUserID; // If available
+
       print("[createUserDocument] user profile image: $imageUrl");
       await userProfileDoc.set({
         'name': name,
         'image': imageUrl,
+        'productId': productId,
+        'startDate': startDate,
+        'expireDate': expireDate,
+        'accessStatus': accessStatus.toString(),
+        'renewStatus': renewStatus.toString(),
+        'subscriptionId': subscriptionId.toString(),
         'generationLimit': generationLimit.toString(),
       });
       print("[firestore]Profile created successfully");
@@ -53,14 +66,18 @@ class Storedata {
     try {
       // Extract relevant subscription information
       final productId =
-          customerInfo.entitlements.all[entitlementId]?.productIdentifier ?? "";
+          customerInfo.entitlements.all[entitlementId]?.productIdentifier ??
+              "Basic Plan";
       final startDate =
           customerInfo.entitlements.all[entitlementId]?.latestPurchaseDate ??
               DateTime.now();
       final expireDate =
-          customerInfo.entitlements.all[entitlementId]?.expirationDate;
-      final renewalStatus =
+          customerInfo.entitlements.all[entitlementId]?.expirationDate ??
+              DateTime.utc(2030, 1, 1);
+      final accessStatus =
           customerInfo.entitlements.all[entitlementId]?.isActive ?? false;
+      final renewStatus =
+          customerInfo.entitlements.all[entitlementId]?.willRenew ?? false;
       final subscriptionId = Purchases.appUserID; // If available
 
       final generationLimit;
@@ -77,7 +94,8 @@ class Storedata {
         'productId': productId.toString(), //subscription plan name
         'expireDate': expireDate.toString(),
         'startDate': startDate.toString(),
-        'renewalStatus': renewalStatus.toString(),
+        'accessStatus': accessStatus.toString(),
+        'renewStatus': renewStatus.toString(),
         'subscriptionId': subscriptionId.toString(),
         'generationLimit': generationLimit.toString(),
       };
@@ -96,47 +114,55 @@ class Storedata {
   }
 
   Future<Map<String, dynamic>> getSubscriptionInfo() async {
-    try {
-      // Fetch the document from Firestore
-      DocumentSnapshot documentSnapshot = await userProfileDoc.get();
-      if (documentSnapshot.exists) {
-        Map<String, dynamic> data =
-            documentSnapshot.data() as Map<String, dynamic>;
-        print("[getSubscriptionInfo]: " + data.toString());
-        // Extract expirationDate and renewalStatus from the document
-        String? productId = data['productId'];
+    // try {
+    // Fetch the document from Firestore
+    DocumentSnapshot documentSnapshot = await userProfileDoc.get();
+    if (documentSnapshot.exists) {
+      Map<String, dynamic> data =
+          documentSnapshot.data() as Map<String, dynamic>;
+      print("[getSubscriptionInfo]: " + data.toString());
 
-        String planName = "Basic Plan";
-        print("[getSubscriptionInfo]: " + productId.toString());
-        if (productId.toString() == "ricebucket01") {
-          planName = "Premium Basic";
-        }
-        if (productId.toString() == "ricebucket02") {
-          planName = "Premium Plus";
-        }
+      String? productId = data['productId'];
 
-        String expirationDate = data['expireDate'];
-        String renewalStatus = data['renewalStatus'];
-        String generationLimit = data['generationLimit'];
+      // default: planName = Basic Plan
+      String planName = "Basic Plan";
 
-        print("[getSubscriptionInfo-PLAN]: " + planName);
-        print("[getSubscriptionInfo-EXPIRE]: " + expirationDate);
-        print("[getSubscriptionInfo-RENEWAL]: " + renewalStatus);
-        print("[getSubscriptionInfo-GENERATION]: " + generationLimit);
-        // Return the relevant information
-        return {
-          'plan': planName,
-          'expirationDate': expirationDate,
-          'renewalStatus': renewalStatus,
-          'generationLimit': generationLimit,
-        };
+      if (productId == null) {
+        planName = "Basic Plan";
+      } else if (productId == "ricebucket01") {
+        planName = "Premium Basic";
+      } else if (productId == "ricebucket02") {
+        planName = "Premium Plus";
       } else {
-        throw Exception("Document does not exist.");
+        throw Exception("Invalid product id ${productId}} encountered.");
       }
-    } catch (e) {
-      print("Error retrieving subscription info: $e");
-      throw Exception("Error retrieving subscription info.");
+
+      String expirationDate = data['expireDate'];
+      String accessStatus = data['accessStatus'];
+      String generationLimit = data['generationLimit'];
+      String renewStatus = data['renewStatus'];
+
+      print("[getSubscriptionInfo-PLAN]: " + planName);
+      print("[getSubscriptionInfo-EXPIRE]: " + expirationDate);
+      print("[getSubscriptionInfo-RENEWAL]: " + renewStatus);
+      print("[getSubscriptionInfo-GENERATION]: " + generationLimit);
+      // Return the relevant information
+      return {
+        'plan': planName,
+        'expirationDate': expirationDate,
+        'accessStatus': accessStatus,
+        'renewalStatus': renewStatus,
+        'generationLimit': generationLimit,
+      };
+    } else {
+      throw Exception("Document does not exist.");
     }
+    // }
+
+    // catch (e) {
+    //   print("Error retrieving subscription info: $e");
+    //   throw Exception("Error retrieving subscription info.");
+    // }
   }
 
   Future<bool> decrementGenerationLimit() async {
@@ -165,6 +191,41 @@ class Storedata {
     } catch (e) {
       print("Error decrementing generation limit: $e");
       return false; // Handle exceptions
+    }
+  }
+
+  Future<void> renewPlanGenerationLimit() async {
+    try {
+      // Fetch current generation limit from Firestore
+      DocumentSnapshot documentSnapshot = await userProfileDoc.get();
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+
+        int newLimit = 10;
+
+        if (data['plan'] == 'Basic Plan') {
+          newLimit = 10;
+        } else if (data['plan'] == 'Premium Basic') {
+          newLimit = 50;
+        } else if (data['plan'] == 'Premium Plus') {
+          newLimit = 300;
+        } else {
+          // Handle unexpected plan types
+          throw Exception("Invalid plan type encountered.");
+        }
+
+        if (DateTime.now().isAtSameMomentAs(data['expirationDate'])) {
+          await userProfileDoc.update({'generationLimit': newLimit.toString()});
+          print(
+              "Generation limit renewed. New limit: $newLimit"); // Indicate successful update
+        }
+      } else {
+        print(
+            "Document does not exist."); // Handle the case where the document doesn't exist
+      }
+    } catch (e) {
+      print("Error decrementing generation limit: $e"); // Handle exceptions
     }
   }
 }
