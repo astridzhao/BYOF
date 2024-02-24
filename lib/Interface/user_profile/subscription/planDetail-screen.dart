@@ -3,7 +3,6 @@ import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class PlanDetailPage extends StatefulWidget {
@@ -17,7 +16,7 @@ class PlanDetailPageState extends State<PlanDetailPage> {
   late Storedata storedata;
   String displayPlan = "Basic Plan";
   String displayStatus = "Active";
-  dynamic displayExpirationDate = null;
+  dynamic displayExpirationDate = DateTime.utc(2030, 1, 1).toString();
   String displayGenerationLimit = "10";
 
   // Initialize the TapGestureRecognizer
@@ -35,46 +34,47 @@ class PlanDetailPageState extends State<PlanDetailPage> {
   }
 
   Future<void> _fetchSubscriptionStatus() async {
-    try {
-      Map<String, dynamic> subscriptionInfo =
-          await storedata.getSubscriptionInfo();
-      String plan = subscriptionInfo['plan'];
-      String date = subscriptionInfo['expirationDate'];
-      String renewalStatus = subscriptionInfo['renewalStatus'];
-      String generationLimit = subscriptionInfo['generationLimit'];
-      String status = "Inactive";
+    // try {
+    Map<String, dynamic> subscriptionInfo =
+        await storedata.getSubscriptionInfo();
+    String plan = subscriptionInfo['plan'];
+    String date = subscriptionInfo['expirationDate'];
+    String renewStatus = subscriptionInfo['renewStatus'];
+    String generationLimit = subscriptionInfo['generationLimit'];
+    String status = "Inactive";
 
-      print("subscriptionInfo: $subscriptionInfo");
-      print("[plandetail]plan: $plan");
-      print("[plandetail]expirationDate: $date");
-      print("[plandetail]renewalStatus: $renewalStatus");
-      print("[plandetail]generationLimit: $generationLimit");
+    print("[plandetail]subscriptionInfo: $subscriptionInfo");
 
-      if (plan == "Basic Plan") {
-        date = DateTime.utc(2030, 1, 1).toString();
-        status = "Infinity";
-      } else if (renewalStatus == "true" &&
-          // ignore: unnecessary_null_comparison
-          date != null) {
-        status = "Active";
-      }
+    //TODO: auto update number for a new cycle
 
-      setState(() {
-        displayPlan = plan;
-        displayStatus = status;
-        displayExpirationDate = date;
-        displayGenerationLimit = generationLimit;
-      });
-      print("[plandetail]status: $displayStatus");
-    } catch (e) {
-      print("Error fetching subscription status: $e");
-      setState(() {
-        displayPlan = "Error";
-        displayStatus = "Error";
-        displayExpirationDate = null;
-        displayGenerationLimit = "Error";
-      });
+    // if (plan == "Basic Plan") {
+    //   date = DateTime.utc(2030, 1, 1).toString();
+    //   status = "Active";
+    //   generationLimit = "10";
+    // } else
+    if (renewStatus == "true" &&
+        // ignore: unnecessary_null_comparison
+        date != null) {
+      status = "Active";
     }
+
+    setState(() {
+      displayPlan = plan;
+      displayStatus = status;
+      displayExpirationDate = date;
+      displayGenerationLimit = generationLimit;
+    });
+    print("[plandetail]status: $displayStatus");
+    // }
+    // catch (e) {
+    //   print("Error fetching subscription status: $e");
+    //   setState(() {
+    //     displayPlan = "Error";
+    //     displayStatus = "Error";
+    //     displayExpirationDate = null;
+    //     displayGenerationLimit = "Error";
+    //   });
+    // }
   }
 
   PreferredSizeWidget _buildAppbar() {
@@ -200,6 +200,8 @@ class PlanDetailPageState extends State<PlanDetailPage> {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
         child: Column(
+          // Your column content here
+
           children: <Widget>[
             SizedBox(
               height: screenHeight * 0.02,
@@ -214,8 +216,8 @@ class PlanDetailPageState extends State<PlanDetailPage> {
               height: screenHeight * 0.02,
             ),
             sectionHeader(context, "My Subscription"),
-            eachSection(
-                context, "Generation Time Left", Icons.numbers, displayGenerationLimit),
+            eachSection(context, "Generation Time Left", Icons.numbers,
+                displayGenerationLimit),
             eachSection(context, "Cancel Subscription", Icons.description,
                 "cancel today :("),
             SizedBox(
