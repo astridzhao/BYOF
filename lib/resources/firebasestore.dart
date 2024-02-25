@@ -46,7 +46,8 @@ class Storedata {
       String startDate = DateTime.now().toString();
       final accessStatus = false;
       final renewStatus = true;
-      final subscriptionId = Purchases.appUserID; // If available
+      // final subscriptionId = Purchases.appUserID; // If available
+
 
       print("[createUserDocument] user profile image: $imageUrl");
       await userProfileDoc.set({
@@ -57,7 +58,7 @@ class Storedata {
         'expireDate': expireDate,
         'accessStatus': accessStatus.toString(),
         'renewStatus': renewStatus.toString(),
-        'subscriptionId': subscriptionId.toString(),
+        // 'subscriptionId': subscriptionId.toString(),
         'generationLimit': generationLimit.toString(),
       });
       print("[firestore]Profile created successfully");
@@ -134,7 +135,7 @@ class Storedata {
       // default: planName = Basic Plan
       String planName = "Basic Plan";
 
-      if (productId == null) {
+      if (productId == "default") {
         planName = "Basic Plan";
       } else if (productId == "ricebucket01") {
         planName = "Premium Basic";
@@ -158,7 +159,7 @@ class Storedata {
         'plan': planName,
         'expirationDate': expirationDate,
         'accessStatus': accessStatus,
-        'renewalStatus': renewStatus,
+        'renewStatus': renewStatus,
         'generationLimit': generationLimit,
       };
     } else {
