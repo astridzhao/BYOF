@@ -22,6 +22,7 @@ import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/database/recipes_dao.dart';
 import 'package:astridzhao_s_food_app/Interface/favorite_page/favorite-recipedetail-screen.dart';
 import 'package:astridzhao_s_food_app/widgets/generation_azure/RecipeImageGenerator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FavoriteRecipePage2 extends StatefulWidget {
   const FavoriteRecipePage2({Key? key}) : super(key: key);
@@ -302,11 +303,11 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                         );
                                       },
                                     );
-                                    bool canGenerate = await Storedata(
-                                            FirebaseAuth
-                                                .instance.currentUser!.uid)
+                                    var storeData = Storedata(
+                                        FirebaseAuth.instance.currentUser!.uid);
+                                    final canGenerate = await storeData
                                         .decrementGenerationLimit();
-                                    if (canGenerate) {
+                                    if (canGenerate == UsageStatus.Success) {
                                       // execute generate image function
                                       await generateImage(i, recipe.id,
                                           recipe.title.toString());
@@ -320,6 +321,60 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                         builder: (BuildContext context) =>
                                             popupDialogImage(context),
                                       );
+                                    } else if (canGenerate ==
+                                        UsageStatus.BetaSurveyNeeded) {
+                                      // --- BETA ONLY SECTION BEGIN ---
+                                      print("You need to fill a survey");
+                                      // showDialog(context: context, builder: builder)
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible:
+                                            false, // User must tap button to close dialog
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: Row(
+                                              children: [
+                                                Text(
+                                                    "Could you help us to fill out a survey?"),
+                                              ],
+                                            ),
+                                            actions: <Widget>[
+                                              new TextButton(
+                                                onPressed: () async {
+                                                  final Uri surveyUrl = Uri.parse(
+                                                      "https://forms.gle/PZQBwYZwD7hUMCzq8");
+                                                  if (!await launchUrl(
+                                                      surveyUrl)) {
+                                                    print(
+                                                        "error launching survey url");
+                                                  }
+                                                  storeData.setBetaSurveyFilled(
+                                                      filled: true);
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text(
+                                                  'Proceed',
+                                                  style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 14.fSize),
+                                                ),
+                                              ),
+                                              new TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text(
+                                                  'Close',
+                                                  style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 14.fSize),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                      // --- BETA ONLY SECTION END   ---
                                     } else {
                                       print(
                                           "You've reached your generation limit.");
