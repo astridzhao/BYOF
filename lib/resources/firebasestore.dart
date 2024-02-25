@@ -46,7 +46,6 @@ class Storedata {
       String startDate = DateTime.now().toString();
       final accessStatus = false;
       final renewStatus = true;
-      // final subscriptionId = Purchases.appUserID; // If available
 
 
       print("[createUserDocument] user profile image: $imageUrl");
@@ -58,7 +57,6 @@ class Storedata {
         'expireDate': expireDate,
         'accessStatus': accessStatus.toString(),
         'renewStatus': renewStatus.toString(),
-        // 'subscriptionId': subscriptionId.toString(),
         'generationLimit': generationLimit.toString(),
       });
       print("[firestore]Profile created successfully");
