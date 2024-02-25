@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:core';
 import 'dart:io';
 import 'dart:typed_data';
@@ -13,7 +11,6 @@ import 'package:clipboard/clipboard.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:dart_openai/dart_openai.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
@@ -26,6 +23,7 @@ import 'package:astridzhao_s_food_app/database/database.dart';
 import 'package:astridzhao_s_food_app/Interface/provider_SavingsModel.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GenerationScreen extends StatefulWidget {
   final String resultCompletion;
@@ -204,10 +202,10 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     fontSize: 15.fSize)),
             onPressed: () async {
               // alert of generating...
-              bool canGenerate =
-                  await Storedata(FirebaseAuth.instance.currentUser!.uid)
-                      .decrementGenerationLimit();
-              if (canGenerate) {
+              var storeData = Storedata(FirebaseAuth.instance.currentUser!.uid);
+              final canGenerate =
+                  await storeData.decrementGenerationLimit();
+              if (canGenerate == UsageStatus.Success) {
                 showDialog(
                   context: context,
                   barrierDismissible:
@@ -257,6 +255,59 @@ class _GenerationScreenState extends State<GenerationScreen> {
                   context: context,
                   builder: (BuildContext context) => popupDialogImage(context),
                 );
+              } else if (canGenerate == UsageStatus.BetaSurveyNeeded) {
+               // --- BETA ONLY SECTION BEGIN ---
+                                      print("You need to fill a survey");
+                                      // showDialog(context: context, builder: builder)
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible:
+                                            false, // User must tap button to close dialog
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: Row(
+                                              children: [
+                                                Text(
+                                                    "Could you help us to fill out a survey?"),
+                                              ],
+                                            ),
+                                            actions: <Widget>[
+                                              new TextButton(
+                                                onPressed: () async {
+                                                  final Uri surveyUrl = Uri.parse(
+                                                      "https://forms.gle/PZQBwYZwD7hUMCzq8");
+                                                  if (!await launchUrl(
+                                                      surveyUrl)) {
+                                                    print(
+                                                        "error launching survey url");
+                                                  }
+                                                  storeData.setBetaSurveyFilled(
+                                                      filled: true);
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text(
+                                                  'Proceed',
+                                                  style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 14.fSize),
+                                                ),
+                                              ),
+                                              new TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text(
+                                                  'Close',
+                                                  style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: 14.fSize),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                      // --- BETA ONLY SECTION END   ---
               } else {
                 // Notify the user that they cannot generate anymore
                 print("You've reached your generation limit.");

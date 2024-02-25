@@ -1,14 +1,21 @@
 import 'package:astridzhao_s_food_app/resources/constant.dart';
-import 'package:astridzhao_s_food_app/user.dart';
+import 'package:drift/drift.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'dart:developer';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseStorage _firebasestorage_realtime = FirebaseStorage.instance;
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+enum UsageStatus {
+  Success,
+  LimitReached,
+  BetaSurveyNeeded, // remove after beta
+  DocDNE,
+  Error,
+}
 
 class Storedata {
   final String userId;
@@ -165,7 +172,19 @@ class Storedata {
     // }
   }
 
-  Future<bool> decrementGenerationLimit() async {
+  // Note: Only use in beta
+  Future<bool> betaSurveyFilled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool("filledBetaSurvey00") ?? false;
+  }
+
+  // Note: Only use in beta
+  Future<void> setBetaSurveyFilled({required bool filled}) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool("filledBetaSurvey00", filled);
+  }
+
+  Future<UsageStatus> decrementGenerationLimit() async {
     try {
       // Fetch current generation limit from Firestore
       DocumentSnapshot documentSnapshot = await userProfileDoc.get();
@@ -176,21 +195,33 @@ class Storedata {
 
         if (currentLimit <= 0) {
           print("Generation limit reached. No more generations allowed.");
-          return false; // Indicate that the generation limit has been reached
+          return UsageStatus.LimitReached; // Indicate that the generation limit has been reached
         } else {
+
+          // --- BETA ONLY SECTION BEGIN ---
+          const basicPlanLimit = 10;
+          final timeUsed = basicPlanLimit - currentLimit;
+          if (timeUsed == 2) {
+            final surveyFilled = await betaSurveyFilled();
+            if (!surveyFilled) {
+              return UsageStatus.BetaSurveyNeeded;
+            }
+          }
+          // --- BETA ONLY SECTION END   ---
+
           // Decrement the generation limit and update Firestore
           int newLimit = currentLimit - 1;
           await userProfileDoc.update({'generationLimit': newLimit.toString()});
           print("Generation limit decremented. New limit: $newLimit");
-          return true; // Indicate successful decrement
+          return UsageStatus.Success; // Indicate successful decrement
         }
       } else {
         print("Document does not exist.");
-        return false; // Handle the case where the document doesn't exist
+        return UsageStatus.DocDNE; // Handle the case where the document doesn't exist
       }
     } catch (e) {
       print("Error decrementing generation limit: $e");
-      return false; // Handle exceptions
+      return UsageStatus.Error; // Handle exceptions
     }
   }
 
