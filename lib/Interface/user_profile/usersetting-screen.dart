@@ -94,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
             imageURL = data?['image'];
             print("current user image: $imageURL");
             // ignore: unnecessary_null_comparison
-            return imageURL!.isEmpty || imageURL != null
+            return imageURL != null && !imageURL!.isEmpty
                 ? CircleAvatar(
                     radius: 80,
                     backgroundColor: appTheme.orange_primary,
@@ -111,7 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
           // While data is loading, show the selected image or a default image
           // ignore: unnecessary_null_comparison
-          return imageURL!.isEmpty || imageURL != null
+          return  imageURL != null && !imageURL!.isEmpty
               ? CircleAvatar(
                   radius: 80,
                   backgroundColor: appTheme.orange_primary,
