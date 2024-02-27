@@ -1,8 +1,10 @@
+import 'package:astridzhao_s_food_app/Interface/user_profile/userInfo_provider.dart';
 import 'package:astridzhao_s_food_app/resources/constant.dart';
 import 'package:drift/drift.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,31 +38,36 @@ class Storedata {
     return downloadurl;
   }
 
-  Future<String> createUserDocument(
-      {required String name, required Uint8List image}) async {
+  Future<String> createUser({required String name}) async {
     try {
-      String imageUrl = await uploadProfileImage("profileImage", image);
-      int generationLimit = 10;
-      String expireDate = DateTime.utc(2030, 1, 1).toString();
-      String productId = "default";
-      String startDate = DateTime.now().toString();
-      final accessStatus = false;
-      final renewStatus = true;
-
-
-      print("[createUserDocument] user profile image: $imageUrl");
       await userProfileDoc.set({
         'name': name,
-        'image': imageUrl,
-        'productId': productId,
-        'startDate': startDate,
-        'expireDate': expireDate,
-        'accessStatus': accessStatus.toString(),
-        'renewStatus': renewStatus.toString(),
-        'generationLimit': generationLimit.toString(),
+        'productId': "default",
+        'startDate': DateTime.now().toString(),
+        'expireDate': DateTime.utc(2030, 1, 1).toString(),
+        'accessStatus': "false",
+        'renewStatus': "false",
+        'generationLimit': "10",
       });
       print("[firestore]Profile created successfully");
       return "Profile created successfully";
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
+  }
+
+  Future<String> updateUserProfile(
+      {required String name, required Uint8List image}) async {
+    try {
+      String imageUrl = await uploadProfileImage("profileImage", image);
+
+      await userProfileDoc.update({
+        'name': name,
+        'image': imageUrl,
+      });
+      print("[firestore]Profile update successfully");
+      return "Profile updated successfully";
     } catch (e) {
       print(e);
       return e.toString();
@@ -194,9 +201,9 @@ class Storedata {
 
         if (currentLimit <= 0) {
           print("Generation limit reached. No more generations allowed.");
-          return UsageStatus.LimitReached; // Indicate that the generation limit has been reached
+          return UsageStatus
+              .LimitReached; // Indicate that the generation limit has been reached
         } else {
-
           // --- BETA ONLY SECTION BEGIN ---
           const basicPlanLimit = 10;
           final timeUsed = basicPlanLimit - currentLimit;
@@ -216,7 +223,8 @@ class Storedata {
         }
       } else {
         print("Document does not exist.");
-        return UsageStatus.DocDNE; // Handle the case where the document doesn't exist
+        return UsageStatus
+            .DocDNE; // Handle the case where the document doesn't exist
       }
     } catch (e) {
       print("Error decrementing generation limit: $e");

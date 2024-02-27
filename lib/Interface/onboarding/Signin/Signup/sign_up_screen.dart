@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/signup_userInitial.dart';
+import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_signin_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +34,9 @@ class SignUpScreenState extends State<SignUpScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      checkEmailVerified();
-    });
+    // Future.delayed(Duration.zero, () {
+    //   checkEmailVerified();
+    // });
   }
 
   @override
@@ -159,16 +161,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                           actions: <Widget>[
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pop(); // Close the dialog
-                                // Optionally, provide a way for the user to request another verification email here
-                              },
-                              child: Text(
-                                'OK',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
                                 // Call the checkEmailVerified method here
                                 checkEmailVerified();
                               },
@@ -179,7 +171,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                // Call the checkEmailVerified method here
                                 try {
                                   FirebaseAuth.instance.currentUser
                                       ?.sendEmailVerification();
@@ -224,7 +215,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                   height: screenHeight * 0.05,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       BlocProvider.of<AuthenticationBloc>(context).add(
                         SignUpUser(
                           emailController.text.trim(),
@@ -286,11 +277,10 @@ class SignUpScreenState extends State<SignUpScreen> {
       // or if it's already created, grant access to the app's features.
       Fluttertoast.showToast(msg: "Email successfully verified!");
       // Email has been verified, proceed with the application flow
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        HomepageContainerScreen.id,
-        (route) => false,
-      );
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => UserInitialSetting()),
+          (route) => false);
     } else {
       // Email is not verified, prompt the user or offer to resend the verification email
       Fluttertoast.showToast(msg: "Please verify your email to continue.");

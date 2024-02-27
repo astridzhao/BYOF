@@ -62,7 +62,6 @@ class SignOutSuccessState extends AuthenticationState {
 class SignUpFailureState extends AuthenticationState {
   final String errorMessage;
   SignUpFailureState(this.errorMessage);
-
   @override
   List<Object?> get props => [errorMessage];
 }

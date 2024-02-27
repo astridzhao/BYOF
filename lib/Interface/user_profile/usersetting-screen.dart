@@ -4,6 +4,7 @@ import 'package:astridzhao_s_food_app/Interface/user_profile/subscription/choose
 import 'package:astridzhao_s_food_app/Interface/user_profile/profile-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/subscription/planDetail-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/user_profile/userInfo_provider.dart';
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:astridzhao_s_food_app/theme/theme_helper.dart';
 import 'package:astridzhao_s_food_app/user.dart';
@@ -26,6 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
+    
     user!.reload();
   }
 
@@ -33,7 +35,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    Uint8List? finalImage;
 
     Widget displayUserName() {
       // Use Provider to listen to changes in UserInformationProvider
@@ -46,7 +47,6 @@ class _SettingsPageState extends State<SettingsPage> {
             return CircularProgressIndicator(); // Show loading indicator while data is being fetched
           } else {
             String name = userInfoProvider.userModel?.name ?? "no name";
-            print("name: $name");
             return Text("$name",
                 style: TextStyle(
                     fontFamily: "Outfit",
@@ -92,21 +92,17 @@ class _SettingsPageState extends State<SettingsPage> {
             // Data fetched successfully, get the image URL
             final data = snapshot.data!.data() as Map<String, dynamic>?;
             imageURL = data?['image'];
+            print("current user image: $imageURL");
             // ignore: unnecessary_null_comparison
-            return finalImage != null
+            return imageURL!.isEmpty || imageURL != null
                 ? CircleAvatar(
                     radius: 80,
                     backgroundColor: appTheme.orange_primary,
-                    backgroundImage: MemoryImage(finalImage))
-                : imageURL != null
-                    ? CircleAvatar(
-                        radius: 80,
-                        backgroundColor: appTheme.orange_primary,
-                        backgroundImage: NetworkImage(imageURL!))
-                    : const CircleAvatar(
-                        radius: 80,
-                        backgroundColor: Colors.lightGreen,
-                        backgroundImage: AssetImage("assets/images/chief.png"));
+                    backgroundImage: NetworkImage(imageURL!))
+                : const CircleAvatar(
+                    radius: 80,
+                    backgroundColor: Colors.lightGreen,
+                    backgroundImage: AssetImage("assets/images/chief.png"));
           } else if (snapshot.hasError) {
             // Handle error state
             print("Error fetching user profile image: ${snapshot.error}");
@@ -115,11 +111,11 @@ class _SettingsPageState extends State<SettingsPage> {
 
           // While data is loading, show the selected image or a default image
           // ignore: unnecessary_null_comparison
-          return finalImage != null
+          return imageURL!.isEmpty || imageURL != null
               ? CircleAvatar(
                   radius: 80,
                   backgroundColor: appTheme.orange_primary,
-                  backgroundImage: MemoryImage(finalImage))
+                  backgroundImage: NetworkImage(imageURL!))
               : const CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.lightGreen,
@@ -164,20 +160,6 @@ class _SettingsPageState extends State<SettingsPage> {
         },
       );
     }
-
-    // Widget subscriptionPlan(BuildContext context) {
-    //   // Directly return a Consumer widget to use within the ListTile's title
-    //   return Consumer<UserInformationProvider>(
-    //     builder: (context, userInfoProvider, child) {
-    //       // Here, instead of returning a String, we return a Text widget
-    //       print(
-    //           "subscription plan [user model]: ${userInfoProvider.userModel?.productId}");
-    //       String subscriptionStatus =
-    //           userInfoProvider.userModel?.productId ?? "Inactive";
-    //       return Text(subscriptionStatus);
-    //     },
-    //   );
-    // }
 
     Widget subscriptionSection(
         BuildContext context, String title, IconData icon, Widget screen) {
@@ -259,10 +241,6 @@ class _SettingsPageState extends State<SettingsPage> {
           accountName: displayUserName(),
           accountEmail: displayUserEmail(),
           currentAccountPicture: displayImage(),
-          // currentAccountPicture: CircleAvatar(
-          //   backgroundImage: AssetImage(
-          //       'assets/images/img_avatar.png'), // Replace with actual image path
-          // ),
           currentAccountPictureSize: Size.square(screenWidth * 0.15),
           decoration: BoxDecoration(
             image: DecorationImage(
