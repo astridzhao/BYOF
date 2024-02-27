@@ -95,6 +95,7 @@ class _UserInitialSettingState extends State<UserInitialSetting> {
 
         await user.reload();
       } catch (e) {
+        print("failed to update profile: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text("Failed to update profile. Please try again.")),
