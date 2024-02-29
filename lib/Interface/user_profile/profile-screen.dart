@@ -142,7 +142,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         finalImage = image;
         print("finalIamge: $finalImage");
       });
-    
     }
 
     Widget changeProfilePic() {
@@ -226,15 +225,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget buildTextField(String labelText, String placeholder, bool isEditable) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
-      child: TextFormField(
+      child: TextField(
+        onTap: () {
+          print("tapped");
+        },
         controller: isEditable ? nameController : null,
         readOnly: !isEditable,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter a user name.';
-          }
-          return null;
-        },
         decoration: InputDecoration(
             suffixIcon: isEditable
                 ? IconButton(

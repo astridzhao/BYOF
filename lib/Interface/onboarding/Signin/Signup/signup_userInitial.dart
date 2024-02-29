@@ -178,31 +178,25 @@ class _UserInitialSettingState extends State<UserInitialSetting> {
   Widget buildTextField(String labelText, String placeholder, bool isEditable) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
-      child: TextFormField(
+      child: TextField(
         controller: isEditable ? nameController : null,
         readOnly: !isEditable,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter a user name.';
+        onTap: () {
+          if (isEditable) {
+            if (nameController.text.trim().isNotEmpty) {
+              updateUserName(nameController.text.trim());
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Name cannot be empty.")),
+              );
+            }
           }
-          return null;
         },
         decoration: InputDecoration(
             suffixIcon: isEditable
-                ? IconButton(
-                    onPressed: () {
-                      if (nameController.text.trim().isNotEmpty) {
-                        updateUserName(nameController.text.trim());
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Name cannot be empty.")),
-                        );
-                      }
-                    },
-                    icon: Icon(
-                      Icons.edit,
-                      color: Colors.grey,
-                    ),
+                ? Icon(
+                    Icons.edit,
+                    color: Colors.grey,
                   )
                 : null,
             contentPadding: EdgeInsets.only(bottom: 3),
