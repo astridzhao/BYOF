@@ -37,32 +37,36 @@ class Storedata {
     return downloadurl;
   }
 
-  Future<String> createUserDocument(
-      {required String name, required Uint8List image}) async {
+  Future<String> createUser({required String name}) async {
     try {
-      String imageUrl = await uploadProfileImage("profileImage", image);
-      int generationLimit = 10;
-      String expireDate = DateTime.utc(2030, 1, 1).toString();
-      String productId = "default";
-      String startDate = DateTime.now().toString();
-      final accessStatus = false;
-      final renewStatus = true;
-      final subscriptionId = Purchases.appUserID; // If available
-
-      print("[createUserDocument] user profile image: $imageUrl");
       await userProfileDoc.set({
         'name': name,
-        'image': imageUrl,
-        'productId': productId,
-        'startDate': startDate,
-        'expireDate': expireDate,
-        'accessStatus': accessStatus.toString(),
-        'renewStatus': renewStatus.toString(),
-        'subscriptionId': subscriptionId.toString(),
-        'generationLimit': generationLimit.toString(),
+        'productId': "default",
+        'startDate': DateTime.now().toString(),
+        'expireDate': DateTime.utc(2030, 1, 1).toString(),
+        'accessStatus': "false",
+        'renewStatus': "false",
+        'generationLimit': "10",
       });
       print("[firestore]Profile created successfully");
       return "Profile created successfully";
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
+  }
+
+  Future<String> updateUserProfile(
+      {required String name, required Uint8List image}) async {
+    try {
+      String imageUrl = await uploadProfileImage("profileImage", image);
+      await userProfileDoc.update({
+        'name': name,
+        'image': imageUrl,
+      });
+
+      print("[firestore]Profile update successfully");
+      return "Profile updated successfully";
     } catch (e) {
       print(e);
       return e.toString();
