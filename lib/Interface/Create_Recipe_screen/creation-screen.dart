@@ -7,7 +7,6 @@ import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/generation-recipe-output.dart';
-import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/RecipeSettingBottomSheet.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:language_picker/language_picker.dart';
@@ -15,6 +14,7 @@ import 'package:language_picker/languages.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Azure_CreateScreen extends StatefulWidget {
   Azure_CreateScreen({
@@ -288,9 +288,9 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                 color: appTheme.green_primary),
           ),
           onPressed: () async {
-            bool canGenerate =
-                await Storedata(user!.uid).decrementGenerationLimit();
-            if (canGenerate) {
+            var storeData = Storedata(user!.uid);
+            final canGenerate = await storeData.decrementGenerationLimit();
+            if (canGenerate == UsageStatus.Success) {
               // handle situtaion of empty input
               if (selectedIngredients.isEmpty ||
                   atomInputContainerController.text.isEmpty) {
@@ -332,6 +332,53 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                     builder: (context) =>
                         GenerationScreen(resultCompletion: resultCompletion)));
               }
+            } else if (canGenerate == UsageStatus.BetaSurveyNeeded) {
+              // --- BETA ONLY SECTION BEGIN ---
+              print("You need to fill a survey");
+              // showDialog(context: context, builder: builder)
+              showDialog(
+                context: context,
+                barrierDismissible:
+                    false, // User must tap button to close dialog
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: Row(
+                      children: [
+                        Text("Could you help us to fill out a survey?"),
+                      ],
+                    ),
+                    actions: <Widget>[
+                      new TextButton(
+                        onPressed: () async {
+                          final Uri survey_url =
+                              Uri.parse("https://forms.gle/PZQBwYZwD7hUMCzq8");
+                          if (!await launchUrl(survey_url)) {
+                            print("error launching survey url");
+                          }
+                          storeData.setBetaSurveyFilled(filled: true);
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Proceed',
+                          style: TextStyle(
+                              color: Colors.black54, fontSize: 14.fSize),
+                        ),
+                      ),
+                      new TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Close',
+                          style: TextStyle(
+                              color: Colors.black54, fontSize: 14.fSize),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+              // --- BETA ONLY SECTION END   ---
             } else {
               // Notify the user that they cannot generate anymore
               print("You've reached your generation limit.");
