@@ -334,17 +334,19 @@ class FavoriteRecipePageState2 extends State<FavoriteRecipePage2> {
                                           return AlertDialog(
                                             content: Row(
                                               children: [
-                                                Text(
-                                                    "Could you help us to fill out a survey?"),
+                                                Expanded(
+                                                  child: Text(
+                                                      "Enjoyed RiceBucket So far? Help us make it better by filling this survey!"),
+                                                )
                                               ],
                                             ),
                                             actions: <Widget>[
                                               new TextButton(
                                                 onPressed: () async {
-                                                  final Uri surveyUrl = Uri.parse(
+                                                  final Uri survey_url = Uri.parse(
                                                       "https://forms.gle/PZQBwYZwD7hUMCzq8");
                                                   if (!await launchUrl(
-                                                      surveyUrl)) {
+                                                      survey_url)) {
                                                     print(
                                                         "error launching survey url");
                                                   }

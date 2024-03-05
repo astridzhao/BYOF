@@ -70,6 +70,7 @@ RecipesCompanion? RecipeFromLLMJson(String llmResult) {
         textColor: Colors.white,
         fontSize: 16.0);
   }
+  return null;
 }
 
 String recipeToCopyableMarkdown(Recipe recipe) {

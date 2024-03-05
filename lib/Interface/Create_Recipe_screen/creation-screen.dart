@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:astridzhao_s_food_app/core/app_export.dart';
+import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -326,11 +327,46 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                   },
                 );
                 await sendPrompt();
+                final recipe = RecipeFromLLMJson(resultCompletion);
                 // Close the dialog
                 Navigator.of(context).pop();
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        GenerationScreen(resultCompletion: resultCompletion)));
+                if (recipe != null) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) {
+                      return GenerationScreen(recipe: recipe);
+                    }),
+                  );
+                } else {
+                  showDialog(
+                    context: context,
+                    barrierDismissible:
+                        false, // User must tap button to close dialog
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                  "An error has occured during generation. Please try again."),
+                            )
+                          ],
+                        ),
+                        actions: <Widget>[
+                          new TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              'Close',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 14.fSize),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
               }
             } else if (canGenerate == UsageStatus.BetaSurveyNeeded) {
               // --- BETA ONLY SECTION BEGIN ---
@@ -344,7 +380,10 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                   return AlertDialog(
                     content: Row(
                       children: [
-                        Text("Could you help us to fill out a survey?"),
+                        Expanded(
+                          child: Text(
+                              "Enjoyed RiceBucket So far? Help us make it better by filling this survey!"),
+                        )
                       ],
                     ),
                     actions: <Widget>[

@@ -26,13 +26,9 @@ import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GenerationScreen extends StatefulWidget {
-  final String resultCompletion;
   final RecipesCompanion? recipe;
 
-  GenerationScreen({Key? key, required this.resultCompletion})
-      : recipe = RecipeFromLLMJson(resultCompletion),
-        // recipe_from_favorite ,
-        super(key: key);
+  GenerationScreen({Key? key, required this.recipe}) : super(key: key);
 
   @override
   _GenerationScreenState createState() => _GenerationScreenState();
@@ -266,15 +262,18 @@ class _GenerationScreenState extends State<GenerationScreen> {
                     return AlertDialog(
                       content: Row(
                         children: [
-                          Text("Could you help us to fill out a survey?"),
+                          Expanded(
+                            child: Text(
+                                "Enjoyed RiceBucket So far? Help us make it better by filling this survey!"),
+                          )
                         ],
                       ),
                       actions: <Widget>[
                         new TextButton(
                           onPressed: () async {
-                            final Uri surveyUrl = Uri.parse(
+                            final Uri survey_url = Uri.parse(
                                 "https://forms.gle/PZQBwYZwD7hUMCzq8");
-                            if (!await launchUrl(surveyUrl)) {
+                            if (!await launchUrl(survey_url)) {
                               print("error launching survey url");
                             }
                             storeData.setBetaSurveyFilled(filled: true);
