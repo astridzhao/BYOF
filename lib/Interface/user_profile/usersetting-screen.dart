@@ -1,3 +1,4 @@
+import 'package:astridzhao_s_food_app/Interface/user_profile/profile-screen%20copy.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/subscription/choosesubscription-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/profile-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
@@ -118,6 +119,13 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     }
 
+    Widget displayImage_beta() {
+      return const CircleAvatar(
+          radius: 80,
+          backgroundColor: Colors.lightGreen,
+          backgroundImage: AssetImage("assets/images/chief.png"));
+    }
+
     Widget sectionHeader(String title) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -234,7 +242,7 @@ class _SettingsPageState extends State<SettingsPage> {
           margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
           accountName: displayUserName(),
           accountEmail: displayUserEmail(),
-          currentAccountPicture: displayImage(),
+          currentAccountPicture: displayImage_beta(),
           currentAccountPictureSize: Size.square(screenWidth * 0.15),
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -256,10 +264,7 @@ class _SettingsPageState extends State<SettingsPage> {
               SizedBox(height: screenHeight * 0.02),
               sectionHeader("Account"),
               eachSection(context, 'Edit profile',
-                  Icons.account_circle_outlined, EditProfilePage()),
-              // eachSection(context, 'Security', Icons.lock, SecuritySetting()),
-              // eachSection(
-              //     context, 'Notification', Icons.privacy_tip, EditProfilePage()),
+                  Icons.account_circle_outlined, EditProfilePage_beta()),
               SizedBox(height: screenHeight * 0.02),
               sectionHeader("Support & About"),
               SizedBox(height: screenHeight * 0.02),
@@ -268,8 +273,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
               eachSection(context, 'View Subscription Plans',
                   Icons.subscriptions, SubscriptionPage()),
-              eachSection(context, 'Help and Support',
-                  Icons.question_mark_outlined, EditProfilePage()),
+              // eachSection(context, 'Help and Support',
+              //     Icons.question_mark_outlined, EditProfilePage()),
               SizedBox(height: screenHeight * 0.1),
               signOutButton(),
               SizedBox(height: screenHeight * 0.02),
