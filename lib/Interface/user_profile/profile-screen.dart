@@ -21,6 +21,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController nameController = TextEditingController();
   Uint8List? finalImage;
   String? imageURL;
+  late Future<UserModel?> userModelFuture;
 
   @override
   void initState() {
@@ -31,6 +32,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       nameController.text = user.displayName!;
     } // Get current user details
     fetchUserProfileImageUrl(); // Your custom method to fetch and set the imageURL
+    userModelFuture = getCurrentUserModel();
   }
 
   void dispose() {
@@ -82,7 +84,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 height: screenHeight * 0.02,
               ),
               FutureBuilder<UserModel?>(
-                future: getCurrentUserModel(),
+                future: userModelFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return displayUserInformation(context, snapshot);
