@@ -206,32 +206,32 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
           "4. Be mindful of I have $selectedDietaryRestriction diet restriction. "
           "5. I have $selectedServingSize people to eat. Tell me how many amount of food I need to use in 'Ingredient List'. ";
 
-  String get system_prompt =>
-      """As a professional personal recipe-generating assistant, your task is to create ONE recipe using provided leftover ingredients. The response should be formatted as a JSON object containing 7 child objects, each with specific data types and content requirements:  
-      1. Title (String): The name of the dish. 
-      2. Ingredient List (List[String]): Ingredients used in the recipe.
-      3. Step-by-Step Instructions (List[String]): Detailed cooking steps.
-      4. Expected Cooking Time (Integer): Time required for cooking, in minutes.
-      5. Note (String): Additional tips.
-      6. Saving Co2 (Double): Estimated CO2 savings in kilograms, calculated as the sum of (Amount of each food type wasted × Emission factor for that food type). The number should never be 0. Even if the result is an integer value, it should be represented with a decimal point (e.g., '3' should be '3.0')
-      7. Saving Money (Double): Estimated monetary savings in US dollars, represented as a floating-point number. The number should never be 0. Even if the savings are whole numbers, they should be formatted with a decimal point (e.g., '5' should be '5.0').
+  // String get system_prompt =>
+  //     """As a professional personal recipe-generating assistant, your task is to create ONE recipe using provided leftover ingredients. The response should be formatted as a JSON object containing 7 child objects, each with specific data types and content requirements:
+  //     1. Title (String): The name of the dish.
+  //     2. Ingredient List (List[String]): Ingredients used in the recipe.
+  //     3. Step-by-Step Instructions (List[String]): Detailed cooking steps.
+  //     4. Expected Cooking Time (Integer): Time required for cooking, in minutes.
+  //     5. Note (String): Additional tips.
+  //     6. Saving Co2 (Double): Estimated CO2 savings in kilograms, calculated as the sum of (Amount of each food type wasted × Emission factor for that food type). The number should never be 0. Even if the result is an integer value, it should be represented with a decimal point (e.g., '3' should be '3.0')
+  //     7. Saving Money (Double): Estimated monetary savings in US dollars, represented as a floating-point number. The number should never be 0. Even if the savings are whole numbers, they should be formatted with a decimal point (e.g., '5' should be '5.0').
 
-      Format of the JSON object:
-      {
-        "Title": "String",
-        "Ingredient List": ["String"],
-        "Step-by-Step Instructions": ["String"],
-        "Expected Cooking Time": Integer,
-        "Note": "String",
-        "Saving Co2": Double,
-        "Saving Money": Double
-      }"
+  //     Format of the JSON object:
+  //     {
+  //       "Title": "String",
+  //       "Ingredient List": ["String"],
+  //       "Step-by-Step Instructions": ["String"],
+  //       "Expected Cooking Time": Integer,
+  //       "Note": "String",
+  //       "Saving Co2": Double,
+  //       "Saving Money": Double
+  //     }"
 
-      Additional Rules: 
-    - The recipe must closely resemble dishes from the selected cuisine ($selectedCuisine).
-    - Use only the ingredients provided by the user, with the allowance of essential sauces and spices.
-    - The recipe output should be in the selected language ($selectedLangauge).
-      """;
+  //     Additional Rules:
+  //   - The recipe must closely resemble dishes from the selected cuisine ($selectedCuisine).
+  //   - Use only the ingredients provided by the user, with the allowance of essential sauces and spices.
+  //   - The recipe output should be in the selected language ($selectedLangauge).
+  //     """;
 
   double getResponsiveFontSize_title(double screenWidth) {
     if (screenWidth < 320) {
