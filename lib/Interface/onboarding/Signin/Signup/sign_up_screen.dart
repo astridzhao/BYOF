@@ -146,6 +146,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                 if (state is SignUpNeedsVerificationState) {
                   print("Email verification needed");
                   showDialog(
+                      barrierDismissible: false,
                       context: context,
                       builder: (context) {
                         return AlertDialog(
