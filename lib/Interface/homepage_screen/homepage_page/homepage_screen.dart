@@ -45,7 +45,7 @@ class HomePagetate extends State<HomePage> {
 
   Stream<List<String?>> getFilteringValues() {
     final imageURL = recipe_dao.recipes.imageURL;
-    final query = recipe_dao.selectOnly(recipe_dao.recipes, distinct: true)
+    final query = recipe_dao.selectOnly(recipe_dao.recipes, distinct: false)
       ..addColumns([imageURL]);
     // Map the results of the query to a list of strings (image URLs)
     Stream<List<String?>> recipeImageURL = query
