@@ -19,10 +19,12 @@ class _UserInitialSettingState extends State<UserInitialSetting> {
   TextEditingController nameController = TextEditingController();
   Uint8List? finalImage;
   String? imageURL;
+  late Future<UserModel?> userModelFuture;
 
   @override
   void initState() {
     super.initState();
+    userModelFuture = getCurrentUserModel();
   }
 
   void dispose() {
@@ -65,7 +67,7 @@ class _UserInitialSettingState extends State<UserInitialSetting> {
                 height: screenHeight * 0.02,
               ),
               FutureBuilder<UserModel?>(
-                future: getCurrentUserModel(),
+                future: userModelFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return displayUserInformation(context, snapshot);
@@ -114,7 +116,7 @@ class _UserInitialSettingState extends State<UserInitialSetting> {
     }
 
     void saveProfile() async {
-      updateUserName(nameController.text);
+      // updateUserName(nameController.text);
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         String userId = user.uid;
