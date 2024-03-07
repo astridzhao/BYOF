@@ -61,6 +61,7 @@ class HomePagetate extends State<HomePage> {
   _launchURL() async {
     final Uri url = Uri.parse('https://forms.gle/PZQBwYZwD7hUMCzq8');
     if (await canLaunchUrl(url)) {
+      print("waiting to launch url");
       await launchUrl(url);
     } else {
       throw Exception('Could not launch $url');
@@ -108,18 +109,17 @@ class HomePagetate extends State<HomePage> {
                         style: TextStyle(
                             color: Colors.black45,
                             fontWeight: FontWeight.bold)),
-                    GestureDetector(
-                      onTap: () {
+                    TextButton(
+                      child: Text('Click here.'),
+                      onPressed: () {
                         _launchURL;
+                        print("tap url succeed");
                       },
-                      child: Text(
-                        'Click here.',
-                        style: CustomTextStyles.bodyMediumff5a7756.copyWith(
-                          decoration: TextDecoration.underline,
-                          color: Colors.black54,
-                        ),
+                      style: CustomTextStyles.bodyMediumff5a7756.copyWith(
+                        decoration: TextDecoration.underline,
+                        color: Colors.black54,
                       ),
-                    )
+                    ),
                   ],
                 ),
                 SizedBox(height: screenHeight * 0.02),
