@@ -13,6 +13,7 @@ import 'package:astridzhao_s_food_app/Interface/provider_SavingsModel.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:astridzhao_s_food_app/Interface/favorite_page/myfavorite-screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key})
@@ -57,6 +58,15 @@ class HomePagetate extends State<HomePage> {
 
   Map<int, String> allRecipeImageURLs = {};
 
+  _launchURL() async {
+    final Uri url = Uri.parse('https://forms.gle/PZQBwYZwD7hUMCzq8');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw Exception('Could not launch $url');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -90,6 +100,28 @@ class HomePagetate extends State<HomePage> {
             padding: EdgeInsets.symmetric(horizontal: 10.h),
             child: Column(
               children: [
+                SizedBox(height: screenHeight * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Please give me feedback. Thank you! ",
+                        style: TextStyle(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.bold)),
+                    GestureDetector(
+                      onTap: () {
+                        _launchURL;
+                      },
+                      child: Text(
+                        'Click here.',
+                        style: CustomTextStyles.bodyMediumff5a7756.copyWith(
+                          decoration: TextDecoration.underline,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
                 SizedBox(height: screenHeight * 0.02),
                 Align(
                   alignment: Alignment.centerLeft,
