@@ -110,15 +110,17 @@ class HomePagetate extends State<HomePage> {
                             color: Colors.black45,
                             fontWeight: FontWeight.bold)),
                     TextButton(
-                      child: Text('Click here.'),
+                      child: Text(
+                        'Click here.',
+                        style: CustomTextStyles.bodyMediumff5a7756.copyWith(
+                          decoration: TextDecoration.underline,
+                          color: Colors.black54,
+                        ),
+                      ),
                       onPressed: () {
-                        _launchURL;
+                        _launchURL();
                         print("tap url succeed");
                       },
-                      style: CustomTextStyles.bodyMediumff5a7756.copyWith(
-                        decoration: TextDecoration.underline,
-                        color: Colors.black54,
-                      ),
                     ),
                   ],
                 ),
