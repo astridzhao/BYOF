@@ -1,7 +1,6 @@
-import 'dart:math';
-
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/signup_user_initial.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_signin_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +9,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
-import 'package:astridzhao_s_food_app/widgets/app_bar/appbar_leading_image.dart';
-import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
-import 'package:astridzhao_s_food_app/widgets/custom_icon_button.dart';
-import 'package:astridzhao_s_food_app/widgets/custom_text_form_field.dart';
 
 class SignUpScreen extends StatefulWidget {
   static String id = 'login_screen';
@@ -32,9 +27,10 @@ class SignUpScreenState extends State<SignUpScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      checkEmailVerified();
-    });
+    // FIXME(yuchen): why are we disabling this?
+    // Future.delayed(Duration.zero, () {
+    //   checkEmailVerified();
+    // });
   }
 
   @override
@@ -150,6 +146,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                 if (state is SignUpNeedsVerificationState) {
                   print("Email verification needed");
                   showDialog(
+                      barrierDismissible: false,
                       context: context,
                       builder: (context) {
                         return AlertDialog(
@@ -157,16 +154,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                           content: Text(
                               "Welcome to Bring Your Own Fridge!A verification email has been sent to ${state.email}. Please check your inbox and click the verification link to proceed. Hope you enjoy your saving journey with us!"),
                           actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(); // Close the dialog
-                                // Optionally, provide a way for the user to request another verification email here
-                              },
-                              child: Text(
-                                'OK',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
                             TextButton(
                               onPressed: () {
                                 // Call the checkEmailVerified method here
@@ -179,7 +166,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                // Call the checkEmailVerified method here
                                 try {
                                   FirebaseAuth.instance.currentUser
                                       ?.sendEmailVerification();
@@ -224,7 +210,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                   height: screenHeight * 0.05,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
+                    // FIXME(yuchen): do we need async here?
+                    onPressed: () async {
                       BlocProvider.of<AuthenticationBloc>(context).add(
                         SignUpUser(
                           emailController.text.trim(),
@@ -286,11 +273,10 @@ class SignUpScreenState extends State<SignUpScreen> {
       // or if it's already created, grant access to the app's features.
       Fluttertoast.showToast(msg: "Email successfully verified!");
       // Email has been verified, proceed with the application flow
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        HomepageContainerScreen.id,
-        (route) => false,
-      );
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => UserInitialSetting()),
+          (route) => false);
     } else {
       // Email is not verified, prompt the user or offer to resend the verification email
       Fluttertoast.showToast(msg: "Please verify your email to continue.");

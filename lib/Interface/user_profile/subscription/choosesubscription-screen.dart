@@ -221,7 +221,33 @@ class SubscriptionPageState extends State<SubscriptionPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: 40.0),
             child: TextButton(
-              onPressed: () => perfomMagic(),
+              onPressed: () => {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(
+                        "You don't have to buy any purchase for testing.",
+                        style:
+                            TextStyle(fontFamily: "Outfit", fontSize: 14.fSize),
+                      ),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "OK",
+                              style: TextStyle(
+                                  fontFamily: "Outfit",
+                                  fontSize: 12.fSize,
+                                  color: appTheme.black900),
+                            ))
+                      ],
+                    );
+                  },
+                ),
+              },
               child: Text(
                 "Buy Subscription",
                 style: TextStyle(

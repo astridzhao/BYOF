@@ -63,76 +63,76 @@ class SignInOneScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CustomElevatedButton(
-            height: MediaQuery.of(context).size.height * 0.06,
-            text: "Continue with Google",
-            margin: EdgeInsets.only(
-              left: 20.h,
-              right: 20.h,
-            ),
-            leftIcon: Container(
-              margin: EdgeInsets.only(right: 15.h),
-              child: CustomImageView(
-                imagePath: ImageConstant.imgGoogle1,
-                height: 29.v,
-                width: 30.h,
-              ),
-            ),
-            buttonStyle: CustomButtonStyles.fillYellow,
-          ),
-          SizedBox(height: 16.v),
-          CustomElevatedButton(
-            height: MediaQuery.of(context).size.height * 0.06,
-            text: "Continue with Apple",
-            margin: EdgeInsets.only(
-              left: 20.h,
-              right: 20.h,
-            ),
-            leftIcon: Container(
-              margin: EdgeInsets.only(right: 15.h),
-              child: CustomImageView(
-                imagePath: ImageConstant.imgApplelogo1,
-                height: 29.v,
-                width: 30.h,
-              ),
-            ),
-            buttonStyle: CustomButtonStyles.fillYellow,
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  top: 7.v,
-                  bottom: 7.v,
-                ),
-                child: SizedBox(
-                  width: 130.h,
-                  child: Divider(color: appTheme.black900),
-                ),
-              ),
-              Text(
-                "or",
-                style: TextStyle(
-                  color: appTheme.black900,
-                  fontSize: 12.fSize,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: 8.v,
-                  bottom: 7.v,
-                ),
-                child: SizedBox(
-                  width: 130.h,
-                  child: Divider(color: appTheme.black900),
-                ),
-              ),
-            ],
-          ),
+          // CustomElevatedButton(
+          //   height: MediaQuery.of(context).size.height * 0.06,
+          //   text: "Continue with Google",
+          //   margin: EdgeInsets.only(
+          //     left: 20.h,
+          //     right: 20.h,
+          //   ),
+          //   leftIcon: Container(
+          //     margin: EdgeInsets.only(right: 15.h),
+          //     child: CustomImageView(
+          //       imagePath: ImageConstant.imgGoogle1,
+          //       height: 29.v,
+          //       width: 30.h,
+          //     ),
+          //   ),
+          //   buttonStyle: CustomButtonStyles.fillYellow,
+          // ),
+          // SizedBox(height: 16.v),
+          // CustomElevatedButton(
+          //   height: MediaQuery.of(context).size.height * 0.06,
+          //   text: "Continue with Apple",
+          //   margin: EdgeInsets.only(
+          //     left: 20.h,
+          //     right: 20.h,
+          //   ),
+          //   leftIcon: Container(
+          //     margin: EdgeInsets.only(right: 15.h),
+          //     child: CustomImageView(
+          //       imagePath: ImageConstant.imgApplelogo1,
+          //       height: 29.v,
+          //       width: 30.h,
+          //     ),
+          //   ),
+          //   buttonStyle: CustomButtonStyles.fillYellow,
+          // ),
+          // SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Padding(
+          //       padding: EdgeInsets.only(
+          //         top: 7.v,
+          //         bottom: 7.v,
+          //       ),
+          //       child: SizedBox(
+          //         width: 130.h,
+          //         child: Divider(color: appTheme.black900),
+          //       ),
+          //     ),
+          //     Text(
+          //       "or",
+          //       style: TextStyle(
+          //         color: appTheme.black900,
+          //         fontSize: 12.fSize,
+          //         fontFamily: 'Poppins',
+          //         fontWeight: FontWeight.w600,
+          //       ),
+          //     ),
+          //     Padding(
+          //       padding: EdgeInsets.only(
+          //         top: 8.v,
+          //         bottom: 7.v,
+          //       ),
+          //       child: SizedBox(
+          //         width: 130.h,
+          //         child: Divider(color: appTheme.black900),
+          //       ),
+          //     ),
+          //   ],
+          // ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           SizedBox(
             height:

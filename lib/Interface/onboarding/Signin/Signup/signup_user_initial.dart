@@ -1,23 +1,21 @@
 import 'dart:typed_data';
 
+import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/user_info_provider.dart';
-import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
 import 'package:astridzhao_s_food_app/user.dart';
-import 'package:astridzhao_s_food_app/widgets/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-class EditProfilePage extends StatefulWidget {
+class UserInitialSetting extends StatefulWidget {
+  static String id = 'signup_createuser';
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  _UserInitialSettingState createState() => _UserInitialSettingState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
-  bool showPassword = false;
+class _UserInitialSettingState extends State<UserInitialSetting> {
   TextEditingController nameController = TextEditingController();
   Uint8List? finalImage;
   String? imageURL;
@@ -26,12 +24,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    // Initialize controller with current user's name, if available
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null && user.displayName != null) {
-      nameController.text = user.displayName!;
-    } // Get current user details
-    fetchUserProfileImageUrl(); // Your custom method to fetch and set the imageURL
     userModelFuture = getCurrentUserModel();
   }
 
@@ -66,15 +58,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         title: Text('Edit Profile'),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 1,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: appTheme.green_primary,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -103,12 +86,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> updateUserName(String name) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      print("checked user is not null");
-      await user.updateDisplayName(name);
-      print("user info is updated in model");
-      Provider.of<UserInformationProvider>(context, listen: false)
-          .fetchCurrentUserModel();
-      print("provider is updated");
+      try {
+        await user.updateDisplayName(name);
+        Provider.of<UserInformationProvider>(context, listen: false)
+            .fetchCurrentUserModel();
+
+        await user.reload();
+      } catch (e) {
+        print("failed to update profile: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text("Failed to update profile. Please try again.")),
+        );
+      }
     }
   }
 
@@ -119,39 +109,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     Widget displayImage() {
-      return finalImage != null
-          ? CircleAvatar(
-              radius: 80,
-              backgroundColor: appTheme.orange_primary,
-              backgroundImage: MemoryImage(finalImage!))
-          : imageURL != null
-              ? CircleAvatar(
-                  radius: 80,
-                  backgroundColor: appTheme.orange_primary,
-                  backgroundImage: NetworkImage(imageURL!))
-              : const CircleAvatar(
-                  radius: 80,
-                  backgroundColor: Colors.lightGreen,
-                  backgroundImage: AssetImage("assets/images/chief.png"));
-    }
-
-    Future<void> uploadImage() async {
-      Uint8List image = await PickImage(ImageSource.gallery);
-
-      setState(() {
-        finalImage = image;
-      });
-    }
-
-    Widget changeProfilePic() {
-      return Container(
-          height: 50,
-          width: 50,
-          child: IconButton(
-            icon: Icon(Icons.add_a_photo),
-            color: Colors.black87,
-            onPressed: () => uploadImage(),
-          ));
+      return const CircleAvatar(
+          radius: 80,
+          backgroundColor: Colors.lightGreen,
+          backgroundImage: AssetImage("assets/images/chief.png"));
     }
 
     void saveProfile() async {
@@ -160,15 +121,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (user != null) {
         String userId = user.uid;
         print("[FirebaseAuth] userId: $userId");
-        String message = await Storedata(userId).updateUserProfile(
-            name: nameController.text, image: finalImage ?? Uint8List(0));
-
-        // // This should now print the updated name // Reload the user to refresh the user's profile data
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text("Profile updated successfully!"),
-              duration: Duration(seconds: 2)),
-        );
+        String message =
+            await Storedata(userId).createUser(name: nameController.text);
         // Handle the message (success or error) appropriately
         print("from storedata: $message");
       } else {
@@ -179,7 +133,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     return Column(children: <Widget>[
       displayImage(),
-      changeProfilePic(),
       SizedBox(
         height: screenHeight * 0.05,
       ),
@@ -200,16 +153,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           OutlinedButton(
-            onPressed: () {
-              final user = FirebaseAuth.instance.currentUser;
-
-              if (user != null) {
-                // user.updateDisplayName(nameController.text);
-                saveProfile();
-              }
+            onPressed: () async {
+              saveProfile();
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          HomepageContainerScreen()),
+                  (route) => false);
             },
             child: Text(
-              "SAVE",
+              "Proceed to Home",
               style: TextStyle(
                   fontSize: 14, letterSpacing: 2.2, color: Colors.black),
             ),

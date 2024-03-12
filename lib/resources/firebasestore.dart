@@ -1,14 +1,22 @@
 import 'package:astridzhao_s_food_app/resources/constant.dart';
-import 'package:astridzhao_s_food_app/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'dart:developer';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseStorage _firebasestorage_realtime = FirebaseStorage.instance;
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+/// Enum indicating the usage status of the user.
+enum UsageStatus {
+  Success,
+  LimitReached,
+  BetaSurveyNeeded,
+  DocDNE,
+  Error,
+}
 
 class Storedata {
   final String userId;
@@ -29,32 +37,36 @@ class Storedata {
     return downloadurl;
   }
 
-  Future<String> createUserDocument(
-      {required String name, required Uint8List image}) async {
+  Future<String> createUser({required String name}) async {
     try {
-      String imageUrl = await uploadProfileImage("profileImage", image);
-      int generationLimit = 10;
-      String expireDate = DateTime.utc(2030, 1, 1).toString();
-      String productId = "default";
-      String startDate = DateTime.now().toString();
-      final accessStatus = false;
-      final renewStatus = true;
-      final subscriptionId = Purchases.appUserID; // If available
-
-      print("[createUserDocument] user profile image: $imageUrl");
       await userProfileDoc.set({
         'name': name,
-        'image': imageUrl,
-        'productId': productId,
-        'startDate': startDate,
-        'expireDate': expireDate,
-        'accessStatus': accessStatus.toString(),
-        'renewStatus': renewStatus.toString(),
-        'subscriptionId': subscriptionId.toString(),
-        'generationLimit': generationLimit.toString(),
+        'productId': "default",
+        'startDate': DateTime.now().toString(),
+        'expireDate': DateTime.utc(2030, 1, 1).toString(),
+        'accessStatus': "false",
+        'renewStatus': "false",
+        'generationLimit': "10",
       });
       print("[firestore]Profile created successfully");
       return "Profile created successfully";
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
+  }
+
+  Future<String> updateUserProfile(
+      {required String name, required Uint8List image}) async {
+    try {
+      String imageUrl = await uploadProfileImage("profileImage", image);
+      await userProfileDoc.update({
+        'name': name,
+        'image': imageUrl,
+      });
+
+      print("[firestore]Profile update successfully");
+      return "Profile updated successfully";
     } catch (e) {
       print(e);
       return e.toString();
@@ -78,6 +90,7 @@ class Storedata {
           customerInfo.entitlements.all[entitlementId]?.isActive ?? false;
       final renewStatus =
           customerInfo.entitlements.all[entitlementId]?.willRenew ?? false;
+      // FIXME(yuchen): is this correct?
       final subscriptionId = Purchases.appUserID; // If available
 
       final generationLimit;
@@ -127,7 +140,7 @@ class Storedata {
       // default: planName = Basic Plan
       String planName = "Basic Plan";
 
-      if (productId == null) {
+      if (productId == "default") {
         planName = "Basic Plan";
       } else if (productId == "ricebucket01") {
         planName = "Premium Basic";
@@ -151,7 +164,7 @@ class Storedata {
         'plan': planName,
         'expirationDate': expirationDate,
         'accessStatus': accessStatus,
-        'renewalStatus': renewStatus,
+        'renewStatus': renewStatus,
         'generationLimit': generationLimit,
       };
     } else {
@@ -165,7 +178,19 @@ class Storedata {
     // }
   }
 
-  Future<bool> decrementGenerationLimit() async {
+  /// Indicates whether the user has filled the beta testing survey.
+  Future<bool> betaSurveyFilled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool("filledBetaSurvey00") ?? false;
+  }
+
+  /// Sets the to beta survey filled status.
+  Future<void> setBetaSurveyFilled({required bool filled}) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool("filledBetaSurvey00", filled);
+  }
+
+  Future<UsageStatus> decrementGenerationLimit() async {
     try {
       // Fetch current generation limit from Firestore
       DocumentSnapshot documentSnapshot = await userProfileDoc.get();
@@ -176,21 +201,40 @@ class Storedata {
 
         if (currentLimit <= 0) {
           print("Generation limit reached. No more generations allowed.");
-          return false; // Indicate that the generation limit has been reached
+
+          // Indicate that the generation limit has been reached
+          return UsageStatus.LimitReached;
         } else {
+          // --- BETA ONLY SECTION BEGIN ---
+          const basicPlanLimit = 10;
+          final timeUsed = basicPlanLimit - currentLimit;
+          if (timeUsed == 2) {
+            final surveyFilled = await betaSurveyFilled();
+            if (!surveyFilled) {
+              return UsageStatus.BetaSurveyNeeded;
+            }
+          }
+          // --- BETA ONLY SECTION END   ---
+
           // Decrement the generation limit and update Firestore
           int newLimit = currentLimit - 1;
           await userProfileDoc.update({'generationLimit': newLimit.toString()});
           print("Generation limit decremented. New limit: $newLimit");
-          return true; // Indicate successful decrement
+
+          // Indicate successful decrement
+          return UsageStatus.Success;
         }
       } else {
         print("Document does not exist.");
-        return false; // Handle the case where the document doesn't exist
+
+        // Handle the case where the document doesn't exist
+        return UsageStatus.DocDNE;
       }
     } catch (e) {
       print("Error decrementing generation limit: $e");
-      return false; // Handle exceptions
+
+      // Handle exceptions
+      return UsageStatus.Error;
     }
   }
 

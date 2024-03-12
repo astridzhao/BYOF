@@ -5,7 +5,6 @@ import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/forget_
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_options_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_up_screen.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_signin_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

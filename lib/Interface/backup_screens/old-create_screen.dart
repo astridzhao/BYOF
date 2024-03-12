@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:astridzhao_s_food_app/core/app_export.dart';
+import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 // import 'package:drift/drift.dart' ;
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/generation-recipe-output.dart';
@@ -320,9 +321,11 @@ class CreateScreenState extends State<CreateScreen> {
                 await sendPrompt();
                 // Close the dialog
                 Navigator.of(context).pop();
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        GenerationScreen(resultCompletion: resultCompletion)));
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  final recipe = RecipeFromLLMJson(resultCompletion);
+                  return GenerationScreen(recipe: recipe);
+                }));
               },
             ),
           ],
@@ -573,7 +576,6 @@ class CreateScreenState extends State<CreateScreen> {
               onValuePicked: (Language language) {
                 setState(() {
                   selectedLangauge = language.name;
-                  
                 });
               },
             ),

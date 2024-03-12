@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:astridzhao_s_food_app/core/app_export.dart';
+import 'package:astridzhao_s_food_app/database/recipesFormatConversion.dart';
 import 'package:astridzhao_s_food_app/resources/firebasestore.dart';
 import 'package:astridzhao_s_food_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/generation-recipe-output.dart';
-import 'package:astridzhao_s_food_app/Interface/create_recipe_screen/RecipeSettingBottomSheet.dart';
 import 'package:astridzhao_s_food_app/widgets/custom_drop_down.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:language_picker/language_picker.dart';
@@ -15,6 +15,7 @@ import 'package:language_picker/languages.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Azure_CreateScreen extends StatefulWidget {
   Azure_CreateScreen({
@@ -205,32 +206,32 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
           "4. Be mindful of I have $selectedDietaryRestriction diet restriction. "
           "5. I have $selectedServingSize people to eat. Tell me how many amount of food I need to use in 'Ingredient List'. ";
 
-  String get system_prompt =>
-      """As a professional personal recipe-generating assistant, your task is to create ONE recipe using provided leftover ingredients. The response should be formatted as a JSON object containing 7 child objects, each with specific data types and content requirements:  
-      1. Title (String): The name of the dish. 
-      2. Ingredient List (List[String]): Ingredients used in the recipe.
-      3. Step-by-Step Instructions (List[String]): Detailed cooking steps.
-      4. Expected Cooking Time (Integer): Time required for cooking, in minutes.
-      5. Note (String): Additional tips.
-      6. Saving Co2 (Double): Estimated CO2 savings in kilograms, calculated as the sum of (Amount of each food type wasted × Emission factor for that food type). The number should never be 0. Even if the result is an integer value, it should be represented with a decimal point (e.g., '3' should be '3.0')
-      7. Saving Money (Double): Estimated monetary savings in US dollars, represented as a floating-point number. The number should never be 0. Even if the savings are whole numbers, they should be formatted with a decimal point (e.g., '5' should be '5.0').
+  // String get system_prompt =>
+  //     """As a professional personal recipe-generating assistant, your task is to create ONE recipe using provided leftover ingredients. The response should be formatted as a JSON object containing 7 child objects, each with specific data types and content requirements:
+  //     1. Title (String): The name of the dish.
+  //     2. Ingredient List (List[String]): Ingredients used in the recipe.
+  //     3. Step-by-Step Instructions (List[String]): Detailed cooking steps.
+  //     4. Expected Cooking Time (Integer): Time required for cooking, in minutes.
+  //     5. Note (String): Additional tips.
+  //     6. Saving Co2 (Double): Estimated CO2 savings in kilograms, calculated as the sum of (Amount of each food type wasted × Emission factor for that food type). The number should never be 0. Even if the result is an integer value, it should be represented with a decimal point (e.g., '3' should be '3.0')
+  //     7. Saving Money (Double): Estimated monetary savings in US dollars, represented as a floating-point number. The number should never be 0. Even if the savings are whole numbers, they should be formatted with a decimal point (e.g., '5' should be '5.0').
 
-      Format of the JSON object:
-      {
-        "Title": "String",
-        "Ingredient List": ["String"],
-        "Step-by-Step Instructions": ["String"],
-        "Expected Cooking Time": Integer,
-        "Note": "String",
-        "Saving Co2": Double,
-        "Saving Money": Double
-      }"
+  //     Format of the JSON object:
+  //     {
+  //       "Title": "String",
+  //       "Ingredient List": ["String"],
+  //       "Step-by-Step Instructions": ["String"],
+  //       "Expected Cooking Time": Integer,
+  //       "Note": "String",
+  //       "Saving Co2": Double,
+  //       "Saving Money": Double
+  //     }"
 
-      Additional Rules: 
-    - The recipe must closely resemble dishes from the selected cuisine ($selectedCuisine).
-    - Use only the ingredients provided by the user, with the allowance of essential sauces and spices.
-    - The recipe output should be in the selected language ($selectedLangauge).
-      """;
+  //     Additional Rules:
+  //   - The recipe must closely resemble dishes from the selected cuisine ($selectedCuisine).
+  //   - Use only the ingredients provided by the user, with the allowance of essential sauces and spices.
+  //   - The recipe output should be in the selected language ($selectedLangauge).
+  //     """;
 
   double getResponsiveFontSize_title(double screenWidth) {
     if (screenWidth < 320) {
@@ -288,9 +289,9 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                 color: appTheme.green_primary),
           ),
           onPressed: () async {
-            bool canGenerate =
-                await Storedata(user!.uid).decrementGenerationLimit();
-            if (canGenerate) {
+            var storeData = Storedata(user!.uid);
+            final canGenerate = await storeData.decrementGenerationLimit();
+            if (canGenerate == UsageStatus.Success) {
               // handle situtaion of empty input
               if (selectedIngredients.isEmpty ||
                   atomInputContainerController.text.isEmpty) {
@@ -326,12 +327,97 @@ class update_CreateScreenState extends State<Azure_CreateScreen> {
                   },
                 );
                 await sendPrompt();
+                final recipe = RecipeFromLLMJson(resultCompletion);
                 // Close the dialog
                 Navigator.of(context).pop();
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        GenerationScreen(resultCompletion: resultCompletion)));
+                if (recipe != null) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) {
+                      return GenerationScreen(recipe: recipe);
+                    }),
+                  );
+                } else {
+                  showDialog(
+                    context: context,
+                    barrierDismissible:
+                        false, // User must tap button to close dialog
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                  "An error has occured during generation. Please try again."),
+                            )
+                          ],
+                        ),
+                        actions: <Widget>[
+                          new TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              'Close',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 14.fSize),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
               }
+            } else if (canGenerate == UsageStatus.BetaSurveyNeeded) {
+              // --- BETA ONLY SECTION BEGIN ---
+              print("You need to fill a survey");
+              // showDialog(context: context, builder: builder)
+              showDialog(
+                context: context,
+                barrierDismissible:
+                    false, // User must tap button to close dialog
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                              "Enjoyed RiceBucket So far? Help us make it better by filling this survey!"),
+                        )
+                      ],
+                    ),
+                    actions: <Widget>[
+                      new TextButton(
+                        onPressed: () async {
+                          final Uri survey_url =
+                              Uri.parse("https://forms.gle/PZQBwYZwD7hUMCzq8");
+                          if (!await launchUrl(survey_url)) {
+                            print("error launching survey url");
+                          }
+                          storeData.setBetaSurveyFilled(filled: true);
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Proceed',
+                          style: TextStyle(
+                              color: Colors.black54, fontSize: 14.fSize),
+                        ),
+                      ),
+                      new TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Close',
+                          style: TextStyle(
+                              color: Colors.black54, fontSize: 14.fSize),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+              // --- BETA ONLY SECTION END   ---
             } else {
               // Notify the user that they cannot generate anymore
               print("You've reached your generation limit.");

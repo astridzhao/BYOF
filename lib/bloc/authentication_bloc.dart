@@ -35,10 +35,27 @@ class AuthenticationBloc
             emit(SignUpNeedsVerificationState(event.email));
           }
         } else {
-          emit(SignUpFailureState('An unknown error occurred'));
+          emit(SignUpFailureState('Authentication failed. Please try again.'));
         }
       } on FirebaseAuthException catch (e) {
-        emit(SignUpFailureState(e.message ?? 'An unknown error occurred'));
+        String errorMessage;
+        switch (e.code) {
+          case 'email-already-in-use':
+            errorMessage = "The account already exists for that email.";
+            break;
+          case 'invalid-email':
+            errorMessage = "The email address is not valid.";
+            break;
+          case 'operation-not-allowed':
+            errorMessage = "Email & Password accounts are not enabled.";
+            break;
+          case 'weak-password':
+            errorMessage = "The password provided is too weak.";
+            break;
+          default:
+            errorMessage = 'An unknown error occurred';
+        }
+        emit(SignUpFailureState(e.message! + errorMessage));
       } catch (e) {
         print(e.toString());
       }
@@ -50,9 +67,12 @@ class AuthenticationBloc
       try {
         final UserModel? user =
             await authService.signInUser(event.email, event.password);
-        if (user != null) {
+        if (user != null && user.emailVerified == true) {
           // User is successfully signed in and not null
           emit(SignInSuccessState(user));
+        } else if (user != null && user.emailVerified == false) {
+          emit(SignInFailureState(
+              'You need to verify your email address. Check your email for a verification link.'));
         } else {
           // Handle the case where user is null - maybe emit a different state
           // or a failure state with a specific error message
