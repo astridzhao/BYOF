@@ -1,4 +1,5 @@
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage_page/homepage_screen.dart';
+import 'package:astridzhao_s_food_app/Interface/meal_plan_screen/mealplan_main.dart';
 import 'package:astridzhao_s_food_app/core/app_export.dart';
 import 'package:astridzhao_s_food_app/Interface/backup_screens/old-create_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/backup_screens/NoAccount-home-screen.dart';
@@ -71,7 +72,7 @@ class _HomepageContainerScreenState extends State<HomepageContainerScreen> {
               bottomItemSelectedColor: appTheme.yellow_secondary,
               label: 'Meal Plan',
               selectedIcon: Icons.dinner_dining_rounded,
-              screen: Azure_CreateScreen(),
+              screen: MealPlan_mainScreen(),
               // screen: GenerationScreen(resultCompletion: resultCompletion),
             ),
             BottomBarItem(
