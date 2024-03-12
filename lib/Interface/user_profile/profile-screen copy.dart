@@ -10,13 +10,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'dart:developer';
 
-class EditProfilePage extends StatefulWidget {
+class EditProfilePage_beta extends StatefulWidget {
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  _EditProfilePageState_beta createState() => _EditProfilePageState_beta();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class _EditProfilePageState_beta extends State<EditProfilePage_beta> {
   bool showPassword = false;
   TextEditingController nameController = TextEditingController();
   Uint8List? finalImage;
@@ -31,7 +32,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (user != null && user.displayName != null) {
       nameController.text = user.displayName!;
     } // Get current user details
-    fetchUserProfileImageUrl(); // Your custom method to fetch and set the imageURL
+    // fetchUserProfileImageUrl(); // Your custom method to fetch and set the imageURL
     userModelFuture = getCurrentUserModel();
   }
 
@@ -105,7 +106,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (user != null) {
       print("checked user is not null");
       await user.updateDisplayName(name);
-      print("user info is updated in model");
+      print("user info is updated in model : $name");
       Provider.of<UserInformationProvider>(context, listen: false)
           .fetchCurrentUserModel();
       print("provider is updated");
@@ -114,52 +115,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   Widget displayUserInformation(context, snapshot) {
     final user = snapshot.data;
-
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
     Widget displayImage() {
-      return finalImage != null
-          ? CircleAvatar(
-              radius: 80,
-              backgroundColor: appTheme.orange_primary,
-              backgroundImage: MemoryImage(finalImage!))
-          : imageURL != null
-              ? CircleAvatar(
-                  radius: 80,
-                  backgroundColor: appTheme.orange_primary,
-                  backgroundImage: NetworkImage(imageURL!))
-              : const CircleAvatar(
-                  radius: 80,
-                  backgroundColor: Colors.lightGreen,
-                  backgroundImage: AssetImage("assets/images/chief.png"));
+      return const CircleAvatar(
+          radius: 80,
+          backgroundColor: Colors.lightGreen,
+          backgroundImage: AssetImage("assets/images/chief.png"));
     }
 
-    Future<void> uploadImage() async {
-      Uint8List image = await PickImage(ImageSource.gallery);
-
-      setState(() {
-        finalImage = image;
-      });
-    }
-
-    Widget changeProfilePic() {
-      return Container(
-          height: 50,
-          width: 50,
-          child: IconButton(
-            icon: Icon(Icons.add_a_photo),
-            color: Colors.black87,
-            onPressed: () => uploadImage(),
-          ));
-    }
-
-    void saveProfile() async {
-      // updateUserName(nameController.text);
+    saveProfile() async {
+      updateUserName(nameController.text);
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         String userId = user.uid;
         print("[FirebaseAuth] userId: $userId");
+
         String message = await Storedata(userId).updateUserProfile(
             name: nameController.text, image: finalImage ?? Uint8List(0));
 
@@ -179,7 +151,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     return Column(children: <Widget>[
       displayImage(),
-      changeProfilePic(),
       SizedBox(
         height: screenHeight * 0.05,
       ),
@@ -202,7 +173,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
           OutlinedButton(
             onPressed: () {
               final user = FirebaseAuth.instance.currentUser;
-
               if (user != null) {
                 // user.updateDisplayName(nameController.text);
                 saveProfile();

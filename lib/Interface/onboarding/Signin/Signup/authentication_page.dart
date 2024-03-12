@@ -1,6 +1,4 @@
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
-import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_up_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/onboarding_first_time_download_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +14,10 @@ class AuthenticationFlowScreen extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            print("[StreamBuilder]user is logged in");
+            print("[StreamBuilder]user is signed up");
             return HomepageContainerScreen();
           } else {
-            print("[StreamBuilder]user is logged out");
+            print("[StreamBuilder]user is new");
             return OnboardingFirstTimeDownloadScreen();
           }
         },

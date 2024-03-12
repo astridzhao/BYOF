@@ -114,39 +114,38 @@ class MyfridgePageState extends State<MyfridgePage> {
   }
 
   Widget build(BuildContext context) {
-    return  Scaffold(
-        body: DecoratedBox(
-          // BoxDecoration takes the image
-          decoration: BoxDecoration(
-            // Image set to background of the body
-            image: DecorationImage(
-                colorFilter: new ColorFilter.mode(
-                    Colors.black.withOpacity(0.15), BlendMode.dstATop),
-                image: AssetImage("assets/images/fridge_background.png"),
-                fit: BoxFit.fill),
-          ),
-          child: SingleChildScrollView(
-            // padding: EdgeInsets.only(top: 20),
-            child: Column(
-              children: [
-                SizedBox(height: 30.v),
-                SectionHeader(title: "Fiber"),
-                SizedBox(height: 1.v),
-                _buildFiberList(context),
-                SizedBox(height: 17.v),
-                SectionHeader(title: "Protein"),
-                SizedBox(height: 1.v),
-                _buildProteinList(context),
-                SizedBox(height: 17.v),
-                SectionHeader(title: "Carbs"),
-                SizedBox(height: 1.v),
-                _buildCarbsList(context),
-                SizedBox(height: 17.v),
-              ],
-            ),
+    return Scaffold(
+      body: DecoratedBox(
+        // BoxDecoration takes the image
+        decoration: BoxDecoration(
+          // Image set to background of the body
+          image: DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.black.withOpacity(0.15), BlendMode.dstATop),
+              image: AssetImage("assets/images/fridge_background.png"),
+              fit: BoxFit.fill),
+        ),
+        child: SingleChildScrollView(
+          // padding: EdgeInsets.only(top: 20),
+          child: Column(
+            children: [
+              SizedBox(height: 30.v),
+              SectionHeader(title: "Fiber"),
+              SizedBox(height: 1.v),
+              _buildFiberList(context),
+              SizedBox(height: 17.v),
+              SectionHeader(title: "Protein"),
+              SizedBox(height: 1.v),
+              _buildProteinList(context),
+              SizedBox(height: 17.v),
+              SectionHeader(title: "Carbs"),
+              SizedBox(height: 1.v),
+              _buildCarbsList(context),
+              SizedBox(height: 17.v),
+            ],
           ),
         ),
-      
+      ),
     );
   }
 
@@ -393,53 +392,3 @@ Future<String?> _showAddIngredientDialog(BuildContext context) async {
     },
   );
 }
-
-
-//class FridgeItem {
-//   String name;
-//   int quantity;
-
-//   FridgeItem({required this.name, required this.quantity});
-
-//   // Convert a FridgeItem into a Map. The keys must correspond to the names of the
-//   // JSON attributes in the Flutter app.
-//   Map<String, dynamic> toJson() => {
-//         'name': name,
-//         'quantity': quantity,
-//       };
-
-//   // A method to create a FridgeItem from a map.
-//   factory FridgeItem.fromJson(Map<String, dynamic> json) => FridgeItem(
-//         name: json['name'],
-//         quantity: json['quantity'],
-//       );
-// }
-
-// Future<void> saveData() async {
-//   final prefs = await SharedPreferences.getInstance();
-
-//   // Example for fiber items. You can replicate for protein and carbs.
-//   List<Map<String, dynamic>> fiberItemsToJson = fiberItems.map((item) => item.toJson()).toList();
-//   String encodedFiberItems = jsonEncode(fiberItemsToJson);
-//   await prefs.setString('fiberItems', encodedFiberItems);
-
-//   // Repeat similar steps for proteinItems and carbsItems...
-// }
-
-// Future<void> loadData() async {
-//   final prefs = await SharedPreferences.getInstance();
-
-//   // Example for fiber items. You can replicate for protein and carbs.
-//   String? encodedFiberItems = prefs.getString('fiberItems');
-//   if (encodedFiberItems != null) {
-//     List<dynamic> decodedFiberItems = jsonDecode(encodedFiberItems);
-//     List<FridgeItem> fiberItems = decodedFiberItems.map((itemJson) => FridgeItem.fromJson(itemJson)).toList();
-
-//     setState(() {
-//       this.fiberItems = fiberItems;
-//     });
-//   }
-
-  // Repeat similar steps for proteinItems and carbsItems...
-// }
-

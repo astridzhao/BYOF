@@ -1,17 +1,15 @@
-import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
-import 'package:astridzhao_s_food_app/Interface/user_profile/security-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/user_profile/profile-screen%20copy.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/subscription/choosesubscription-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/profile-screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/sign_in_email_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/user_profile/subscription/planDetail-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/user_profile/user_info_provider.dart';
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:astridzhao_s_food_app/theme/theme_helper.dart';
 import 'package:astridzhao_s_food_app/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +31,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    Uint8List? finalImage;
 
     Widget displayUserName() {
       // Use Provider to listen to changes in UserInformationProvider
@@ -46,7 +43,6 @@ class _SettingsPageState extends State<SettingsPage> {
             return CircularProgressIndicator(); // Show loading indicator while data is being fetched
           } else {
             String name = userInfoProvider.userModel?.name ?? "no name";
-            print("name: $name");
             return Text("$name",
                 style: TextStyle(
                     fontFamily: "Outfit",
@@ -93,20 +89,15 @@ class _SettingsPageState extends State<SettingsPage> {
             final data = snapshot.data!.data() as Map<String, dynamic>?;
             imageURL = data?['image'];
             // ignore: unnecessary_null_comparison
-            return finalImage != null
+            return imageURL != null && !imageURL!.isEmpty
                 ? CircleAvatar(
                     radius: 80,
                     backgroundColor: appTheme.orange_primary,
-                    backgroundImage: MemoryImage(finalImage))
-                : imageURL != null
-                    ? CircleAvatar(
-                        radius: 80,
-                        backgroundColor: appTheme.orange_primary,
-                        backgroundImage: NetworkImage(imageURL!))
-                    : const CircleAvatar(
-                        radius: 80,
-                        backgroundColor: Colors.lightGreen,
-                        backgroundImage: AssetImage("assets/images/chief.png"));
+                    backgroundImage: NetworkImage(imageURL!))
+                : const CircleAvatar(
+                    radius: 80,
+                    backgroundColor: Colors.lightGreen,
+                    backgroundImage: AssetImage("assets/images/chief.png"));
           } else if (snapshot.hasError) {
             // Handle error state
             print("Error fetching user profile image: ${snapshot.error}");
@@ -115,17 +106,24 @@ class _SettingsPageState extends State<SettingsPage> {
 
           // While data is loading, show the selected image or a default image
           // ignore: unnecessary_null_comparison
-          return finalImage != null
+          return imageURL != null && !imageURL!.isEmpty
               ? CircleAvatar(
                   radius: 80,
                   backgroundColor: appTheme.orange_primary,
-                  backgroundImage: MemoryImage(finalImage))
+                  backgroundImage: NetworkImage(imageURL!))
               : const CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.lightGreen,
                   backgroundImage: AssetImage("assets/images/chief.png"));
         },
       );
+    }
+
+    Widget displayImage_beta() {
+      return const CircleAvatar(
+          radius: 80,
+          backgroundColor: Colors.lightGreen,
+          backgroundImage: AssetImage("assets/images/chief.png"));
     }
 
     Widget sectionHeader(String title) {
@@ -164,20 +162,6 @@ class _SettingsPageState extends State<SettingsPage> {
         },
       );
     }
-
-    // Widget subscriptionPlan(BuildContext context) {
-    //   // Directly return a Consumer widget to use within the ListTile's title
-    //   return Consumer<UserInformationProvider>(
-    //     builder: (context, userInfoProvider, child) {
-    //       // Here, instead of returning a String, we return a Text widget
-    //       print(
-    //           "subscription plan [user model]: ${userInfoProvider.userModel?.productId}");
-    //       String subscriptionStatus =
-    //           userInfoProvider.userModel?.productId ?? "Inactive";
-    //       return Text(subscriptionStatus);
-    //     },
-    //   );
-    // }
 
     Widget subscriptionSection(
         BuildContext context, String title, IconData icon, Widget screen) {
@@ -258,11 +242,7 @@ class _SettingsPageState extends State<SettingsPage> {
           margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
           accountName: displayUserName(),
           accountEmail: displayUserEmail(),
-          currentAccountPicture: displayImage(),
-          // currentAccountPicture: CircleAvatar(
-          //   backgroundImage: AssetImage(
-          //       'assets/images/img_avatar.png'), // Replace with actual image path
-          // ),
+          currentAccountPicture: displayImage_beta(),
           currentAccountPictureSize: Size.square(screenWidth * 0.15),
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -284,10 +264,7 @@ class _SettingsPageState extends State<SettingsPage> {
               SizedBox(height: screenHeight * 0.02),
               sectionHeader("Account"),
               eachSection(context, 'Edit profile',
-                  Icons.account_circle_outlined, EditProfilePage()),
-              // eachSection(context, 'Security', Icons.lock, SecuritySetting()),
-              // eachSection(
-              //     context, 'Notification', Icons.privacy_tip, EditProfilePage()),
+                  Icons.account_circle_outlined, EditProfilePage_beta()),
               SizedBox(height: screenHeight * 0.02),
               sectionHeader("Support & About"),
               SizedBox(height: screenHeight * 0.02),
@@ -296,8 +273,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
               eachSection(context, 'View Subscription Plans',
                   Icons.subscriptions, SubscriptionPage()),
-              eachSection(context, 'Help and Support',
-                  Icons.question_mark_outlined, EditProfilePage()),
+              // eachSection(context, 'Help and Support',
+              //     Icons.question_mark_outlined, EditProfilePage()),
               SizedBox(height: screenHeight * 0.1),
               signOutButton(),
               SizedBox(height: screenHeight * 0.02),

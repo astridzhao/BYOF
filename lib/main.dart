@@ -1,8 +1,6 @@
-
 import 'package:astridzhao_s_food_app/Interface/homepage_screen/homepage-container.dart';
-import 'package:astridzhao_s_food_app/Interface/loading_screen.dart';
 import 'package:astridzhao_s_food_app/Interface/onboarding/Signin/Signup/authentication_page.dart';
-import 'package:astridzhao_s_food_app/Interface/user_profile/profile-screen.dart';
+import 'package:astridzhao_s_food_app/Interface/user_profile/user_info_provider.dart';
 import 'package:astridzhao_s_food_app/bloc/authentication_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
